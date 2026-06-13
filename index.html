@@ -12,900 +12,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            dark: '#1a1625',
-                            card: '#251b33',
-                            primary: '#360568',
-                            secondary: '#5B2A86',
-                            muted: '#7785AC',
-                            teal: '#9AC6C5',
-                            mint: '#A5E6BA',
-                            danger: '#7f1d1d'
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        body { background-color: theme('colors.brand.dark'); color: #f3f4f6; }
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: theme('colors.brand.dark'); }
-        ::-webkit-scrollbar-thumb { background: theme('colors.brand.secondary'); border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: theme('colors.brand.muted'); }
-        
-        /* Hide scrollbar for clean horizontal scrolls but allow scrolling */
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
-        /* Animation for transitions */
-        .fade-in { animation: fadeIn 0.3s ease-in-out; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    </style>
-</head>
-<body class="min-h-screen flex flex-col antialiased">
-
-    <!-- LOGIN PAGE -->
-    <div id="login-page" class="fixed inset-0 z-50 flex items-center justify-center bg-[#160d22] px-4">
-        <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#7785AC_1px,transparent_1px)] [background-size:16px_16px]"></div>
-        <div class="relative w-full max-w-md p-8 rounded-2xl bg-brand-card border border-brand-secondary/40 shadow-2xl">
-            <div class="text-center mb-8">
-                <div class="inline-flex items-center justify-center w-16 h-16 rounded-xl bg-brand-primary border-2 border-brand-secondary text-brand-mint text-3xl font-extrabold mb-4 shadow-inner">
-                    B
-                </div>
-                <h1 class="text-2xl font-bold text-white tracking-tight">Logistics Tracker</h1>
-                <p class="text-sm text-brand-muted mt-1 font-medium">Binus Alam Sutera Event Management</p>
-            </div>
-
-            <form id="login-form" onsubmit="handleLogin(event)" class="space-y-5">
-                <div id="login-error" class="hidden bg-red-900/50 border border-red-500 text-red-200 text-xs p-3 rounded-lg text-center font-semibold">
-                    Username atau password salah!
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-brand-muted uppercase tracking-wider mb-2">Username</label>
-                    <input type="text" id="username" required placeholder="sewong" 
-                        class="w-full px-4 py-3 rounded-xl bg-[#160d22] border border-brand-secondary/60 text-white font-medium placeholder-gray-600 focus:outline-none focus:border-brand-teal focus:ring-1 focus:ring-brand-teal transition">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-brand-muted uppercase tracking-wider mb-2">Password</label>
-                    <input type="password" id="password" required placeholder="••••••••" 
-                        class="w-full px-4 py-3 rounded-xl bg-[#160d22] border border-brand-secondary/60 text-white font-medium placeholder-gray-600 focus:outline-none focus:border-brand-teal focus:ring-1 focus:ring-brand-teal transition">
-                </div>
-                <button type="submit" 
-                    class="w-full py-3.5 mt-2 rounded-xl bg-brand-secondary hover:bg-brand-primary text-white font-bold tracking-wide shadow-lg hover:shadow-brand-secondary/30 transition duration-200">
-                    Masuk Sistem
-                </button>
-            </form>
-            <div class="mt-6 text-center text-xs text-brand-muted">
-                <p>Role yang tersedia:</p>
-                <p class="mt-1 font-mono">Admin: sewong | Viewer: alsut_view</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- MAIN APP STRUCTURE -->
-    <div id="main-app" class="hidden flex-1 h-screen flex flex-col md:flex-row overflow-hidden">
-        
-        <!-- MOBILE HEADER (Visible only on small screens) -->
-        <div class="md:hidden flex items-center justify-between bg-brand-primary p-4 border-b border-brand-secondary/40 z-20">
-            <div class="flex items-center space-x-3">
-                <div class="w-8 h-8 rounded-md bg-brand-secondary flex items-center justify-center font-bold text-brand-mint text-xs shadow-md">AS</div>
-                <h2 class="text-sm font-bold text-white leading-tight">Binus Alsut Logistics</h2>
-            </div>
-            <button onclick="toggleMobileMenu()" class="text-white p-2 focus:outline-none">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
-            </button>
-        </div>
-
-        <!-- SIDEBAR NAVIGATION -->
-        <nav id="sidebar" class="fixed md:static inset-y-0 left-0 w-64 bg-brand-card border-r border-brand-secondary/40 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out z-30 flex flex-col">
-            <div class="hidden md:flex items-center space-x-3 p-6 border-b border-brand-secondary/40">
-                <div class="w-10 h-10 rounded-lg bg-brand-secondary flex items-center justify-center font-extrabold text-brand-mint shadow-md">AS</div>
-                <div>
-                    <h2 class="text-sm font-bold text-white leading-tight">Alsut Logistics</h2>
-                    <p class="text-[10px] text-brand-muted uppercase tracking-wider mt-0.5">Event Management</p>
-                </div>
-            </div>
-
-            <!-- User Info Widget -->
-            <div class="p-5 border-b border-brand-secondary/20 bg-brand-primary/10">
-                <p class="text-xs text-brand-muted mb-1">Login Status</p>
-                <p class="text-sm font-bold text-white" id="user-display-name">Teguh Adhi Wibowo</p>
-                <p class="text-xs font-semibold text-brand-teal inline-flex items-center mt-1 bg-brand-teal/10 px-2 py-0.5 rounded-md" id="user-role-badge">IT Admin</p>
-            </div>
-
-            <div class="flex-1 overflow-y-auto py-4">
-                <ul class="space-y-1 px-3">
-                    <li>
-                        <button onclick="navigate('dashboard')" id="nav-dashboard" class="w-full flex items-center px-4 py-3 rounded-xl text-sm font-bold transition-colors bg-brand-secondary/30 text-white">
-                            <span class="mr-3 text-lg">📊</span> Dashboard Analytics
-                        </button>
-                    </li>
-                    <li>
-                        <button onclick="navigate('database')" id="nav-database" class="w-full flex items-center px-4 py-3 rounded-xl text-sm font-bold text-brand-muted hover:bg-brand-primary/40 hover:text-white transition-colors">
-                            <span class="mr-3 text-lg">🗄️</span> Data & Form Input
-                        </button>
-                    </li>
-                    <li>
-                        <button onclick="navigate('active-loans')" id="nav-active-loans" class="w-full flex items-center px-4 py-3 rounded-xl text-sm font-bold text-brand-muted hover:bg-brand-primary/40 hover:text-white transition-colors">
-                            <span class="mr-3 text-lg">⚡</span> Peminjaman Aktif
-                        </button>
-                    </li>
-                    <li>
-                        <button onclick="navigate('history')" id="nav-history" class="w-full flex items-center px-4 py-3 rounded-xl text-sm font-bold text-brand-muted hover:bg-brand-primary/40 hover:text-white transition-colors">
-                            <span class="mr-3 text-lg">🕒</span> Riwayat Terakhir
-                        </button>
-                    </li>
-                </ul>
-            </div>
-
-            <div class="p-4 border-t border-brand-secondary/40">
-                <button onclick="handleLogout()" class="w-full flex items-center justify-center px-4 py-2.5 rounded-lg bg-red-900/40 hover:bg-red-900 border border-red-500/30 text-sm font-bold text-red-200 transition">
-                    Sign Out
-                </button>
-            </div>
-        </nav>
-
-        <!-- MAIN CONTENT AREA -->
-        <main class="flex-1 bg-brand-dark overflow-y-auto relative w-full">
-            
-            <!-- OVERLAY FOR MOBILE SIDEBAR -->
-            <div id="mobile-overlay" onclick="toggleMobileMenu()" class="fixed inset-0 bg-black/60 z-20 hidden md:hidden"></div>
-
-            <div class="p-4 sm:p-6 md:p-8 w-full max-w-7xl mx-auto space-y-8 pb-20">
-                
-                <!-- VIEW 1: DASHBOARD ANALYTICS -->
-                <div id="view-dashboard" class="fade-in space-y-6">
-                    <div class="flex items-center justify-between mb-2">
-                        <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Executive Dashboard</h2>
-                    </div>
-                    
-                    <!-- Summary Cards -->
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
-                        <div class="bg-brand-card rounded-2xl p-5 border border-brand-secondary/30 shadow-lg relative overflow-hidden">
-                            <div class="absolute top-0 right-0 p-4 opacity-20 text-4xl">📦</div>
-                            <p class="text-xs font-bold text-brand-muted uppercase tracking-wider mb-1">Total Peminjaman</p>
-                            <p class="text-3xl font-extrabold text-white" id="dash-total-loans">0</p>
-                        </div>
-                        <div class="bg-brand-card rounded-2xl p-5 border border-brand-teal/40 shadow-lg shadow-brand-teal/5 relative overflow-hidden">
-                            <div class="absolute top-0 right-0 p-4 opacity-20 text-4xl">⚠️</div>
-                            <p class="text-xs font-bold text-brand-teal uppercase tracking-wider mb-1">Active / Ongoing</p>
-                            <p class="text-3xl font-extrabold text-brand-teal" id="dash-active-loans">0</p>
-                        </div>
-                        <div class="bg-brand-card rounded-2xl p-5 border border-brand-mint/40 shadow-lg shadow-brand-mint/5 relative overflow-hidden">
-                            <div class="absolute top-0 right-0 p-4 opacity-20 text-4xl">✅</div>
-                            <p class="text-xs font-bold text-brand-mint uppercase tracking-wider mb-1">Selesai / Clear</p>
-                            <p class="text-3xl font-extrabold text-brand-mint" id="dash-done-loans">0</p>
-                        </div>
-                        <div class="bg-brand-card rounded-2xl p-5 border border-brand-secondary/30 shadow-lg relative overflow-hidden">
-                            <div class="absolute top-0 right-0 p-4 opacity-20 text-4xl">🔧</div>
-                            <p class="text-xs font-bold text-brand-muted uppercase tracking-wider mb-1">Total Item Unit</p>
-                            <p class="text-3xl font-extrabold text-white" id="dash-total-items">0</p>
-                        </div>
-                    </div>
-
-                    <!-- Charts Grid -->
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        <!-- Top 10 Most Borrowed -->
-                        <div class="bg-brand-card p-5 rounded-2xl border border-brand-secondary/30 shadow-lg">
-                            <h3 class="text-sm font-bold text-white flex items-center mb-4">
-                                <span class="w-2 h-4 bg-brand-teal rounded-full mr-2"></span> Top 10 Barang Paling Sering Dipinjam
-                            </h3>
-                            <div class="relative h-64 w-full">
-                                <canvas id="chartTop10"></canvas>
-                            </div>
-                        </div>
-
-                        <!-- Top 10 Least Borrowed (Obsolete Check) -->
-                        <div class="bg-brand-card p-5 rounded-2xl border border-brand-secondary/30 shadow-lg">
-                            <h3 class="text-sm font-bold text-white flex items-center mb-4">
-                                <span class="w-2 h-4 bg-brand-muted rounded-full mr-2"></span> Top 10 Barang Paling Jarang Dipinjam
-                            </h3>
-                            <div class="relative h-64 w-full">
-                                <canvas id="chartBottom10"></canvas>
-                            </div>
-                        </div>
-
-                        <!-- Monthly Trend Line Chart (Spans full width on LG) -->
-                        <div class="bg-brand-card p-5 rounded-2xl border border-brand-secondary/30 shadow-lg lg:col-span-2">
-                            <h3 class="text-sm font-bold text-white flex items-center mb-4">
-                                <span class="w-2 h-4 bg-brand-primary rounded-full mr-2"></span> Tren Peminjaman Per Bulan (Peak Season)
-                            </h3>
-                            <div class="relative h-72 w-full">
-                                <canvas id="chartTrend"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- VIEW 2: DATABASE & FORM INPUT -->
-                <div id="view-database" class="hidden fade-in h-full flex flex-col space-y-6">
-                    <div class="flex items-center justify-between">
-                        <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Data & Form Input</h2>
-                    </div>
-
-                    <div class="flex flex-col xl:flex-row gap-6 flex-1 min-h-0">
-                        <!-- Left: Form Input (Admin Only) -->
-                        <div class="w-full xl:w-[400px] shrink-0 bg-brand-card rounded-2xl p-6 border border-brand-secondary/30 shadow-lg admin-only">
-                            <div class="flex items-center justify-between mb-5">
-                                <h3 class="text-md font-bold text-white flex items-center" id="form-title">
-                                    <span class="w-2 h-5 bg-brand-mint rounded-full mr-2"></span> Input Peminjaman Baru
-                                </h3>
-                                <button id="cancel-edit-btn" onclick="resetForm()" class="hidden text-xs font-bold text-brand-muted hover:text-white px-2 py-1 bg-brand-dark rounded-md border border-brand-secondary/50">Batal Edit</button>
-                            </div>
-
-                            <form id="loan-form" onsubmit="handleSubmitLoan(event)" class="space-y-4">
-                                <input type="hidden" id="edit-id" value="">
-                                
-                                <div>
-                                    <label class="block text-xs font-bold text-brand-muted uppercase mb-1.5">Nomor Ticket</label>
-                                    <input type="text" id="input-ticket" required placeholder="TKT-2026-XXXX" 
-                                        class="w-full px-3 py-2.5 rounded-xl bg-brand-dark border border-brand-secondary/60 text-white font-medium focus:outline-none focus:border-brand-teal transition">
-                                </div>
-
-                                <div class="grid grid-cols-2 gap-3">
-                                    <div>
-                                        <label class="block text-xs font-bold text-brand-muted uppercase mb-1.5">Tanggal</label>
-                                        <input type="date" id="input-date" required 
-                                            class="w-full px-3 py-2.5 rounded-xl bg-brand-dark border border-brand-secondary/60 text-white font-medium focus:outline-none focus:border-brand-teal transition">
-                                    </div>
-                                    <div>
-                                        <label class="block text-xs font-bold text-brand-muted uppercase mb-1.5">Status</label>
-                                        <select id="input-status" class="w-full px-3 py-2.5 rounded-xl bg-brand-dark border border-brand-secondary/60 text-white font-medium focus:outline-none focus:border-brand-teal transition">
-                                            <option value="Dipinjam">⚠️ Dipinjam</option>
-                                            <option value="Kembali">✅ Kembali</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <label class="block text-xs font-bold text-brand-muted uppercase mb-1.5">Nama Event / Kegiatan</label>
-                                    <input type="text" id="input-event" required placeholder="Nama event..." 
-                                        class="w-full px-3 py-2.5 rounded-xl bg-brand-dark border border-brand-secondary/60 text-white font-medium focus:outline-none focus:border-brand-teal transition">
-                                </div>
-
-                                <!-- Dynamic Items Selection -->
-                                <div class="pt-2 pb-1 border-t border-brand-secondary/30 mt-2">
-                                    <div class="flex items-center justify-between mb-2">
-                                        <label class="block text-xs font-bold text-brand-muted uppercase">Daftar Barang (Qty)</label>
-                                        <button type="button" onclick="addFormItemRow()" class="text-xs text-brand-teal hover:text-brand-mint font-bold">+ Tambah Barang</button>
-                                    </div>
-                                    <div id="items-container" class="space-y-2 max-h-40 overflow-y-auto pr-1 no-scrollbar">
-                                        <!-- Item rows injected here -->
-                                    </div>
-                                </div>
-
-                                <button type="submit" id="submit-btn"
-                                    class="w-full py-3.5 mt-2 rounded-xl bg-brand-secondary hover:bg-brand-primary text-white font-extrabold tracking-wide shadow-md transition duration-200">
-                                    Simpan Data
-                                </button>
-                            </form>
-                        </div>
-
-                        <!-- Viewer Notification if not Admin -->
-                        <div class="w-full xl:w-[400px] shrink-0 bg-brand-card rounded-2xl p-6 border border-brand-teal/30 shadow-lg viewer-only flex-col items-center justify-center text-center hidden">
-                            <span class="text-4xl mb-3 block">🔒</span>
-                            <h3 class="text-lg font-bold text-white mb-2">Akses Read-Only</h3>
-                            <p class="text-sm text-brand-muted leading-relaxed">Anda login menggunakan akses Viewer. Penambahan, pengeditan, atau penghapusan data dikunci.</p>
-                        </div>
-
-                        <!-- Right: Table Data View -->
-                        <div class="flex-1 bg-brand-card rounded-2xl border border-brand-secondary/30 shadow-lg flex flex-col min-h-[500px] overflow-hidden">
-                            <div class="p-4 border-b border-brand-secondary/40 flex flex-col sm:flex-row gap-4 items-center justify-between bg-brand-card z-10">
-                                <h3 class="text-md font-bold text-white w-full sm:w-auto">Database Rekapitulasi</h3>
-                                <div class="relative w-full sm:w-72">
-                                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-brand-muted">🔍</span>
-                                    <input type="text" id="table-search" oninput="renderTable()" placeholder="Cari event, tiket..." 
-                                        class="w-full pl-9 pr-4 py-2 rounded-xl bg-brand-dark border border-brand-secondary/50 text-white font-medium text-sm focus:outline-none focus:border-brand-teal transition">
-                                </div>
-                            </div>
-                            <div class="flex-1 overflow-auto relative">
-                                <table class="w-full text-left border-collapse min-w-[800px]">
-                                    <thead class="sticky top-0 bg-[#2b213b] shadow-md z-10">
-                                        <tr class="border-b border-brand-secondary/40 text-[11px] font-extrabold uppercase tracking-wider text-brand-muted">
-                                            <th class="py-4 px-5">Tgl</th>
-                                            <th class="py-4 px-5">No. Ticket</th>
-                                            <th class="py-4 px-5">Event</th>
-                                            <th class="py-4 px-5">Rincian Barang</th>
-                                            <th class="py-4 px-5 w-28 text-center">Status</th>
-                                            <th class="py-4 px-5 w-24 text-right admin-only">Aksi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="loan-table-body" class="divide-y divide-brand-secondary/20 text-sm font-medium">
-                                        <!-- Dynamic JS Insertion -->
-                                    </tbody>
-                                </table>
-                                <div id="empty-state" class="hidden flex flex-col items-center justify-center p-12 text-center text-brand-muted absolute inset-0">
-                                    <span class="text-4xl mb-3">📋</span>
-                                    <p class="font-bold">Tidak ada data yang cocok.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- VIEW 3: ACTIVE LOANS WIDGET -->
-                <div id="view-active-loans" class="hidden fade-in space-y-6">
-                    <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight flex items-center">
-                        <span class="mr-3">⚡</span> Ongoing / Peminjaman Aktif
-                    </h2>
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="active-loans-grid">
-                        <!-- Cards injected via JS -->
-                    </div>
-                    <div id="active-empty" class="hidden p-8 text-center text-brand-muted bg-brand-card rounded-2xl border border-brand-secondary/30">
-                        <span class="text-3xl block mb-2">🎉</span>
-                        <p class="font-bold">Semua barang sudah kembali ke storage. Aman terkendali.</p>
-                    </div>
-                </div>
-
-                <!-- VIEW 4: RECENT HISTORY -->
-                <div id="view-history" class="hidden fade-in space-y-6">
-                    <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight flex items-center">
-                        <span class="mr-3">🕒</span> Riwayat Transaksi Terakhir
-                    </h2>
-                    <div class="bg-brand-card rounded-2xl border border-brand-secondary/30 overflow-hidden shadow-lg p-1 sm:p-4">
-                        <div class="space-y-4" id="history-list">
-                            <!-- List injected via JS -->
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </main>
-    </div>
-
-    <!-- SCRIPT LOGIC -->
-    <script>
-        // Data & State Initialization
-        const DB_KEY = 'binus_alsut_records';
-        let currentUser = null; // { role: 'admin' | 'viewer' }
-        
-        // Master list of items based on Excel columns
-        const masterItemsList = [
-            'Mini PC', 'Laptop', 'Monitor', 'Pointer', 'TV', 'Acer PC', 'Camera PTZ', 
-            'HDMI 1.5 Meter', 'HDMI 2 Meter', 'HDMI 3 Meter', 'HDMI 5 Meter', 'HDMI 10 Meter', 'HDMI 15 Meter', 'HDMI 20 Meter', 'HDMI 30 Meter', 'HDMI 50 Meter',
-            'HDMI Spliter 1x2', 'HDMI Spliter 1x4', 'HDMI Switcher 1x2', 'HDMI Switcher 1x4', 'HDMI Switcher 2x4', 'HDMI Switcher 4x4',
-            'Splitter Lindy', 'Switch Hub 5 Port', 'HDMI Capture', 'HDMI Wireless Hagibis', 'HDMI 30 Meter Optic',
-            'Type C to All', 'USB 15 Meter', 'USB 20 Meter', 'Hub LAn', 'DP TO HDMI', 'DP TO VGA', 'USB SOUNDCARD', 'Wifi USB', 'IPAD PRO', 'PRINTER', 'POLY SPEAKER'
-        ].sort();
-
-        // Sample Data Generation if localStorage is empty
-        let initialData = [
-            {
-                id: "1704067200000", date: "2026-01-10", ticket: "464533", event: "Lecturer Gathering 2520", status: "Kembali",
-                items: [{name: "Pointer", qty: 2}, {name: "HDMI Spliter 1x4", qty: 1}, {name: "Mini PC", qty: 4}]
-            },
-            {
-                id: "1716422400000", date: "2026-05-23", ticket: "493608", event: "Ujian Onsite PT VIRTUS", status: "Dipinjam",
-                items: [{name: "Laptop", qty: 15}, {name: "Switch Hub 5 Port", qty: 2}, {name: "HDMI 5 Meter", qty: 1}]
-            },
-            {
-                id: "1716595200000", date: "2026-05-25", ticket: "493756", event: "Industry Visit Guest Lecturer BOSCH", status: "Kembali",
-                items: [{name: "Pointer", qty: 1}, {name: "HDMI 1.5 Meter", qty: 4}]
-            },
-            {
-                id: "1725148800000", date: "2026-09-01", ticket: "460674", event: "Pra-Raker 2026 BiON", status: "Dipinjam",
-                items: [{name: "Monitor", qty: 1}, {name: "USB 20 Meter", qty: 1}, {name: "Pointer", qty: 1}]
-            }
-        ];
-
-        let trackingRecords = JSON.parse(localStorage.getItem(DB_KEY)) || initialData;
-
-        // Chart Instances
-        let chartTop10Instance, chartBottom10Instance, chartTrendInstance;
-
-        // Ensure App runs
-        window.onload = () => {
-            const savedRole = localStorage.getItem('binus_role');
-            if (savedRole) {
-                applyRole(savedRole);
-            }
-        };
-
-        // --- AUTH & NAVIGATION --- //
-        function handleLogin(e) {
-            e.preventDefault();
-            const user = document.getElementById('username').value.trim();
-            const pass = document.getElementById('password').value;
-            const err = document.getElementById('login-error');
-
-            if (user === 'sewong' && pass === '_pR0t3<s3<uR3') {
-                applyRole('admin');
-            } else if (user === 'alsut_view') {
-                applyRole('viewer'); // simple access for viewer, ignoring pass for demo ease
-            } else {
-                err.classList.remove('hidden');
-            }
-        }
-
-        function handleLogout() {
-            localStorage.removeItem('binus_role');
-            currentUser = null;
-            document.getElementById('login-page').classList.remove('hidden');
-            document.getElementById('main-app').classList.add('hidden');
-            document.getElementById('login-form').reset();
-            document.getElementById('login-error').classList.add('hidden');
-        }
-
-        function applyRole(role) {
-            localStorage.setItem('binus_role', role);
-            currentUser = { role: role };
-            
-            // Adjust UI
-            const isAdm = role === 'admin';
-            document.getElementById('user-display-name').innerText = isAdm ? 'Teguh Adhi Wibowo' : 'Guest Viewer';
-            document.getElementById('user-role-badge').innerText = isAdm ? 'IT Admin' : 'Read-Only';
-            document.getElementById('user-role-badge').className = isAdm ? 'text-xs font-semibold text-brand-mint inline-flex items-center mt-1 bg-brand-mint/10 px-2 py-0.5 rounded-md border border-brand-mint/20' : 'text-xs font-semibold text-brand-muted inline-flex items-center mt-1 bg-brand-muted/10 px-2 py-0.5 rounded-md border border-brand-muted/20';
-
-            // Show/Hide Admin specific elements
-            document.querySelectorAll('.admin-only').forEach(el => el.style.display = isAdm ? '' : 'none');
-            document.querySelectorAll('.viewer-only').forEach(el => el.style.display = isAdm ? 'none' : 'flex');
-
-            document.getElementById('login-page').classList.add('hidden');
-            document.getElementById('main-app').classList.remove('hidden');
-            
-            initFormItems();
-            navigate('dashboard');
-        }
-
-        function navigate(viewId) {
-            // Hide all views
-            ['dashboard', 'database', 'active-loans', 'history'].forEach(id => {
-                document.getElementById('view-' + id).classList.add('hidden');
-                document.getElementById('nav-' + id).classList.replace('bg-brand-secondary/30', 'text-brand-muted');
-                document.getElementById('nav-' + id).classList.replace('text-white', 'text-brand-muted');
-            });
-
-            // Show selected view
-            document.getElementById('view-' + viewId).classList.remove('hidden');
-            const navBtn = document.getElementById('nav-' + viewId);
-            navBtn.classList.replace('text-brand-muted', 'text-white');
-            navBtn.classList.add('bg-brand-secondary/30');
-
-            // Close mobile menu
-            document.getElementById('sidebar').classList.add('-translate-x-full');
-            document.getElementById('mobile-overlay').classList.add('hidden');
-
-            // Render specific data
-            if (viewId === 'dashboard') renderDashboard();
-            if (viewId === 'database') renderTable();
-            if (viewId === 'active-loans') renderActiveLoans();
-            if (viewId === 'history') renderHistory();
-        }
-
-        function toggleMobileMenu() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('mobile-overlay');
-            sidebar.classList.toggle('-translate-x-full');
-            overlay.classList.toggle('hidden');
-        }
-
-        // --- DASHBOARD LOGIC --- //
-        function renderDashboard() {
-            // Metrics
-            const totalLoans = trackingRecords.length;
-            const activeLoans = trackingRecords.filter(r => r.status === 'Dipinjam').length;
-            const doneLoans = trackingRecords.filter(r => r.status === 'Kembali').length;
-            
-            // Item Counts
-            const itemCounts = {};
-            trackingRecords.forEach(r => {
-                r.items.forEach(i => {
-                    itemCounts[i.name] = (itemCounts[i.name] || 0) + parseInt(i.qty);
-                });
-            });
-            
-            const totalItems = Object.values(itemCounts).reduce((a, b) => a + b, 0);
-
-            document.getElementById('dash-total-loans').innerText = totalLoans;
-            document.getElementById('dash-active-loans').innerText = activeLoans;
-            document.getElementById('dash-done-loans').innerText = doneLoans;
-            document.getElementById('dash-total-items').innerText = totalItems;
-
-            // Chart Data Prep
-            const sortedItems = Object.entries(itemCounts).sort((a, b) => b[1] - a[1]);
-            
-            // Need all master items for obsolete check (0 count)
-            const allItemCounts = [...masterItemsList].map(name => ({
-                name: name,
-                count: itemCounts[name] || 0
-            })).sort((a, b) => a.count - b.count);
-
-            const top10 = sortedItems.slice(0, 10);
-            const bottom10 = allItemCounts.slice(0, 10);
-
-            // Monthly Trend Prep (Last 6 Months logic based on data)
-            const monthsMap = {};
-            trackingRecords.forEach(r => {
-                const date = new Date(r.date);
-                const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-                monthsMap[key] = (monthsMap[key] || 0) + 1;
-            });
-            const sortedMonths = Object.keys(monthsMap).sort();
-            const monthLabels = sortedMonths.map(m => {
-                const [y, mm] = m.split('-');
-                const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-                return `${monthNames[parseInt(mm)-1]} ${y}`;
-            });
-            const monthData = sortedMonths.map(m => monthsMap[m]);
-
-            // Chart Colors
-            const colorPrimary = '#360568';
-            const colorTeal = '#9AC6C5';
-            const colorMuted = '#7785AC';
-            const colorCard = '#251b33';
-            const colorText = '#f3f4f6';
-
-            Chart.defaults.color = colorMuted;
-            Chart.defaults.font.family = '"Plus Jakarta Sans", sans-serif';
-
-            // Top 10 Chart
-            const ctxTop = document.getElementById('chartTop10').getContext('2d');
-            if(chartTop10Instance) chartTop10Instance.destroy();
-            chartTop10Instance = new Chart(ctxTop, {
-                type: 'bar',
-                data: {
-                    labels: top10.map(i => i[0]),
-                    datasets: [{
-                        label: 'Total Dipinjam (Unit)',
-                        data: top10.map(i => i[1]),
-                        backgroundColor: colorTeal,
-                        borderRadius: 4
-                    }]
-                },
-                options: {
-                    indexAxis: 'y',
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        x: { grid: { color: 'rgba(91, 42, 134, 0.2)' } },
-                        y: { grid: { display: false } }
-                    }
-                }
-            });
-
-            // Bottom 10 Chart
-            const ctxBot = document.getElementById('chartBottom10').getContext('2d');
-            if(chartBottom10Instance) chartBottom10Instance.destroy();
-            chartBottom10Instance = new Chart(ctxBot, {
-                type: 'bar',
-                data: {
-                    labels: bottom10.map(i => i.name),
-                    datasets: [{
-                        label: 'Total Dipinjam (Unit)',
-                        data: bottom10.map(i => i.count),
-                        backgroundColor: colorMuted,
-                        borderRadius: 4
-                    }]
-                },
-                options: {
-                    indexAxis: 'y',
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        x: { 
-                            grid: { color: 'rgba(91, 42, 134, 0.2)' },
-                            ticks: { stepSize: 1 }
-                        },
-                        y: { grid: { display: false } }
-                    }
-                }
-            });
-
-            // Trend Chart
-            const ctxTrend = document.getElementById('chartTrend').getContext('2d');
-            if(chartTrendInstance) chartTrendInstance.destroy();
-            chartTrendInstance = new Chart(ctxTrend, {
-                type: 'line',
-                data: {
-                    labels: monthLabels,
-                    datasets: [{
-                        label: 'Jumlah Event / Peminjaman',
-                        data: monthData,
-                        borderColor: '#A5E6BA',
-                        backgroundColor: 'rgba(165, 230, 186, 0.1)',
-                        borderWidth: 3,
-                        pointBackgroundColor: '#5B2A86',
-                        pointBorderColor: '#A5E6BA',
-                        pointBorderWidth: 2,
-                        pointRadius: 5,
-                        fill: true,
-                        tension: 0.3
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        x: { grid: { display: false } },
-                        y: { 
-                            grid: { color: 'rgba(91, 42, 134, 0.2)' },
-                            beginAtZero: true,
-                            ticks: { stepSize: 1 }
-                        }
-                    }
-                }
-            });
-        }
-
-        // --- DATABASE LOGIC (CRUD) --- //
-        function renderTable() {
-            const tbody = document.getElementById('loan-table-body');
-            const emptyState = document.getElementById('empty-state');
-            const searchTerm = document.getElementById('table-search').value.toLowerCase();
-            
-            tbody.innerHTML = '';
-            
-            let filtered = trackingRecords.filter(item => {
-                const itemsStr = item.items.map(i => `${i.name} ${i.qty}`).join(' ');
-                return item.ticket.toLowerCase().includes(searchTerm) || 
-                       item.event.toLowerCase().includes(searchTerm) || 
-                       itemsStr.toLowerCase().includes(searchTerm);
-            });
-
-            filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-            if(filtered.length === 0) {
-                emptyState.classList.remove('hidden');
-            } else {
-                emptyState.classList.add('hidden');
-                filtered.forEach(record => {
-                    const statusClass = record.status === 'Kembali' 
-                        ? 'bg-brand-mint/10 text-brand-mint border-brand-mint/30' 
-                        : 'bg-[#f59e0b]/10 text-[#f59e0b] border-[#f59e0b]/30'; // Warning orange for active
-                    
-                    const itemsHtml = record.items.map(i => `<span class="inline-block bg-brand-primary/40 px-2 py-0.5 rounded mr-1 mb-1 border border-brand-secondary/40">${i.qty}x ${i.name}</span>`).join('');
-                    const isAdmin = currentUser && currentUser.role === 'admin';
-
-                    const row = document.createElement('tr');
-                    row.className = 'hover:bg-brand-secondary/20 transition duration-150';
-                    row.innerHTML = `
-                        <td class="py-3 px-5 text-white whitespace-nowrap">${formatDate(record.date)}</td>
-                        <td class="py-3 px-5 font-bold text-brand-teal tracking-wide whitespace-nowrap">${record.ticket}</td>
-                        <td class="py-3 px-5 text-white font-bold">${record.event}</td>
-                        <td class="py-3 px-5 text-xs">${itemsHtml}</td>
-                        <td class="py-3 px-5 text-center whitespace-nowrap">
-                            <span class="px-3 py-1 text-[11px] uppercase font-extrabold tracking-wide rounded-md border shadow-sm ${statusClass}">
-                                ${record.status}
-                            </span>
-                        </td>
-                        <td class="py-3 px-5 text-right whitespace-nowrap text-xs space-x-2 admin-only" style="display: ${isAdmin ? '' : 'none'}">
-                            <button onclick="editRecord('${record.id}')" class="text-brand-teal hover:text-white font-bold transition">Edit</button>
-                            <span class="text-brand-secondary">|</span>
-                            <button onclick="deleteRecord('${record.id}')" class="text-brand-danger hover:text-red-400 font-bold transition">Del</button>
-                        </td>
-                    `;
-                    tbody.appendChild(row);
-                });
-            }
-        }
-
-        // Form Items Logic
-        function initFormItems() {
-            document.getElementById('items-container').innerHTML = '';
-            addFormItemRow();
-        }
-
-        function addFormItemRow(name = '', qty = 1) {
-            const container = document.getElementById('items-container');
-            const rowId = 'item-row-' + Date.now();
-            
-            const options = masterItemsList.map(item => 
-                `<option value="${item}" ${item === name ? 'selected' : ''}>${item}</option>`
-            ).join('');
-
-            const row = document.createElement('div');
-            row.id = rowId;
-            row.className = 'flex items-center space-x-2 animate-[fadeIn_0.2s_ease-out]';
-            row.innerHTML = `
-                <select class="item-select flex-1 px-3 py-2 rounded-lg bg-[#160d22] border border-brand-secondary/60 text-white font-medium text-xs focus:outline-none focus:border-brand-teal transition">
-                    <option value="" disabled ${!name ? 'selected' : ''}>-- Pilih Barang --</option>
-                    ${options}
-                </select>
-                <input type="number" min="1" value="${qty}" class="item-qty w-16 px-3 py-2 rounded-lg bg-[#160d22] border border-brand-secondary/60 text-white font-medium text-xs text-center focus:outline-none focus:border-brand-teal transition">
-                <button type="button" onclick="document.getElementById('${rowId}').remove()" class="p-2 text-brand-muted hover:text-brand-danger bg-brand-dark rounded-lg border border-brand-secondary/30">
-                    ✕
-                </button>
-            `;
-            container.appendChild(row);
-        }
-
-        function handleSubmitLoan(e) {
-            e.preventDefault();
-            if(currentUser.role !== 'admin') return;
-            
-            const id = document.getElementById('edit-id').value;
-            const date = document.getElementById('input-date').value;
-            const ticket = document.getElementById('input-ticket').value;
-            const event = document.getElementById('input-event').value;
-            const status = document.getElementById('input-status').value;
-
-            // Collect Items
-            const items = [];
-            document.querySelectorAll('#items-container > div').forEach(row => {
-                const name = row.querySelector('.item-select').value;
-                const qty = row.querySelector('.item-qty').value;
-                if(name && qty > 0) items.push({name, qty: parseInt(qty)});
-            });
-
-            if(items.length === 0) {
-                alert('Pilih minimal 1 barang yang dipinjam!');
-                return;
-            }
-
-            if (id) {
-                const index = trackingRecords.findIndex(r => r.id === id);
-                if(index !== -1) trackingRecords[index] = { id, date, ticket, event, items, status };
-            } else {
-                trackingRecords.push({ id: Date.now().toString(), date, ticket, event, items, status });
-            }
-
-            saveState();
-            resetForm();
-        }
-
-        function editRecord(id) {
-            const record = trackingRecords.find(r => r.id === id);
-            if (!record) return;
-
-            document.getElementById('edit-id').value = record.id;
-            document.getElementById('input-date').value = record.date;
-            document.getElementById('input-ticket').value = record.ticket;
-            document.getElementById('input-event').value = record.event;
-            document.getElementById('input-status').value = record.status;
-
-            // Rebuild Items
-            document.getElementById('items-container').innerHTML = '';
-            record.items.forEach(i => addFormItemRow(i.name, i.qty));
-
-            document.getElementById('form-title').innerHTML = '<span class="w-2 h-5 bg-brand-teal rounded-full mr-2"></span> Edit Mode Aktif';
-            const btn = document.getElementById('submit-btn');
-            btn.innerText = 'Update Data';
-            btn.className = 'w-full py-3.5 mt-4 rounded-xl bg-brand-teal hover:bg-brand-mint hover:text-brand-primary text-brand-dark font-extrabold tracking-wide shadow-md transition duration-200';
-            document.getElementById('cancel-edit-btn').classList.remove('hidden');
-        }
-
-        function deleteRecord(id) {
-            if(confirm('Yakin hapus record peminjaman tiket ini?')) {
-                trackingRecords = trackingRecords.filter(r => r.id !== id);
-                saveState();
-                if(document.getElementById('edit-id').value === id) resetForm();
-            }
-        }
-
-        function resetForm() {
-            document.getElementById('loan-form').reset();
-            document.getElementById('edit-id').value = '';
-            initFormItems();
-            document.getElementById('form-title').innerHTML = '<span class="w-2 h-5 bg-brand-mint rounded-full mr-2"></span> Input Peminjaman Baru';
-            const btn = document.getElementById('submit-btn');
-            btn.innerText = 'Simpan Data';
-            btn.className = 'w-full py-3.5 mt-2 rounded-xl bg-brand-secondary hover:bg-brand-primary text-white font-extrabold tracking-wide shadow-md transition duration-200';
-            document.getElementById('cancel-edit-btn').classList.add('hidden');
-        }
-
-        function saveState() {
-            localStorage.setItem(DB_KEY, JSON.stringify(trackingRecords));
-            renderTable();
-        }
-
-        // --- WIDGET VIEWS --- //
-        function renderActiveLoans() {
-            const activeLoans = trackingRecords.filter(r => r.status === 'Dipinjam');
-            const grid = document.getElementById('active-loans-grid');
-            const empty = document.getElementById('active-empty');
-            
-            grid.innerHTML = '';
-            if(activeLoans.length === 0) {
-                grid.classList.add('hidden');
-                empty.classList.remove('hidden');
-            } else {
-                grid.classList.remove('hidden');
-                empty.classList.add('hidden');
-                
-                activeLoans.sort((a, b) => new Date(a.date) - new Date(b.date));
-                
-                activeLoans.forEach(loan => {
-                    // Calculate days active
-                    const loanDate = new Date(loan.date);
-                    const today = new Date();
-                    const diffTime = Math.abs(today - loanDate);
-                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                    
-                    const badgeColor = diffDays > 7 ? 'bg-red-900/50 text-red-300 border-red-500/30' : 'bg-orange-900/40 text-orange-300 border-orange-500/30';
-                    const icon = diffDays > 7 ? '🔥 Overdue' : '⚠️ Active';
-
-                    const itemsHtml = loan.items.map(i => `<li class="flex justify-between text-sm py-1 border-b border-brand-secondary/20 last:border-0"><span class="text-brand-muted">${i.name}</span> <span class="font-bold text-white">${i.qty} Unit</span></li>`).join('');
-
-                    grid.innerHTML += `
-                        <div class="bg-brand-card rounded-2xl border border-brand-secondary/40 shadow-lg overflow-hidden flex flex-col">
-                            <div class="p-4 border-b border-brand-secondary/30 flex justify-between items-start bg-brand-primary/20">
-                                <div>
-                                    <h4 class="font-bold text-white text-md mb-1">${loan.ticket}</h4>
-                                    <p class="text-xs text-brand-muted">${formatDate(loan.date)}</p>
-                                </div>
-                                <span class="px-2 py-1 text-[10px] font-extrabold uppercase rounded border ${badgeColor}">${icon} (${diffDays} Hari)</span>
-                            </div>
-                            <div class="p-4 flex-1">
-                                <p class="text-sm font-bold text-brand-teal mb-3 leading-tight">${loan.event}</p>
-                                <ul class="space-y-1 mt-2">
-                                    ${itemsHtml}
-                                </ul>
-                            </div>
-                        </div>
-                    `;
-                });
-            }
-        }
-
-        function renderHistory() {
-            const list = document.getElementById('history-list');
-            list.innerHTML = '';
-            
-            // Get last 10 entries based on id (timestamp)
-            const sorted = [...trackingRecords].sort((a, b) => parseInt(b.id) - parseInt(a.id)).slice(0, 10);
-            
-            sorted.forEach(record => {
-                const statusIcon = record.status === 'Kembali' ? '✅' : '⚠️';
-                const statusColor = record.status === 'Kembali' ? 'text-brand-mint' : 'text-orange-400';
-                
-                list.innerHTML += `
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-brand-dark rounded-xl border border-brand-secondary/20 hover:border-brand-secondary/60 transition">
-                        <div class="flex items-start space-x-4 mb-3 sm:mb-0">
-                            <div class="text-2xl mt-1">${statusIcon}</div>
-                            <div>
-                                <h4 class="font-bold text-white">${record.ticket} <span class="text-brand-muted text-xs font-normal ml-2">Diperbarui: ${formatDate(record.date)}</span></h4>
-                                <p class="text-sm text-brand-teal mt-0.5">${record.event}</p>
-                                <p class="text-xs text-brand-muted mt-1 w-full sm:w-[400px] truncate">Barang: ${record.items.map(i => i.name).join(', ')}</p>
-                            </div>
-                        </div>
-                        <div class="text-left sm:text-right">
-                            <span class="text-xs font-bold uppercase tracking-wider ${statusColor} bg-brand-card px-3 py-1 rounded-md border border-brand-secondary/30">${record.status}</span>
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
-        function formatDate(dateString) {
-            if(!dateString) return '';
-            const options = { year: 'numeric', month: 'short', day: 'numeric' };
-            return new Date(dateString).toLocaleDateString('id-ID', options);
-        }
-    </script>
-</body>
-</html>
-
-Sorry bro, kadang sistem file-attachment suka bug gak muncul di layar. Ini gw kasih langsung source code mentahnya biar lu gampang copy-paste.
-
-Lu tinggal Copy (salin) semua kode HTML di bawah ini, buka Notepad / VS Code, terus Save As dengan nama index.html.
-
-HTML
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Binus Alsut Event Logistics</title>
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- PapaParse for CSV Import/Export -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <script>
@@ -938,7 +44,6 @@ HTML
         ::-webkit-scrollbar-thumb { background: theme('colors.brand.secondary'); border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: theme('colors.brand.muted'); }
         
-        /* Hide scrollbar for clean horizontal scrolls */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
@@ -953,9 +58,7 @@ HTML
         <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#7785AC_1px,transparent_1px)] [background-size:16px_16px]"></div>
         <div class="relative w-full max-w-md p-8 rounded-2xl bg-brand-card border border-brand-secondary/40 shadow-2xl">
             <div class="text-center mb-8">
-                <div class="inline-flex items-center justify-center w-16 h-16 rounded-xl bg-brand-primary border-2 border-brand-secondary text-brand-mint text-3xl font-extrabold mb-4 shadow-inner">
-                    B
-                </div>
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-xl bg-brand-primary border-2 border-brand-secondary text-brand-mint text-3xl font-extrabold mb-4 shadow-inner">B</div>
                 <h1 class="text-2xl font-bold text-white tracking-tight">Logistics Tracker</h1>
                 <p class="text-sm text-brand-muted mt-1 font-medium">Binus Alam Sutera Event Management</p>
             </div>
@@ -1025,9 +128,7 @@ HTML
             </div>
 
             <div class="p-4 border-t border-brand-secondary/40">
-                <button onclick="handleLogout()" class="w-full flex items-center justify-center px-4 py-2.5 rounded-lg bg-red-900/40 hover:bg-red-900 border border-red-500/30 text-sm font-bold text-red-200 transition">
-                    Sign Out
-                </button>
+                <button onclick="handleLogout()" class="w-full flex items-center justify-center px-4 py-2.5 rounded-lg bg-red-900/40 hover:bg-red-900 border border-red-500/30 text-sm font-bold text-red-200 transition">Sign Out</button>
             </div>
         </nav>
 
@@ -1039,7 +140,6 @@ HTML
                 
                 <!-- VIEW 1: DASHBOARD ANALYTICS -->
                 <div id="view-dashboard" class="fade-in space-y-6">
-                    <!-- Dashboard content (kept same structure) -->
                     <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Executive Dashboard</h2>
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
                         <div class="bg-brand-card rounded-2xl p-5 border border-brand-secondary/30 shadow-lg relative overflow-hidden"><p class="text-xs font-bold text-brand-muted uppercase tracking-wider mb-1">Total Peminjaman</p><p class="text-3xl font-extrabold text-white" id="dash-total-loans">0</p></div>
@@ -1058,7 +158,6 @@ HTML
                 <div id="view-database" class="hidden fade-in h-full flex flex-col space-y-6">
                     <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Data & Form Input</h2>
                     <div class="flex flex-col xl:flex-row gap-6 flex-1 min-h-0">
-                        
                         <!-- Form Input -->
                         <div class="w-full xl:w-[400px] shrink-0 bg-brand-card rounded-2xl p-6 border border-brand-secondary/30 shadow-lg admin-only">
                             <div class="flex items-center justify-between mb-5">
@@ -1109,7 +208,6 @@ HTML
                     <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Pencarian Detail & Ekspor Data</h2>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        
                         <!-- Widget 1: Cari Ticket Detail -->
                         <div class="bg-brand-card rounded-2xl p-6 border border-brand-secondary/30 shadow-lg">
                             <h3 class="text-lg font-bold text-brand-teal mb-4 flex items-center"><span class="text-2xl mr-2">🔍</span> Cek Detail Ticket</h3>
@@ -1118,10 +216,7 @@ HTML
                                 <input type="text" id="lookup-input" placeholder="Contoh: 460674" class="flex-1 px-4 py-3 rounded-xl bg-brand-dark border border-brand-secondary/60 text-white font-bold focus:border-brand-teal outline-none">
                                 <button onclick="lookupTicket()" class="px-6 py-3 rounded-xl bg-brand-secondary hover:bg-brand-primary text-white font-bold transition shadow-md">Cari</button>
                             </div>
-                            <!-- Result Container -->
-                            <div id="lookup-result" class="hidden bg-brand-dark p-5 rounded-xl border border-brand-teal/30">
-                                <!-- Injected via JS -->
-                            </div>
+                            <div id="lookup-result" class="hidden bg-brand-dark p-5 rounded-xl border border-brand-teal/30"></div>
                         </div>
 
                         <!-- Widget 2: Export Data -->
@@ -1135,20 +230,18 @@ HTML
                             <button onclick="exportData()" class="w-full py-3.5 rounded-xl bg-brand-teal text-brand-dark hover:bg-brand-mint font-extrabold transition shadow-md">Download CSV Excel</button>
                         </div>
                         
-                        <!-- Widget 3: Import Data (Solusi Data Tidak Ditemukan) -->
+                        <!-- Widget 3: Import Data -->
                         <div class="bg-brand-card rounded-2xl p-6 border border-brand-secondary/30 shadow-lg md:col-span-2 admin-only">
                             <h3 class="text-lg font-bold text-[#f59e0b] mb-2 flex items-center"><span class="text-2xl mr-2">📤</span> Import Data Master (Excel ke CSV)</h3>
                             <p class="text-sm text-brand-muted mb-4 leading-relaxed">
-                                <strong>Penting:</strong> Jika nomor tiket Anda "Tidak Ditemukan" padahal ada di file Excel Anda (2023-2026), itu karena aplikasi web ini berjalan secara lokal di browser Anda dan belum tersambung ke file Excel asli Anda.<br>
-                                <strong>Solusi:</strong> 1. Save file Excel Anda menjadi format <code>.csv</code>. 2. Upload file tersebut di bawah ini untuk memasukkannya ke dalam sistem web.
+                                <strong>Solusi Data Kosong:</strong> 1. Save file Excel asli Anda menjadi format <code>.csv</code>. 2. Upload file tersebut di bawah ini untuk memasukkannya ke dalam sistem web.
                             </p>
-                            <div class="flex items-center space-x-4">
+                            <div class="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4">
                                 <input type="file" id="import-file" accept=".csv" class="block w-full text-sm text-brand-muted file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-brand-secondary/40 file:text-white hover:file:bg-brand-secondary/60 transition">
-                                <button onclick="importCSV()" class="px-6 py-2.5 rounded-xl bg-[#f59e0b]/80 hover:bg-[#f59e0b] text-white font-bold transition shadow-md whitespace-nowrap">Proses Import</button>
+                                <button onclick="importCSV()" class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-[#f59e0b]/80 hover:bg-[#f59e0b] text-white font-bold transition shadow-md whitespace-nowrap">Proses Import</button>
                             </div>
                             <p id="import-msg" class="text-xs font-bold text-brand-mint mt-3 hidden"></p>
                         </div>
-
                     </div>
                 </div>
 
@@ -1169,7 +262,6 @@ HTML
                 <div id="view-settings" class="hidden fade-in space-y-6 admin-only">
                     <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">⚙️ Pengaturan Sistem & Pengguna</h2>
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        
                         <!-- Add User Form -->
                         <div class="bg-brand-card rounded-2xl p-6 border border-brand-secondary/30 shadow-lg">
                             <h3 class="text-md font-bold text-white mb-5">Tambah User Baru</h3>
@@ -1186,17 +278,12 @@ HTML
                                 <button type="submit" class="w-full py-3 mt-2 rounded-xl bg-brand-teal hover:bg-brand-mint text-brand-dark font-extrabold shadow-md transition">Buat User</button>
                             </form>
                         </div>
-
                         <!-- User List -->
                         <div class="lg:col-span-2 bg-brand-card rounded-2xl border border-brand-secondary/30 shadow-lg flex flex-col overflow-hidden">
                             <div class="p-4 border-b border-brand-secondary/40 bg-brand-card z-10"><h3 class="text-md font-bold text-white">Daftar Akun Terdaftar</h3></div>
                             <div class="flex-1 overflow-auto">
                                 <table class="w-full text-left border-collapse">
-                                    <thead class="bg-[#2b213b]">
-                                        <tr class="border-b border-brand-secondary/40 text-[11px] font-extrabold uppercase text-brand-muted">
-                                            <th class="py-3 px-5">Username</th><th class="py-3 px-5">Role</th><th class="py-3 px-5">Aksi</th>
-                                        </tr>
-                                    </thead>
+                                    <thead class="bg-[#2b213b]"><tr class="border-b border-brand-secondary/40 text-[11px] font-extrabold uppercase text-brand-muted"><th class="py-3 px-5">Username</th><th class="py-3 px-5">Role</th><th class="py-3 px-5">Aksi</th></tr></thead>
                                     <tbody id="user-table-body" class="divide-y divide-brand-secondary/20 text-sm"></tbody>
                                 </table>
                             </div>
@@ -1210,7 +297,7 @@ HTML
 
     <!-- SCRIPT LOGIC -->
     <script>
-        // Data Initialization
+        // System Keys
         const DB_KEY = 'binus_alsut_records';
         const USER_DB_KEY = 'binus_users_db';
         let currentUser = null; 
@@ -1223,27 +310,58 @@ HTML
             'Type C to All', 'USB 15 Meter', 'USB 20 Meter', 'Hub LAn', 'DP TO HDMI', 'DP TO VGA', 'USB SOUNDCARD', 'Wifi USB', 'IPAD PRO', 'PRINTER', 'POLY SPEAKER'
         ].sort();
 
-        let trackingRecords = JSON.parse(localStorage.getItem(DB_KEY)) || [];
+        // Safe Initialization with Auto-Healing
+        let trackingRecords = [];
+        try {
+            trackingRecords = JSON.parse(localStorage.getItem(DB_KEY)) || [];
+        } catch(e) {
+            console.warn("DB reset due to corruption.");
+            localStorage.removeItem(DB_KEY);
+        }
         
-        // Dynamic User Database
-        let appUsers = JSON.parse(localStorage.getItem(USER_DB_KEY)) || [
-            { username: 'sewong', password: '_pR0t3<s3<uR3', role: 'admin' },
-            { username: 'alsut_view', password: '123', role: 'viewer' }
-        ];
+        let appUsers = [];
+        try {
+            appUsers = JSON.parse(localStorage.getItem(USER_DB_KEY));
+            if (!Array.isArray(appUsers)) throw new Error("Invalid User Array");
+        } catch(e) {
+            appUsers = [];
+        }
+
+        // AUTO-HEALING: Guarantee 'sewong' Admin always exists
+        const rootAdmin = appUsers.find(u => u.username === 'sewong');
+        if (!rootAdmin) {
+            appUsers.push({ username: 'sewong', password: '_pR0t3<s3<uR3', role: 'admin' });
+        } else {
+            // Force reset password in case it got corrupted during tests
+            rootAdmin.password = '_pR0t3<s3<uR3';
+        }
+        // Ensure viewer account exists as default demo
+        if (!appUsers.find(u => u.username === 'alsut_view')) {
+            appUsers.push({ username: 'alsut_view', password: '123', role: 'viewer' });
+        }
+        localStorage.setItem(USER_DB_KEY, JSON.stringify(appUsers));
 
         let chartTop10Instance, chartBottom10Instance, chartTrendInstance;
 
         window.onload = () => {
-            const savedUser = JSON.parse(localStorage.getItem('binus_current_session'));
-            if (savedUser) applyRole(savedUser);
+            try {
+                const savedUserStr = localStorage.getItem('binus_current_session');
+                if (savedUserStr && savedUserStr !== "undefined") {
+                    const savedUser = JSON.parse(savedUserStr);
+                    if (savedUser && savedUser.role) applyRole(savedUser);
+                }
+            } catch(e) {
+                localStorage.removeItem('binus_current_session');
+            }
             renderUsers();
         };
 
-        // --- AUTH & USER MANAGEMENT --- //
+        // --- AUTH LOGIC --- //
         function handleLogin(e) {
             e.preventDefault();
             const u = document.getElementById('username').value.trim();
-            const p = document.getElementById('password').value;
+            // Trim removes accidental spaces you might have copy-pasted
+            const p = document.getElementById('password').value.trim(); 
             const err = document.getElementById('login-error');
 
             const validUser = appUsers.find(user => user.username === u && user.password === p);
@@ -1291,7 +409,6 @@ HTML
             tbody.innerHTML = '';
             appUsers.forEach((u, index) => {
                 const roleColor = u.role === 'admin' ? 'text-brand-mint' : 'text-brand-teal';
-                // Don't allow deleting main admin
                 const delBtn = u.username !== 'sewong' 
                     ? `<button onclick="deleteUser(${index})" class="text-brand-danger hover:text-red-400 font-bold text-xs">Hapus</button>`
                     : `<span class="text-xs text-brand-muted">Root</span>`;
@@ -1309,7 +426,7 @@ HTML
         function handleAddUser(e) {
             e.preventDefault();
             const uname = document.getElementById('new-user-name').value.trim();
-            const pass = document.getElementById('new-user-pass').value;
+            const pass = document.getElementById('new-user-pass').value.trim();
             const role = document.getElementById('new-user-role').value;
 
             if(appUsers.find(u => u.username === uname)) {
@@ -1359,14 +476,12 @@ HTML
             document.getElementById('mobile-overlay').classList.toggle('hidden');
         }
 
-        // --- NEW TOOLS: TICKET LOOKUP & EXPORT --- //
+        // --- TOOLS: SEARCH & EXPORT --- //
         function lookupTicket() {
             const input = document.getElementById('lookup-input').value.trim().toLowerCase();
             const resContainer = document.getElementById('lookup-result');
             
             if(!input) return;
-
-            // Search by exact ticket match
             const records = trackingRecords.filter(r => (r.ticket || "").toLowerCase() === input);
             
             resContainer.classList.remove('hidden');
@@ -1385,19 +500,11 @@ HTML
                     html += `
                         <div class="mb-4 last:mb-0 bg-brand-card p-4 rounded-lg border border-brand-secondary/50">
                             <div class="flex justify-between items-start mb-2">
-                                <div>
-                                    <h4 class="text-xl font-extrabold text-brand-teal uppercase tracking-widest">${res.ticket}</h4>
-                                    <p class="text-sm text-white font-bold mt-1">${res.event}</p>
-                                    <p class="text-xs text-brand-muted">${formatDate(res.date)}</p>
-                                </div>
+                                <div><h4 class="text-xl font-extrabold text-brand-teal uppercase tracking-widest">${res.ticket}</h4><p class="text-sm text-white font-bold mt-1">${res.event}</p><p class="text-xs text-brand-muted">${formatDate(res.date)}</p></div>
                                 <span class="px-2 py-1 rounded border border-brand-secondary/40 text-[10px] font-bold uppercase ${statusColor}">${res.status}</span>
                             </div>
-                            <div class="mt-4 pt-3 border-t border-brand-secondary/30">
-                                <p class="text-xs font-bold text-brand-muted uppercase mb-2">Daftar Barang yang Dipinjam</p>
-                                <ul class="text-sm">${itemsList}</ul>
-                            </div>
-                        </div>
-                    `;
+                            <div class="mt-4 pt-3 border-t border-brand-secondary/30"><p class="text-xs font-bold text-brand-muted uppercase mb-2">Daftar Barang yang Dipinjam</p><ul class="text-sm">${itemsList}</ul></div>
+                        </div>`;
                 });
                 resContainer.innerHTML = html;
             }
@@ -1406,36 +513,24 @@ HTML
         function exportData() {
             const start = document.getElementById('export-start').value;
             const end = document.getElementById('export-end').value;
-            
             let filtered = trackingRecords;
-            if(start) {
-                filtered = filtered.filter(r => new Date(r.date) >= new Date(start));
-            }
-            if(end) {
-                filtered = filtered.filter(r => new Date(r.date) <= new Date(end));
-            }
+            
+            if(start) filtered = filtered.filter(r => new Date(r.date) >= new Date(start));
+            if(end) filtered = filtered.filter(r => new Date(r.date) <= new Date(end));
 
-            if(filtered.length === 0) {
-                alert("Tidak ada data pada rentang tanggal tersebut.");
-                return;
-            }
+            if(filtered.length === 0) { alert("Tidak ada data pada rentang tanggal tersebut."); return; }
 
-            // Generate CSV content
             let csvContent = "Tanggal,Nomor Ticket,Nama Event,Status,Nama Barang,Quantity\n";
             filtered.forEach(r => {
                 r.items.forEach(i => {
-                    // Escape event string for CSV
                     let safeEvent = `"${(r.event || "").replace(/"/g, '""')}"`;
-                    let row = `${r.date},${r.ticket},${safeEvent},${r.status},"${i.name}",${i.qty}`;
-                    csvContent += row + "\n";
+                    csvContent += `${r.date},${r.ticket},${safeEvent},${r.status},"${i.name}",${i.qty}\n`;
                 });
             });
 
-            // Trigger Download
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement("a");
-            const url = URL.createObjectURL(blob);
-            link.setAttribute("href", url);
+            link.href = URL.createObjectURL(blob);
             link.setAttribute("download", `Binus_Logistics_Export_${start||'all'}_to_${end||'all'}.csv`);
             document.body.appendChild(link);
             link.click();
@@ -1446,22 +541,15 @@ HTML
             const fileInput = document.getElementById('import-file');
             const msg = document.getElementById('import-msg');
             
-            if(!fileInput.files.length) {
-                alert("Pilih file CSV terlebih dahulu!");
-                return;
-            }
+            if(!fileInput.files.length) { alert("Pilih file CSV terlebih dahulu!"); return; }
 
             msg.classList.remove('hidden');
             msg.innerText = "Memproses data...";
 
             Papa.parse(fileInput.files[0], {
-                header: true,
-                skipEmptyLines: true,
+                header: true, skipEmptyLines: true,
                 complete: function(results) {
                     let importedCount = 0;
-                    
-                    // Simple logic to map wide CSV (like the original excel) to the app's structure
-                    // Assumes CSV has 'Ticket Number', 'Date', 'Event Name' and item columns
                     results.data.forEach(row => {
                         let ticket = row['Ticket Number'] || row['No Ticket'] || row['Ticket'];
                         let dateStr = row['Date'] || row['Tanggal'];
@@ -1469,36 +557,24 @@ HTML
                         
                         if(ticket && dateStr) {
                             let items = [];
-                            // scan for item columns
                             masterItemsList.forEach(itemName => {
-                                if(row[itemName] && !isNaN(row[itemName])) {
-                                    let qty = parseInt(row[itemName]);
-                                    if(qty > 0) items.push({name: itemName, qty: qty});
+                                if(row[itemName] && !isNaN(row[itemName]) && parseInt(row[itemName]) > 0) {
+                                    items.push({name: itemName, qty: parseInt(row[itemName])});
                                 }
                             });
 
                             if(items.length > 0) {
-                                // Check if ticket already exists, update or push
                                 let existingIdx = trackingRecords.findIndex(r => r.ticket === ticket);
                                 let recordObj = {
                                     id: Date.now().toString() + Math.random().toString().slice(2, 5),
-                                    date: dateStr,
-                                    ticket: ticket,
-                                    event: event,
-                                    status: "Kembali", // Default to kembali for old imported data
-                                    items: items
+                                    date: dateStr, ticket: ticket, event: event, status: "Kembali", items: items
                                 };
-                                
-                                if(existingIdx !== -1) {
-                                    trackingRecords[existingIdx] = recordObj;
-                                } else {
-                                    trackingRecords.push(recordObj);
-                                }
+                                if(existingIdx !== -1) trackingRecords[existingIdx] = recordObj;
+                                else trackingRecords.push(recordObj);
                                 importedCount++;
                             }
                         }
                     });
-
                     saveState();
                     msg.innerText = `Sukses! ${importedCount} tiket berhasil di-import/update.`;
                     setTimeout(() => msg.classList.add('hidden'), 5000);
@@ -1506,9 +582,7 @@ HTML
             });
         }
 
-
-        // --- CRUD & DB --- (Rest of the code remains structurally identical, updated references) //
-        
+        // --- CRUD LOGIC --- //
         function renderTable() {
             const tbody = document.getElementById('loan-table-body');
             const emptyState = document.getElementById('empty-state');
@@ -1517,16 +591,13 @@ HTML
             tbody.innerHTML = '';
             let filtered = trackingRecords.filter(item => {
                 const itemsStr = item.items.map(i => `${i.name} ${i.qty}`).join(' ');
-                return (item.ticket||"").toLowerCase().includes(searchTerm) || 
-                       (item.event||"").toLowerCase().includes(searchTerm) || 
-                       itemsStr.toLowerCase().includes(searchTerm);
+                return (item.ticket||"").toLowerCase().includes(searchTerm) || (item.event||"").toLowerCase().includes(searchTerm) || itemsStr.toLowerCase().includes(searchTerm);
             });
 
             filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-            if(filtered.length === 0) {
-                emptyState.classList.remove('hidden');
-            } else {
+            if(filtered.length === 0) { emptyState.classList.remove('hidden'); } 
+            else {
                 emptyState.classList.add('hidden');
                 filtered.forEach(record => {
                     const statusClass = record.status === 'Kembali' ? 'bg-brand-mint/10 text-brand-mint border-brand-mint/30' : 'bg-[#f59e0b]/10 text-[#f59e0b] border-[#f59e0b]/30';
@@ -1541,8 +612,7 @@ HTML
                             <td class="py-3 px-5 text-xs">${itemsHtml}</td>
                             <td class="py-3 px-5 text-center whitespace-nowrap"><span class="px-3 py-1 text-[11px] uppercase font-extrabold tracking-wide rounded-md border shadow-sm ${statusClass}">${record.status}</span></td>
                             <td class="py-3 px-5 text-right whitespace-nowrap text-xs space-x-2 admin-only" style="display: ${isAdmin ? '' : 'none'}">
-                                <button onclick="editRecord('${record.id}')" class="text-brand-teal hover:text-white font-bold transition">Edit</button>
-                                <span class="text-brand-secondary">|</span>
+                                <button onclick="editRecord('${record.id}')" class="text-brand-teal hover:text-white font-bold transition">Edit</button> <span class="text-brand-secondary">|</span>
                                 <button onclick="deleteRecord('${record.id}')" class="text-brand-danger hover:text-red-400 font-bold transition">Del</button>
                             </td>
                         </tr>`;
@@ -1550,33 +620,21 @@ HTML
             }
         }
 
-        function initFormItems() {
-            document.getElementById('items-container').innerHTML = '';
-            addFormItemRow();
-        }
-
+        function initFormItems() { document.getElementById('items-container').innerHTML = ''; addFormItemRow(); }
         function addFormItemRow(name = '', qty = 1) {
             const container = document.getElementById('items-container');
-            const rowId = 'item-row-' + Date.now();
+            const rowId = 'item-row-' + Date.now() + Math.random().toString().slice(2,5);
             const options = masterItemsList.map(item => `<option value="${item}" ${item === name ? 'selected' : ''}>${item}</option>`).join('');
             
             const row = document.createElement('div');
-            row.id = rowId;
-            row.className = 'flex items-center space-x-2 animate-[fadeIn_0.2s_ease-out]';
-            row.innerHTML = `
-                <select class="item-select flex-1 px-3 py-2 rounded-lg bg-[#160d22] border border-brand-secondary/60 text-white font-medium text-xs focus:outline-none focus:border-brand-teal transition">
-                    <option value="" disabled ${!name ? 'selected' : ''}>-- Pilih Barang --</option>${options}
-                </select>
-                <input type="number" min="1" value="${qty}" class="item-qty w-16 px-3 py-2 rounded-lg bg-[#160d22] border border-brand-secondary/60 text-white text-xs text-center focus:outline-none focus:border-brand-teal">
-                <button type="button" onclick="document.getElementById('${rowId}').remove()" class="p-2 text-brand-muted hover:text-brand-danger bg-brand-dark rounded-lg border border-brand-secondary/30">✕</button>
-            `;
+            row.id = rowId; row.className = 'flex items-center space-x-2 animate-[fadeIn_0.2s_ease-out]';
+            row.innerHTML = `<select class="item-select flex-1 px-3 py-2 rounded-lg bg-[#160d22] border border-brand-secondary/60 text-white font-medium text-xs focus:outline-none focus:border-brand-teal transition"><option value="" disabled ${!name ? 'selected' : ''}>-- Pilih Barang --</option>${options}</select><input type="number" min="1" value="${qty}" class="item-qty w-16 px-3 py-2 rounded-lg bg-[#160d22] border border-brand-secondary/60 text-white text-xs text-center focus:outline-none focus:border-brand-teal"><button type="button" onclick="document.getElementById('${rowId}').remove()" class="p-2 text-brand-muted hover:text-brand-danger bg-brand-dark rounded-lg border border-brand-secondary/30">✕</button>`;
             container.appendChild(row);
         }
 
         function handleSubmitLoan(e) {
             e.preventDefault();
             if(currentUser.role !== 'admin') return;
-            
             const id = document.getElementById('edit-id').value;
             const date = document.getElementById('input-date').value;
             const ticket = document.getElementById('input-ticket').value;
@@ -1589,17 +647,13 @@ HTML
                 const qty = row.querySelector('.item-qty').value;
                 if(name && qty > 0) items.push({name, qty: parseInt(qty)});
             });
-
             if(items.length === 0) { alert('Pilih minimal 1 barang!'); return; }
 
             if (id) {
                 const index = trackingRecords.findIndex(r => r.id === id);
                 if(index !== -1) trackingRecords[index] = { id, date, ticket, event, items, status };
-            } else {
-                trackingRecords.push({ id: Date.now().toString(), date, ticket, event, items, status });
-            }
-            saveState();
-            resetForm();
+            } else { trackingRecords.push({ id: Date.now().toString(), date, ticket, event, items, status }); }
+            saveState(); resetForm();
         }
 
         function editRecord(id) {
@@ -1610,10 +664,8 @@ HTML
             document.getElementById('input-ticket').value = record.ticket;
             document.getElementById('input-event').value = record.event;
             document.getElementById('input-status').value = record.status;
-
             document.getElementById('items-container').innerHTML = '';
             record.items.forEach(i => addFormItemRow(i.name, i.qty));
-
             document.getElementById('form-title').innerText = 'Edit Mode Aktif';
             document.getElementById('submit-btn').innerText = 'Update Data';
             document.getElementById('cancel-edit-btn').classList.remove('hidden');
@@ -1636,25 +688,17 @@ HTML
             document.getElementById('cancel-edit-btn').classList.add('hidden');
         }
 
-        function saveState() {
-            localStorage.setItem(DB_KEY, JSON.stringify(trackingRecords));
-            renderTable();
-        }
+        function saveState() { localStorage.setItem(DB_KEY, JSON.stringify(trackingRecords)); renderTable(); }
 
         // --- DASHBOARD CHARTS & MISC --- //
         function renderDashboard() {
-            const totalLoans = trackingRecords.length;
-            const activeLoans = trackingRecords.filter(r => r.status === 'Dipinjam').length;
-            const doneLoans = trackingRecords.filter(r => r.status === 'Kembali').length;
+            document.getElementById('dash-total-loans').innerText = trackingRecords.length;
+            document.getElementById('dash-active-loans').innerText = trackingRecords.filter(r => r.status === 'Dipinjam').length;
+            document.getElementById('dash-done-loans').innerText = trackingRecords.filter(r => r.status === 'Kembali').length;
             
             const itemCounts = {};
             trackingRecords.forEach(r => r.items.forEach(i => itemCounts[i.name] = (itemCounts[i.name] || 0) + parseInt(i.qty)));
-            const totalItems = Object.values(itemCounts).reduce((a, b) => a + b, 0);
-
-            document.getElementById('dash-total-loans').innerText = totalLoans;
-            document.getElementById('dash-active-loans').innerText = activeLoans;
-            document.getElementById('dash-done-loans').innerText = doneLoans;
-            document.getElementById('dash-total-items').innerText = totalItems;
+            document.getElementById('dash-total-items').innerText = Object.values(itemCounts).reduce((a, b) => a + b, 0);
 
             const sortedItems = Object.entries(itemCounts).sort((a, b) => b[1] - a[1]);
             const allItemCounts = [...masterItemsList].map(name => ({ name: name, count: itemCounts[name] || 0 })).sort((a, b) => a.count - b.count);
@@ -1665,17 +709,10 @@ HTML
             const monthsMap = {};
             trackingRecords.forEach(r => {
                 const date = new Date(r.date);
-                if(isNaN(date)) return;
-                const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-                monthsMap[key] = (monthsMap[key] || 0) + 1;
+                if(!isNaN(date)) monthsMap[`${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`] = (monthsMap[`${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`] || 0) + 1;
             });
             const sortedMonths = Object.keys(monthsMap).sort();
-            const monthLabels = sortedMonths.map(m => {
-                const [y, mm] = m.split('-');
-                const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-                return `${monthNames[parseInt(mm)-1]} ${y}`;
-            });
-            const monthData = sortedMonths.map(m => monthsMap[m]);
+            const monthLabels = sortedMonths.map(m => `${["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][parseInt(m.split('-')[1])-1]} ${m.split('-')[0]}`);
 
             Chart.defaults.color = '#7785AC';
             Chart.defaults.font.family = '"Plus Jakarta Sans", sans-serif';
@@ -1687,7 +724,7 @@ HTML
             chartBottom10Instance = new Chart(document.getElementById('chartBottom10').getContext('2d'), { type: 'bar', data: { labels: bottom10.map(i => i.name), datasets: [{ label: 'Dipinjam', data: bottom10.map(i => i.count), backgroundColor: '#7785AC', borderRadius: 4 }] }, options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { color: 'rgba(91,42,134,0.2)' }, ticks: { stepSize: 1 } }, y: { grid: { display: false } } } } });
 
             if(chartTrendInstance) chartTrendInstance.destroy();
-            chartTrendInstance = new Chart(document.getElementById('chartTrend').getContext('2d'), { type: 'line', data: { labels: monthLabels, datasets: [{ label: 'Event', data: monthData, borderColor: '#A5E6BA', backgroundColor: 'rgba(165,230,186,0.1)', borderWidth: 3, pointBackgroundColor: '#5B2A86', pointBorderColor: '#A5E6BA', pointBorderWidth: 2, pointRadius: 5, fill: true, tension: 0.3 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: 'rgba(91,42,134,0.2)' }, beginAtZero: true, ticks: { stepSize: 1 } } } } });
+            chartTrendInstance = new Chart(document.getElementById('chartTrend').getContext('2d'), { type: 'line', data: { labels: monthLabels, datasets: [{ label: 'Event', data: sortedMonths.map(m => monthsMap[m]), borderColor: '#A5E6BA', backgroundColor: 'rgba(165,230,186,0.1)', borderWidth: 3, pointBackgroundColor: '#5B2A86', pointBorderColor: '#A5E6BA', pointBorderWidth: 2, pointRadius: 5, fill: true, tension: 0.3 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: 'rgba(91,42,134,0.2)' }, beginAtZero: true, ticks: { stepSize: 1 } } } } });
         }
 
         function renderActiveLoans() {
@@ -1701,9 +738,8 @@ HTML
                 activeLoans.sort((a, b) => new Date(a.date) - new Date(b.date)).forEach(loan => {
                     const diffDays = Math.ceil(Math.abs(new Date() - new Date(loan.date)) / (1000 * 60 * 60 * 24));
                     const badgeColor = diffDays > 7 ? 'bg-red-900/50 text-red-300 border-red-500/30' : 'bg-orange-900/40 text-orange-300 border-orange-500/30';
-                    const icon = diffDays > 7 ? '🔥 Overdue' : '⚠️ Active';
                     const itemsHtml = loan.items.map(i => `<li class="flex justify-between text-sm py-1 border-b border-brand-secondary/20 last:border-0"><span class="text-brand-muted">${i.name}</span> <span class="font-bold text-white">${i.qty} Unit</span></li>`).join('');
-                    grid.innerHTML += `<div class="bg-brand-card rounded-2xl border border-brand-secondary/40 shadow-lg flex flex-col"><div class="p-4 border-b border-brand-secondary/30 flex justify-between items-start bg-brand-primary/20"><div><h4 class="font-bold text-white text-md mb-1">${loan.ticket}</h4><p class="text-xs text-brand-muted">${formatDate(loan.date)}</p></div><span class="px-2 py-1 text-[10px] font-extrabold uppercase rounded border ${badgeColor}">${icon} (${diffDays} Hari)</span></div><div class="p-4 flex-1"><p class="text-sm font-bold text-brand-teal mb-3 leading-tight">${loan.event}</p><ul class="space-y-1 mt-2">${itemsHtml}</ul></div></div>`;
+                    grid.innerHTML += `<div class="bg-brand-card rounded-2xl border border-brand-secondary/40 shadow-lg flex flex-col"><div class="p-4 border-b border-brand-secondary/30 flex justify-between items-start bg-brand-primary/20"><div><h4 class="font-bold text-white text-md mb-1">${loan.ticket}</h4><p class="text-xs text-brand-muted">${formatDate(loan.date)}</p></div><span class="px-2 py-1 text-[10px] font-extrabold uppercase rounded border ${badgeColor}">${diffDays > 7 ? '🔥 Overdue' : '⚠️ Active'} (${diffDays} Hari)</span></div><div class="p-4 flex-1"><p class="text-sm font-bold text-brand-teal mb-3 leading-tight">${loan.event}</p><ul class="space-y-1 mt-2">${itemsHtml}</ul></div></div>`;
                 });
             }
         }
@@ -1717,10 +753,7 @@ HTML
             });
         }
 
-        function formatDate(dateString) {
-            if(!dateString) return '';
-            return new Date(dateString).toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' });
-        }
+        function formatDate(dateString) { return !dateString ? '' : new Date(dateString).toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' }); }
     </script>
 </body>
 </html>
