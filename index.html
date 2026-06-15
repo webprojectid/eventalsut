@@ -345,4 +345,395 @@
             const isAdm = userObj.role === 'admin';
             document.getElementById('user-display-name').innerText = userObj.username;
             document.getElementById('user-role-badge').innerText = isAdm ? 'IT Admin' : 'View Only';
-            document.getElementById('user-role-badge').className = isAdm ? 'text-xs font-semibold text-brand-mint inline-flex items-center mt-1 bg-brand-mint/10 px-
+            document.getElementById('user-role-badge').className = isAdm ? 'text-xs font-semibold text-brand-mint inline-flex items-center mt-1 bg-brand-mint/10 px-2 py-0.5 rounded-md border border-brand-mint/20' : 'text-xs font-semibold text-brand-muted inline-flex items-center mt-1 bg-brand-muted/10 px-2 py-0.5 rounded-md border border-brand-muted/20';
+            document.querySelectorAll('.admin-only').forEach(el => el.style.display = isAdm ? '' : 'none');
+            document.querySelectorAll('.viewer-only').forEach(el => el.style.display = isAdm ? 'none' : 'flex');
+            document.getElementById('login-page').classList.add('hidden'); document.getElementById('main-app').classList.remove('hidden');
+            initFormItems(); navigate('dashboard');
+        }
+
+        function renderUsers() {
+            const tbody = document.getElementById('user-table-body');
+            if(!tbody) return; tbody.innerHTML = '';
+            appUsers.forEach((u, index) => {
+                const roleColor = u.role === 'admin' ? 'text-brand-mint' : 'text-brand-teal';
+                const delBtn = u.username !== 'sewong' ? `<button onclick="deleteUser(${index})" class="text-brand-danger hover:text-red-400 font-bold text-xs">Hapus</button>` : `<span class="text-xs text-brand-muted">Root</span>`;
+                tbody.innerHTML += `<tr class="hover:bg-brand-secondary/20 border-b border-brand-secondary/10"><td class="py-3 px-5 text-white font-bold">${u.username}</td><td class="py-3 px-5 font-bold uppercase text-[10px] ${roleColor}">${u.role}</td><td class="py-3 px-5">${delBtn}</td></tr>`;
+            });
+        }
+
+        function handleAddUser(e) {
+            e.preventDefault();
+            const uname = document.getElementById('new-user-name').value.trim();
+            const pass = document.getElementById('new-user-pass').value.trim();
+            const role = document.getElementById('new-user-role').value;
+            if(appUsers.find(u => u.username === uname)) { alert("Username sudah ada!"); return; }
+            appUsers.push({username: uname, password: pass, role: role});
+            localStorage.setItem(USER_DB_KEY, JSON.stringify(appUsers));
+            document.getElementById('new-user-name').value = ''; document.getElementById('new-user-pass').value = '';
+            renderUsers(); alert(`User ${uname} berhasil ditambahkan!`);
+        }
+
+        function deleteUser(index) {
+            if(confirm("Hapus user ini?")) { appUsers.splice(index, 1); localStorage.setItem(USER_DB_KEY, JSON.stringify(appUsers)); renderUsers(); }
+        }
+
+        // --- NAVIGATION ---
+        function navigate(viewId) {
+            ['dashboard', 'database', 'tools', 'active-loans', 'history', 'settings'].forEach(id => {
+                document.getElementById('view-' + id).classList.add('hidden');
+                document.getElementById('nav-' + id).classList.replace('bg-brand-secondary/30', 'text-brand-muted');
+                document.getElementById('nav-' + id).classList.replace('text-white', 'text-brand-muted');
+            });
+            document.getElementById('view-' + viewId).classList.remove('hidden');
+            document.getElementById('nav-' + viewId).classList.replace('text-brand-muted', 'text-white');
+            document.getElementById('nav-' + viewId).classList.add('bg-brand-secondary/30');
+            document.getElementById('sidebar').classList.add('-translate-x-full'); document.getElementById('mobile-overlay').classList.add('hidden');
+            if (viewId === 'dashboard') renderDashboard();
+            if (viewId === 'database') renderTable();
+            if (viewId === 'active-loans') renderActiveLoans();
+            if (viewId === 'history') renderHistory();
+        }
+
+        function toggleMobileMenu() {
+            document.getElementById('sidebar').classList.toggle('-translate-x-full'); document.getElementById('mobile-overlay').classList.toggle('hidden');
+        }
+
+        // --- CLOUD EXCEL (.XLSX) IMPORT LOGIC ---
+        function importExcel() {
+            const fileInput = document.getElementById('import-file');
+            const msg = document.getElementById('import-msg');
+            
+            if(!fileInput.files.length) { alert("Pilih file Excel (.xlsx) terlebih dahulu!"); return; }
+
+            msg.classList.remove('hidden');
+            msg.innerText = "Membaca semua sheet file Excel...";
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, {type: 'array', cellDates: true});
+                    
+                    let importedCount = 0;
+                    
+                    workbook.SheetNames.forEach(sheetName => {
+                        const worksheet = workbook.Sheets[sheetName];
+                        const jsonData = XLSX.utils.sheet_to_json(worksheet, {raw: false, dateNF: 'yyyy-mm-dd'});
+                        
+                        jsonData.forEach(row => {
+                            // Deteksi otomatis perbedaan struktur kolom tiap tahun
+                            let ticket = row['Ticket Number'] || row['No Tiket'] || row['No. Tiket'] || row['Ticket'];
+                            let dateStr = row['Date'] || row['Tanggal Event Selesai'] || row['Tanggal'];
+                            let event = row['Event Name'] || row['Nama Kegiatan'] || row['Event'] || "Event Import";
+                            
+                            if(ticket && dateStr) {
+                                let items = [];
+                                masterItemsList.forEach(itemName => {
+                                    let cellValue = row[itemName];
+                                    if (!cellValue && itemName === 'Acer PC') cellValue = row['PC ACER'];
+                                    
+                                    if(cellValue && !isNaN(parseInt(cellValue))) {
+                                        let qty = parseInt(cellValue);
+                                        if(qty > 0) items.push({name: itemName, qty: qty});
+                                    }
+                                });
+
+                                if(items.length > 0) {
+                                    let existingIdx = trackingRecords.findIndex(r => String(r.ticket).trim() === String(ticket).trim());
+                                    
+                                    let finalDate = dateStr;
+                                    try {
+                                        if(typeof dateStr === 'string' && dateStr.includes('/')) {
+                                            let parts = dateStr.split('/');
+                                            if(parts[0].length === 2 && parts[2].length === 4) {
+                                                finalDate = `${parts[2]}-${parts[1]}-${parts[0]}`; 
+                                            }
+                                        } else if (dateStr instanceof Date) {
+                                            finalDate = dateStr.toISOString().split('T')[0];
+                                        }
+                                    } catch(err) {}
+
+                                    let recordObj = {
+                                        id: Date.now().toString() + Math.random().toString().slice(2, 5),
+                                        date: finalDate, 
+                                        ticket: String(ticket).trim(), 
+                                        event: event, 
+                                        status: "Kembali", 
+                                        items: items
+                                    };
+                                    
+                                    if(existingIdx !== -1) trackingRecords[existingIdx] = recordObj;
+                                    else trackingRecords.push(recordObj);
+                                    importedCount++;
+                                }
+                            }
+                        });
+                    });
+                    
+                    saveState();
+                    msg.innerText = `Sukses import ${importedCount} data ke lokal. Mulai sinkronisasi ke Cloud (Mohon tunggu beberapa saat, DILARANG TUTUP HALAMAN INI)...`;
+                    
+                    // Sekuensial upload ke cloud database Google Sheets
+                    (async function syncAllToCloud() {
+                        let successCount = 0;
+                        for(let rec of trackingRecords) {
+                            try {
+                                await fetch(API_URL, {
+                                    method: 'POST',
+                                    body: JSON.stringify({action: "insert", ...rec})
+                                });
+                                successCount++;
+                                msg.innerText = `Sync Cloud: ${successCount} / ${trackingRecords.length} data sedang di-upload...`;
+                            } catch(e) {}
+                        }
+                        msg.innerText = `Upload Cloud Selesai! Seluruh data Excel berhasil pindah ke Google Sheets.`;
+                        setTimeout(() => msg.classList.add('hidden'), 5000);
+                    })();
+                    
+                } catch (error) {
+                    msg.innerText = "Gagal membaca file. Pastikan format Excel benar.";
+                    msg.classList.replace('text-brand-mint', 'text-red-400');
+                    console.error(error);
+                }
+            };
+            reader.readAsArrayBuffer(fileInput.files[0]);
+        }
+
+        // --- EXPORT & LOOKUP ---
+        function lookupTicket() {
+            const input = document.getElementById('lookup-input').value.trim().toLowerCase();
+            const resContainer = document.getElementById('lookup-result');
+            if(!input) return;
+            const records = trackingRecords.filter(r => (String(r.ticket) || "").toLowerCase() === input);
+            resContainer.classList.remove('hidden');
+            if(records.length === 0) {
+                resContainer.innerHTML = `<div class="text-center py-4"><span class="text-4xl block mb-2">❌</span><p class="text-red-400 font-bold">Ticket tidak ditemukan.</p><p class="text-xs text-brand-muted mt-2">Pastikan file Excel sudah di-import.</p></div>`;
+            } else {
+                let html = '';
+                records.forEach(res => {
+                    const statusColor = res.status === 'Kembali' ? 'text-brand-mint' : 'text-orange-400';
+                    const itemsList = res.items.map(i => `<li class="flex justify-between border-b border-brand-secondary/30 py-1"><span class="text-brand-muted">${i.name}</span><span class="text-white font-bold">${i.qty}</span></li>`).join('');
+                    html += `<div class="mb-4 last:mb-0 bg-brand-card p-4 rounded-lg border border-brand-secondary/50"><div class="flex justify-between items-start mb-2"><div><h4 class="text-xl font-extrabold text-brand-teal uppercase tracking-widest">${res.ticket}</h4><p class="text-sm text-white font-bold mt-1">${res.event}</p><p class="text-xs text-brand-muted">${formatDate(res.date)}</p></div><span class="px-2 py-1 rounded border border-brand-secondary/40 text-[10px] font-bold uppercase ${statusColor}">${res.status}</span></div><div class="mt-4 pt-3 border-t border-brand-secondary/30"><p class="text-xs font-bold text-brand-muted uppercase mb-2">Daftar Barang yang Dipinjam</p><ul class="text-sm">${itemsList}</ul></div></div>`;
+                });
+                resContainer.innerHTML = html;
+            }
+        }
+
+        function exportData() {
+            const start = document.getElementById('export-start').value;
+            const end = document.getElementById('export-end').value;
+            let filtered = trackingRecords;
+            if(start) filtered = filtered.filter(r => new Date(r.date) >= new Date(start));
+            if(end) filtered = filtered.filter(r => new Date(r.date) <= new Date(end));
+            if(filtered.length === 0) { alert("Tidak ada data."); return; }
+
+            let csvContent = "Tanggal,Nomor Ticket,Nama Event,Status,Nama Barang,Quantity\n";
+            filtered.forEach(r => {
+                r.items.forEach(i => {
+                    let safeEvent = `"${(r.event || "").replace(/"/g, '""')}"`;
+                    csvContent += `${r.date},${r.ticket},${safeEvent},${r.status},"${i.name}",${i.qty}\n`;
+                });
+            });
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.setAttribute("download", `Binus_Logistics_${start||'all'}_to_${end||'all'}.csv`);
+            document.body.appendChild(link); link.click(); document.body.removeChild(link);
+        }
+
+        // --- CRUD LOGIC ---
+        function renderTable() {
+            const tbody = document.getElementById('loan-table-body');
+            const emptyState = document.getElementById('empty-state');
+            const searchTerm = document.getElementById('table-search').value.toLowerCase();
+            
+            tbody.innerHTML = '';
+            let filtered = trackingRecords.filter(item => {
+                const itemsStr = item.items.map(i => `${i.name} ${i.qty}`).join(' ');
+                return (String(item.ticket)||"").toLowerCase().includes(searchTerm) || (item.event||"").toLowerCase().includes(searchTerm) || itemsStr.toLowerCase().includes(searchTerm);
+            });
+
+            filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            if(filtered.length === 0) { emptyState.classList.remove('hidden'); } 
+            else {
+                emptyState.classList.add('hidden');
+                filtered.forEach(record => {
+                    const statusClass = record.status === 'Kembali' ? 'bg-brand-mint/10 text-brand-mint border-brand-mint/30' : 'bg-[#f59e0b]/10 text-[#f59e0b] border-[#f59e0b]/30';
+                    const itemsHtml = record.items.map(i => `<span class="inline-block bg-brand-primary/40 px-2 py-0.5 rounded mr-1 mb-1 border border-brand-secondary/40">${i.qty}x ${i.name}</span>`).join('');
+                    const isAdmin = currentUser && currentUser.role === 'admin';
+
+                    tbody.innerHTML += `
+                        <tr class="hover:bg-brand-secondary/20 transition duration-150">
+                            <td class="py-3 px-5 text-white whitespace-nowrap">${formatDate(record.date)}</td>
+                            <td class="py-3 px-5 font-bold text-brand-teal tracking-wide whitespace-nowrap">${record.ticket}</td>
+                            <td class="py-3 px-5 text-white font-bold truncate max-w-xs">${record.event}</td>
+                            <td class="py-3 px-5 text-xs">${itemsHtml}</td>
+                            <td class="py-3 px-5 text-center whitespace-nowrap"><span class="px-3 py-1 text-[11px] uppercase font-extrabold tracking-wide rounded-md border shadow-sm ${statusClass}">${record.status}</span></td>
+                            <td class="py-3 px-5 text-right whitespace-nowrap text-xs space-x-2 admin-only" style="display: ${isAdmin ? '' : 'none'}">
+                                <button onclick="editRecord('${record.id}')" class="text-brand-teal hover:text-white font-bold transition">Edit</button> <span class="text-brand-secondary">|</span>
+                                <button onclick="deleteRecord('${record.id}')" class="text-brand-danger hover:text-red-400 font-bold transition">Del</button>
+                            </td>
+                        </tr>`;
+                });
+            }
+        }
+
+        function initFormItems() { document.getElementById('items-container').innerHTML = ''; addFormItemRow(); }
+        function addFormItemRow(name = '', qty = 1) {
+            const container = document.getElementById('items-container');
+            const rowId = 'item-row-' + Date.now() + Math.random().toString().slice(2,5);
+            const options = masterItemsList.map(item => `<option value="${item}" ${item === name ? 'selected' : ''}>${item}</option>`).join('');
+            const row = document.createElement('div');
+            row.id = rowId; row.className = 'flex items-center space-x-2 animate-[fadeIn_0.2s_ease-out]';
+            row.innerHTML = `<select class="item-select flex-1 px-3 py-2 rounded-lg bg-[#160d22] border border-brand-secondary/60 text-white font-medium text-xs focus:outline-none focus:border-brand-teal transition"><option value="" disabled ${!name ? 'selected' : ''}>-- Pilih Barang --</option>${options}</select><input type="number" min="1" value="${qty}" class="item-qty w-16 px-3 py-2 rounded-lg bg-[#160d22] border border-brand-secondary/60 text-white text-xs text-center focus:outline-none focus:border-brand-teal"><button type="button" onclick="document.getElementById('${rowId}').remove()" class="p-2 text-brand-muted hover:text-brand-danger bg-brand-dark rounded-lg border border-brand-secondary/30">✕</button>`;
+            container.appendChild(row);
+        }
+
+        function handleSubmitLoan(e) {
+            e.preventDefault();
+            if(currentUser.role !== 'admin') return;
+            const id = document.getElementById('edit-id').value;
+            const date = document.getElementById('input-date').value;
+            const ticket = document.getElementById('input-ticket').value;
+            const event = document.getElementById('input-event').value;
+            const status = document.getElementById('input-status').value;
+
+            const items = [];
+            document.querySelectorAll('#items-container > div').forEach(row => {
+                const name = row.querySelector('.item-select').value;
+                const qty = row.querySelector('.item-qty').value;
+                if(name && qty > 0) items.push({name, qty: parseInt(qty)});
+            });
+            if(items.length === 0) { alert('Pilih minimal 1 barang!'); return; }
+
+            let actionStr = "insert";
+            let recordObj;
+
+            if (id) {
+                const index = trackingRecords.findIndex(r => r.id === id);
+                recordObj = { id, date, ticket, event, items, status };
+                if(index !== -1) trackingRecords[index] = recordObj;
+                actionStr = "update";
+            } else { 
+                recordObj = { id: Date.now().toString(), date, ticket, event, items, status };
+                trackingRecords.push(recordObj); 
+            }
+            saveState(); resetForm();
+
+            // PUSH DATA KE CLOUD GOOGLE SHEETS
+            fetch(API_URL, {
+                method: 'POST',
+                body: JSON.stringify({action: actionStr, ...recordObj})
+            }).catch(e => console.log('Cloud Sync Error:', e));
+        }
+
+        function editRecord(id) {
+            const record = trackingRecords.find(r => r.id === id);
+            if (!record) return;
+            document.getElementById('edit-id').value = record.id;
+            document.getElementById('input-date').value = record.date;
+            document.getElementById('input-ticket').value = record.ticket;
+            document.getElementById('input-event').value = record.event;
+            document.getElementById('input-status').value = record.status;
+            document.getElementById('items-container').innerHTML = '';
+            record.items.forEach(i => addFormItemRow(i.name, i.qty));
+            document.getElementById('form-title').innerText = 'Edit Mode Aktif';
+            document.getElementById('submit-btn').innerText = 'Update Data';
+            document.getElementById('cancel-edit-btn').classList.remove('hidden');
+        }
+
+        function deleteRecord(id) {
+            if(confirm('Yakin hapus record?')) {
+                trackingRecords = trackingRecords.filter(r => r.id !== id);
+                saveState();
+                if(document.getElementById('edit-id').value === id) resetForm();
+
+                // HAPUS DATA DARI CLOUD GOOGLE SHEETS
+                fetch(API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({action: "delete", id: id})
+                }).catch(e => console.log('Cloud Sync Error:', e));
+            }
+        }
+
+        function resetForm() {
+            document.getElementById('loan-form').reset();
+            document.getElementById('edit-id').value = '';
+            initFormItems();
+            document.getElementById('form-title').innerText = 'Input Peminjaman Baru';
+            document.getElementById('submit-btn').innerText = 'Simpan Data';
+            document.getElementById('cancel-edit-btn').classList.add('hidden');
+        }
+
+        function saveState() { localStorage.setItem(DB_KEY, JSON.stringify(trackingRecords)); renderTable(); }
+
+        // --- DASHBOARD CHARTS ---
+        function renderDashboard() {
+            document.getElementById('dash-total-loans').innerText = trackingRecords.length;
+            document.getElementById('dash-active-loans').innerText = trackingRecords.filter(r => r.status === 'Dipinjam').length;
+            document.getElementById('dash-done-loans').innerText = trackingRecords.filter(r => r.status === 'Kembali').length;
+            
+            const itemCounts = {};
+            trackingRecords.forEach(r => r.items.forEach(i => itemCounts[i.name] = (itemCounts[i.name] || 0) + parseInt(i.qty)));
+            document.getElementById('dash-total-items').innerText = Object.values(itemCounts).reduce((a, b) => a + b, 0);
+
+            const sortedItems = Object.entries(itemCounts).sort((a, b) => b[1] - a[1]);
+            const allItemCounts = [...masterItemsList].map(name => ({ name: name, count: itemCounts[name] || 0 })).sort((a, b) => a.count - b.count);
+
+            const top10 = sortedItems.slice(0, 10);
+            const bottom10 = allItemCounts.slice(0, 10);
+
+            const monthsMap = {};
+            trackingRecords.forEach(r => {
+                const date = new Date(r.date);
+                if(!isNaN(date)) monthsMap[`${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`] = (monthsMap[`${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`] || 0) + 1;
+            });
+            const sortedMonths = Object.keys(monthsMap).sort();
+            const monthLabels = sortedMonths.map(m => `${["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][parseInt(m.split('-')[1])-1]} ${m.split('-')[0]}`);
+
+            Chart.defaults.color = '#7785AC';
+            Chart.defaults.font.family = '"Plus Jakarta Sans", sans-serif';
+
+            if(chartTop10Instance) chartTop10Instance.destroy();
+            chartTop10Instance = new Chart(document.getElementById('chartTop10').getContext('2d'), { type: 'bar', data: { labels: top10.map(i => i[0]), datasets: [{ label: 'Dipinjam', data: top10.map(i => i[1]), backgroundColor: '#9AC6C5', borderRadius: 4 }] }, options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { color: 'rgba(91,42,134,0.2)' } }, y: { grid: { display: false } } } } });
+
+            if(chartBottom10Instance) chartBottom10Instance.destroy();
+            chartBottom10Instance = new Chart(document.getElementById('chartBottom10').getContext('2d'), { type: 'bar', data: { labels: bottom10.map(i => i.name), datasets: [{ label: 'Dipinjam', data: bottom10.map(i => i.count), backgroundColor: '#7785AC', borderRadius: 4 }] }, options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { color: 'rgba(91,42,134,0.2)' }, ticks: { stepSize: 1 } }, y: { grid: { display: false } } } } });
+
+            if(chartTrendInstance) chartTrendInstance.destroy();
+            chartTrendInstance = new Chart(document.getElementById('chartTrend').getContext('2d'), { type: 'line', data: { labels: monthLabels, datasets: [{ label: 'Event', data: sortedMonths.map(m => monthsMap[m]), borderColor: '#A5E6BA', backgroundColor: 'rgba(165,230,186,0.1)', borderWidth: 3, pointBackgroundColor: '#5B2A86', pointBorderColor: '#A5E6BA', pointBorderWidth: 2, pointRadius: 5, fill: true, tension: 0.3 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: 'rgba(91,42,134,0.2)' }, beginAtZero: true, ticks: { stepSize: 1 } } } } });
+        }
+
+        function renderActiveLoans() {
+            const activeLoans = trackingRecords.filter(r => r.status === 'Dipinjam');
+            const grid = document.getElementById('active-loans-grid');
+            const empty = document.getElementById('active-empty');
+            grid.innerHTML = '';
+            if(activeLoans.length === 0) { grid.classList.add('hidden'); empty.classList.remove('hidden'); } 
+            else {
+                grid.classList.remove('hidden'); empty.classList.add('hidden');
+                activeLoans.sort((a, b) => new Date(a.date) - new Date(b.date)).forEach(loan => {
+                    const diffDays = Math.ceil(Math.abs(new Date() - new Date(loan.date)) / (1000 * 60 * 60 * 24));
+                    const badgeColor = diffDays > 7 ? 'bg-red-900/50 text-red-300 border-red-500/30' : 'bg-orange-900/40 text-orange-300 border-orange-500/30';
+                    const itemsHtml = loan.items.map(i => `<li class="flex justify-between text-sm py-1 border-b border-brand-secondary/20 last:border-0"><span class="text-brand-muted">${i.name}</span> <span class="font-bold text-white">${i.qty} Unit</span></li>`).join('');
+                    grid.innerHTML += `<div class="bg-brand-card rounded-2xl border border-brand-secondary/40 shadow-lg flex flex-col"><div class="p-4 border-b border-brand-secondary/30 flex justify-between items-start bg-brand-primary/20"><div><h4 class="font-bold text-white text-md mb-1">${loan.ticket}</h4><p class="text-xs text-brand-muted">${formatDate(loan.date)}</p></div><span class="px-2 py-1 text-[10px] font-extrabold uppercase rounded border ${badgeColor}">${diffDays > 7 ? '🔥 Overdue' : '⚠️ Active'} (${diffDays} Hari)</span></div><div class="p-4 flex-1"><p class="text-sm font-bold text-brand-teal mb-3 leading-tight">${loan.event}</p><ul class="space-y-1 mt-2">${itemsHtml}</ul></div></div>`;
+                });
+            }
+        }
+
+        function renderHistory() {
+            const list = document.getElementById('history-list');
+            list.innerHTML = '';
+            [...trackingRecords].sort((a, b) => parseInt(b.id) - parseInt(a.id)).slice(0, 10).forEach(record => {
+                const statusColor = record.status === 'Kembali' ? 'text-brand-mint' : 'text-orange-400';
+                list.innerHTML += `<div class="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-brand-dark rounded-xl border border-brand-secondary/20 hover:border-brand-secondary/60 transition"><div class="flex items-start space-x-4 mb-3 sm:mb-0"><div class="text-2xl mt-1">${record.status === 'Kembali' ? '✅' : '⚠️'}</div><div><h4 class="font-bold text-white">${record.ticket} <span class="text-brand-muted text-xs font-normal ml-2">Tgl: ${formatDate(record.date)}</span></h4><p class="text-sm text-brand-teal mt-0.5">${record.event}</p><p class="text-xs text-brand-muted mt-1 w-full sm:w-[400px] truncate">Barang: ${record.items.map(i => i.name).join(', ')}</p></div></div><div class="text-left sm:text-right"><span class="text-xs font-bold uppercase tracking-wider ${statusColor} bg-brand-card px-3 py-1 rounded-md border border-brand-secondary/30">${record.status}</span></div></div>`;
+            });
+        }
+
+        function formatDate(dateString) { return !dateString ? '' : new Date(dateString).toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' }); }
+    </script>
+</body>
+</html>
