@@ -89,18 +89,16 @@
             display: block !important;
         }
 
-        /* Default - sebelum role ditentukan, sembunyikan semua role-specific */
         body:not(.role-admin):not(.role-viewer) .admin-only,
         body:not(.role-admin):not(.role-viewer) .viewer-only {
             display: none !important;
         }
-        /* Tapi saat di login screen, jangan hide apa2 dulu */
+
         body.showing-login .admin-only,
         body.showing-login .viewer-only {
             display: none !important;
         }
 
-        /* Card glow */
         .card-glow {
             box-shadow: 0 0 20px rgba(54, 5, 104, 0.25), 0 4px 24px rgba(0, 0, 0, 0.3);
         }
@@ -108,7 +106,6 @@
             box-shadow: 0 0 30px rgba(54, 5, 104, 0.4), 0 6px 30px rgba(0, 0, 0, 0.4);
         }
 
-        /* Sidebar transition */
         .sidebar-link {
             transition: all 0.2s ease;
             border-left: 3px solid transparent;
@@ -124,7 +121,6 @@
             font-weight: 600;
         }
 
-        /* Button styles */
         .btn-primary {
             background: linear-gradient(135deg, #360568, #4a1a7a);
             color: #fff;
@@ -156,7 +152,6 @@
             box-shadow: 0 0 14px rgba(224, 85, 106, 0.5);
         }
 
-        /* Badge overdue */
         .badge-overdue {
             background: #e0556a;
             color: #fff;
@@ -177,7 +172,6 @@
             }
         }
 
-        /* Table styles */
         table.data-table {
             border-collapse: separate;
             border-spacing: 0;
@@ -202,13 +196,11 @@
             background: rgba(54, 5, 104, 0.2);
         }
 
-        /* Modal */
         .modal-overlay {
             background: rgba(0, 0, 0, 0.7);
             backdrop-filter: blur(4px);
         }
 
-        /* Input fields */
         input[type="text"],
         input[type="date"],
         input[type="number"],
@@ -232,7 +224,6 @@
             box-shadow: 0 0 0 3px rgba(154, 198, 197, 0.15);
         }
 
-        /* Toast notification */
         .toast {
             position: fixed;
             top: 20px;
@@ -276,15 +267,12 @@
 </head>
 <body class="showing-login">
 
-    <!-- ==================== LOGIN SCREEN ==================== -->
+    <!-- LOGIN SCREEN -->
     <div id="loginScreen" class="fixed inset-0 z-[100] flex items-center justify-center bg-darkbg">
         <div class="card-glow bg-cardbg rounded-2xl p-10 w-full max-w-md mx-4 border border-border">
             <div class="text-center mb-8">
                 <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-primary to-tealacc flex items-center justify-center">
-                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
-                    </svg>
+                    <span class="text-2xl text-white font-bold">BA</span>
                 </div>
                 <h1 class="text-2xl font-bold text-white">Binus Alam Sutera</h1>
                 <p class="text-textmuted text-sm mt-1">Manajemen Logistik Event</p>
@@ -307,16 +295,14 @@
         </div>
     </div>
 
-    <!-- ==================== MAIN APP (HIDDEN UNTIL LOGIN) ==================== -->
+    <!-- MAIN APP -->
     <div id="mainApp" class="hidden flex min-h-screen">
         <!-- SIDEBAR -->
         <aside class="w-64 bg-sidebar border-r border-border flex-shrink-0 flex flex-col min-h-screen sticky top-0 z-30">
             <div class="p-5 border-b border-border">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-tealacc flex items-center justify-center flex-shrink-0">
-                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
-                        </svg>
+                        <span class="text-white font-bold text-sm">BA</span>
                     </div>
                     <div>
                         <h2 class="text-white font-bold text-sm leading-tight">BINUS ALSUT</h2>
@@ -325,40 +311,32 @@
                 </div>
             </div>
             <nav class="flex-1 py-4 space-y-1 px-3">
-                <a href="#" data-page="dashboard" class="sidebar-link active flex items-center gap-3 px-4 py-3 rounded-lg text-sm text-textmuted">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
-                    Dashboard
+                <a href="#" data-page="dashboard" class="sidebar-link active flex items-center gap-3 px-4 py-3 rounded-lg text-sm">
+                    <span>📊</span> Dashboard
                 </a>
-                <a href="#" data-page="database" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-sm text-textmuted">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2 1.5 3.5 3.5 3.5h9c2 0 3.5-1.5 3.5-3.5V7"/><rect x="4" y="3" width="16" height="4" rx="1"/></svg>
-                    Database
+                <a href="#" data-page="database" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-sm">
+                    <span>📁</span> Database
                 </a>
-                <a href="#" data-page="active" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-sm text-textmuted">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                    Tiket Aktif
+                <a href="#" data-page="active" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-sm">
+                    <span>🎫</span> Tiket Aktif
                     <span id="activeCountBadge" class="ml-auto bg-primary text-white text-xs rounded-full px-2 py-0.5">0</span>
                 </a>
-                <a href="#" data-page="import" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-sm text-textmuted">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
-                    Import Excel
+                <a href="#" data-page="import" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-sm">
+                    <span>📥</span> Import Excel
                 </a>
-                <a href="#" data-page="tools" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-sm text-textmuted">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                    Tools
+                <a href="#" data-page="tools" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-sm">
+                    <span>🔧</span> Tools
                 </a>
-                <a href="#" data-page="history" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-sm text-textmuted">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                    History
+                <a href="#" data-page="history" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-sm">
+                    <span>🕐</span> History
                 </a>
             </nav>
             <div class="p-4 border-t border-border space-y-3">
-                <button id="syncCloudBtn" class="btn-teal w-full py-2.5 rounded-lg text-sm flex items-center justify-center gap-2">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-                    Sync Cloud Manual
+                <button id="syncCloudBtn" class="btn-teal w-full py-2.5 rounded-lg text-sm">
+                    ☁️ Sync Cloud Manual
                 </button>
-                <button id="logoutBtn" class="w-full py-2.5 rounded-lg text-sm border border-border text-textmuted hover:bg-hover transition flex items-center justify-center gap-2">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
-                    Logout
+                <button id="logoutBtn" class="w-full py-2.5 rounded-lg text-sm border border-border text-textmuted hover:bg-hover transition">
+                    🚪 Logout
                 </button>
                 <p class="text-textmuted text-xs text-center" id="loggedInUser">user</p>
             </div>
@@ -366,34 +344,30 @@
 
         <!-- MAIN CONTENT -->
         <main class="flex-1 overflow-y-auto p-6 lg:p-8">
-            <!-- Dashboard Page -->
+            <!-- Dashboard -->
             <section id="page-dashboard" class="page-section">
-                <h2 class="text-2xl font-bold text-white mb-6">Dashboard</h2>
+                <h2 class="text-2xl font-bold text-white mb-6">📊 Dashboard</h2>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
                     <div class="card-glow bg-cardbg rounded-xl p-5 border border-border">
-                        <p class="text-textmuted text-xs uppercase tracking-wider">Total Peminjaman</p>
+                        <p class="text-textmuted text-xs">TOTAL PEMINJAMAN</p>
                         <p class="text-3xl font-bold text-white mt-2" id="statTotal">0</p>
-                        <p class="text-textmuted text-xs mt-1">Semua periode</p>
                     </div>
                     <div class="card-glow bg-cardbg rounded-xl p-5 border border-border">
-                        <p class="text-textmuted text-xs uppercase tracking-wider">Active / Ongoing</p>
+                        <p class="text-textmuted text-xs">ACTIVE / ONGOING</p>
                         <p class="text-3xl font-bold text-mintacc mt-2" id="statActive">0</p>
-                        <p class="text-textmuted text-xs mt-1">Sedang dipinjam</p>
                     </div>
                     <div class="card-glow bg-cardbg rounded-xl p-5 border border-border">
-                        <p class="text-textmuted text-xs uppercase tracking-wider">Done / Selesai</p>
+                        <p class="text-textmuted text-xs">DONE / SELESAI</p>
                         <p class="text-3xl font-bold text-tealacc mt-2" id="statDone">0</p>
-                        <p class="text-textmuted text-xs mt-1">Telah dikembalikan</p>
                     </div>
                     <div class="card-glow bg-cardbg rounded-xl p-5 border border-border">
-                        <p class="text-textmuted text-xs uppercase tracking-wider">Total Unit Barang</p>
+                        <p class="text-textmuted text-xs">TOTAL UNIT BARANG</p>
                         <p class="text-3xl font-bold text-white mt-2" id="statUnits">0</p>
-                        <p class="text-textmuted text-xs mt-1">Akumulasi qty</p>
                     </div>
                 </div>
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <div class="card-glow bg-cardbg rounded-xl p-5 border border-border">
-                        <h3 class="text-white font-semibold mb-3">Peminjaman per Bulan (2026)</h3>
+                        <h3 class="text-white font-semibold mb-3">Peminjaman per Bulan</h3>
                         <canvas id="chartBar" height="250"></canvas>
                     </div>
                     <div class="card-glow bg-cardbg rounded-xl p-5 border border-border">
@@ -403,13 +377,13 @@
                 </div>
             </section>
 
-            <!-- Database Page -->
+            <!-- Database -->
             <section id="page-database" class="page-section hidden">
                 <div class="flex flex-wrap items-center justify-between gap-4 mb-5">
-                    <h2 class="text-2xl font-bold text-white">Database</h2>
-                    <div class="flex gap-3 flex-wrap">
+                    <h2 class="text-2xl font-bold text-white">📁 Database</h2>
+                    <div class="flex gap-3">
                         <input type="search" id="dbSearch" placeholder="Cari data..." class="w-56">
-                        <button id="btnAddData" class="admin-only btn-primary px-5 py-2.5 rounded-lg text-sm font-semibold">+ Tambah Data</button>
+                        <button id="btnAddData" class="admin-only btn-primary px-5 py-2.5 rounded-lg text-sm">+ Tambah Data</button>
                     </div>
                 </div>
                 <div class="card-glow bg-cardbg rounded-xl border border-border overflow-hidden">
@@ -417,103 +391,84 @@
                         <table class="data-table w-full text-sm">
                             <thead>
                                 <tr>
-                                    <th class="text-left">No</th>
-                                    <th class="text-left">Ticket</th>
-                                    <th class="text-left">Event</th>
-                                    <th class="text-left">PIC</th>
-                                    <th class="text-left">Tanggal</th>
-                                    <th class="text-left">Status</th>
-                                    <th class="text-left">Item</th>
-                                    <th class="text-left">Qty</th>
-                                    <th class="admin-only text-left">Aksi</th>
+                                    <th>No</th><th>Ticket</th><th>Event</th><th>PIC</th>
+                                    <th>Tanggal</th><th>Status</th><th>Item</th><th>Qty</th>
+                                    <th class="admin-only">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody id="dbTableBody"></tbody>
                         </table>
                     </div>
-                    <div class="flex flex-wrap items-center justify-between gap-4 p-4 border-t border-border">
+                    <div class="flex items-center justify-between p-4 border-t border-border">
                         <p class="text-textmuted text-sm" id="paginationInfo">Menampilkan 0-0 dari 0 data</p>
                         <div class="flex gap-2">
-                            <button id="btnPrev" class="px-4 py-2 rounded-lg border border-border text-textmuted hover:bg-hover transition disabled:opacity-40 disabled:cursor-not-allowed" disabled>← Previous</button>
-                            <button id="btnNext" class="px-4 py-2 rounded-lg border border-border text-textmuted hover:bg-hover transition disabled:opacity-40 disabled:cursor-not-allowed" disabled>Next →</button>
+                            <button id="btnPrev" class="px-4 py-2 rounded-lg border border-border text-textmuted hover:bg-hover transition disabled:opacity-40" disabled>← Prev</button>
+                            <button id="btnNext" class="px-4 py-2 rounded-lg border border-border text-textmuted hover:bg-hover transition disabled:opacity-40" disabled>Next →</button>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- Active Tickets Page -->
+            <!-- Active Tickets -->
             <section id="page-active" class="page-section hidden">
-                <h2 class="text-2xl font-bold text-white mb-5">Tiket Aktif (Ongoing)</h2>
+                <h2 class="text-2xl font-bold text-white mb-5">🎫 Tiket Aktif (Ongoing)</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="activeCardsContainer">
                     <p class="text-textmuted col-span-full text-center py-10">Tidak ada tiket aktif.</p>
                 </div>
             </section>
 
-            <!-- Import Excel Page -->
+            <!-- Import Excel -->
             <section id="page-import" class="page-section hidden">
-                <h2 class="text-2xl font-bold text-white mb-5">Import Excel</h2>
+                <h2 class="text-2xl font-bold text-white mb-5">📥 Import Excel</h2>
                 <div class="card-glow bg-cardbg rounded-xl p-6 border border-border max-w-2xl">
-                    <p class="text-textmuted mb-4">Upload file Excel (.xlsx) dengan multi-sheet (2023-2026). Sistem akan membaca dan memetakan kolom secara otomatis.</p>
+                    <p class="text-textmuted mb-4">Upload file Excel (.xlsx) dengan multi-sheet.</p>
                     <div class="border-2 border-dashed border-border rounded-xl p-10 text-center hover:border-tealacc transition cursor-pointer" id="dropZone">
-                        <svg class="w-12 h-12 mx-auto text-textmuted mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
                         <p class="text-white font-semibold">Klik atau drag file Excel di sini</p>
-                        <p class="text-textmuted text-sm mt-1">.xlsx · Multi-sheet support</p>
                         <input type="file" id="excelFileInput" accept=".xlsx,.xls" class="hidden">
                     </div>
                     <div id="importResult" class="mt-4 hidden"></div>
                 </div>
             </section>
 
-            <!-- Tools Page -->
+            <!-- Tools -->
             <section id="page-tools" class="page-section hidden">
-                <h2 class="text-2xl font-bold text-white mb-5">Tools</h2>
+                <h2 class="text-2xl font-bold text-white mb-5">🔧 Tools</h2>
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <!-- Lookup Widget -->
                     <div class="card-glow bg-cardbg rounded-xl p-6 border border-border">
-                        <h3 class="text-white font-semibold mb-4">🔍 Cek Detail Ticket (Lookup)</h3>
+                        <h3 class="text-white font-semibold mb-4">🔍 Cek Detail Ticket</h3>
                         <div class="flex gap-3 mb-4">
-                            <input type="text" id="lookupInput" placeholder="Masukkan Ticket ID..." class="flex-1">
-                            <button id="btnLookup" class="btn-teal px-5 py-2.5 rounded-lg text-sm font-semibold">Cari</button>
+                            <input type="text" id="lookupInput" placeholder="Ticket ID..." class="flex-1">
+                            <button id="btnLookup" class="btn-teal px-5 py-2.5 rounded-lg text-sm">Cari</button>
                         </div>
-                        <div id="lookupResult" class="text-sm space-y-2 hidden">
-                            <!-- hasil lookup -->
-                        </div>
-                        <p id="lookupEmpty" class="text-textmuted text-sm">Masukkan Ticket ID untuk mencari.</p>
+                        <div id="lookupResult" class="text-sm space-y-2 hidden"></div>
                     </div>
-
-                    <!-- Export CSV -->
                     <div class="card-glow bg-cardbg rounded-xl p-6 border border-border">
-                        <h3 class="text-white font-semibold mb-4">📥 Ekspor CSV (Rentang Tanggal)</h3>
+                        <h3 class="text-white font-semibold mb-4">📥 Ekspor CSV</h3>
                         <div class="space-y-4">
-                            <div class="flex gap-3 flex-wrap">
-                                <div class="flex-1 min-w-[140px]">
-                                    <label class="text-textmuted text-xs block mb-1">Dari</label>
+                            <div class="flex gap-3">
+                                <div class="flex-1">
+                                    <label class="text-textmuted text-xs">Dari</label>
                                     <input type="date" id="csvDateFrom">
                                 </div>
-                                <div class="flex-1 min-w-[140px]">
-                                    <label class="text-textmuted text-xs block mb-1">Sampai</label>
+                                <div class="flex-1">
+                                    <label class="text-textmuted text-xs">Sampai</label>
                                     <input type="date" id="csvDateTo">
                                 </div>
                             </div>
-                            <button id="btnExportCsv" class="btn-primary w-full py-2.5 rounded-lg text-sm font-semibold">Ekspor CSV</button>
+                            <button id="btnExportCsv" class="btn-primary w-full py-2.5 rounded-lg text-sm">Ekspor CSV</button>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- History Page -->
+            <!-- History -->
             <section id="page-history" class="page-section hidden">
-                <h2 class="text-2xl font-bold text-white mb-5">History Sinkronisasi</h2>
+                <h2 class="text-2xl font-bold text-white mb-5">🕐 History Sinkronisasi</h2>
                 <div class="card-glow bg-cardbg rounded-xl border border-border overflow-hidden">
                     <div class="overflow-x-auto max-h-[55vh] overflow-y-auto">
                         <table class="data-table w-full text-sm">
                             <thead>
-                                <tr>
-                                    <th class="text-left">Waktu</th>
-                                    <th class="text-left">Aksi</th>
-                                    <th class="text-left">Status</th>
-                                    <th class="text-left">Detail</th>
-                                </tr>
+                                <tr><th>Waktu</th><th>Aksi</th><th>Status</th><th>Detail</th></tr>
                             </thead>
                             <tbody id="historyTableBody">
                                 <tr><td colspan="4" class="text-center text-textmuted py-6">Belum ada history.</td></tr>
@@ -525,80 +480,306 @@
         </main>
     </div>
 
-    <!-- ==================== MODAL: TAMBAH/EDIT DATA ==================== -->
+    <!-- MODAL FORM -->
     <div id="modalForm" class="modal-overlay fixed inset-0 z-[200] hidden flex items-center justify-center">
         <div class="card-glow bg-cardbg rounded-2xl p-8 w-full max-w-lg mx-4 border border-border max-h-[85vh] overflow-y-auto">
             <h3 class="text-xl font-bold text-white mb-5" id="modalTitle">Tambah Data</h3>
             <form id="dataForm" class="space-y-4">
-                <input type="hidden" id="formIndex" value="">
-                <div>
-                    <label class="text-textmuted text-sm block mb-1">Ticket Number</label>
-                    <input type="text" id="formTicket" required placeholder="Contoh: TKT-001">
-                </div>
-                <div>
-                    <label class="text-textmuted text-sm block mb-1">Nama Event</label>
-                    <input type="text" id="formEvent" required placeholder="Nama event">
-                </div>
-                <div>
-                    <label class="text-textmuted text-sm block mb-1">PIC / Peminjam</label>
-                    <input type="text" id="formPIC" required placeholder="Nama PIC">
-                </div>
-                <div>
-                    <label class="text-textmuted text-sm block mb-1">Tanggal Pinjam</label>
-                    <input type="date" id="formDate" required>
-                </div>
-                <div>
-                    <label class="text-textmuted text-sm block mb-1">Status</label>
+                <input type="hidden" id="formIndex">
+                <div><label class="text-textmuted text-sm">Ticket</label><input type="text" id="formTicket" required></div>
+                <div><label class="text-textmuted text-sm">Event</label><input type="text" id="formEvent" required></div>
+                <div><label class="text-textmuted text-sm">PIC</label><input type="text" id="formPIC" required></div>
+                <div><label class="text-textmuted text-sm">Tanggal</label><input type="date" id="formDate" required></div>
+                <div><label class="text-textmuted text-sm">Status</label>
                     <select id="formStatus" required>
                         <option value="Dipinjam">Dipinjam</option>
                         <option value="Dikembalikan">Dikembalikan</option>
-                        <option value="Overdue">Overdue</option>
                         <option value="Done">Done</option>
                     </select>
                 </div>
-                <div>
-                    <label class="text-textmuted text-sm block mb-1">Nama Item / Barang</label>
-                    <input type="text" id="formItem" required placeholder="Nama barang">
-                </div>
-                <div>
-                    <label class="text-textmuted text-sm block mb-1">Quantity</label>
-                    <input type="number" id="formQty" required min="1" value="1">
-                </div>
-                <div>
-                    <label class="text-textmuted text-sm block mb-1">Catatan</label>
-                    <textarea id="formNotes" rows="2" placeholder="Opsional"></textarea>
-                </div>
+                <div><label class="text-textmuted text-sm">Item</label><input type="text" id="formItem" required></div>
+                <div><label class="text-textmuted text-sm">Qty</label><input type="number" id="formQty" required min="1" value="1"></div>
+                <div><label class="text-textmuted text-sm">Notes</label><textarea id="formNotes" rows="2"></textarea></div>
                 <div class="flex gap-3 pt-2">
-                    <button type="submit" class="btn-primary flex-1 py-2.5 rounded-lg font-semibold">Simpan</button>
-                    <button type="button" id="btnCancelForm" class="flex-1 py-2.5 rounded-lg border border-border text-textmuted hover:bg-hover transition">Batal</button>
+                    <button type="submit" class="btn-primary flex-1 py-2.5 rounded-lg">Simpan</button>
+                    <button type="button" id="btnCancelForm" class="flex-1 py-2.5 rounded-lg border border-border text-textmuted hover:bg-hover">Batal</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- ==================== TOAST CONTAINER ==================== -->
     <div id="toastContainer"></div>
 
     <script>
+        // ============ FULL JAVASCRIPT FIX ============
         (function() {
-            // ==================== CONFIG ====================
-            // URL SUDAH DIGANTI DENGAN DEPLOYMENT LO
+            console.log('🚀 App starting...');
+
             const API_URL =
                 'https://script.google.com/macros/s/AKfycbymJEILXcT2USmaNNFAhPWyX0ju1o5kR_hhyjLqk0eDJCM10opI9QpprKfp3-ETO8E-/exec';
+
             const USERS = {
                 'sewong': { password: '_pR0t3<s3<uR3', role: 'admin' },
                 'alsut_view': { password: '123', role: 'viewer' },
                 'sdp.csm.alsut': { password: '1dua3333V6tujuh', role: 'viewer' }
             };
-            const LS_KEYS = {
-                DATA: 'alsut_event_data',
-                HISTORY: 'alsut_sync_history',
-                AUTH: 'alsut_auth_session'
-            };
 
-            // ==================== STATE ====================
-            let appData = []; // Array of objects
-            let currentPage = 'dashboard';
+            const LS_DATA = 'alsut_event_data';
+            const LS_HISTORY = 'alsut_sync_history';
+            const LS_AUTH = 'alsut_auth_session';
+
+            let appData = [];
+            let currentUser = null;
             let dbPage = 1;
-            const DB_PER_PAGE = 10;
-            let
+            const PER_PAGE = 10;
+            let dbFiltered = [];
+
+            // ============ DOM ELEMENTS ============
+            const $loginScreen = document.getElementById('loginScreen');
+            const $mainApp = document.getElementById('mainApp');
+            const $loginForm = document.getElementById('loginForm');
+            const $loginError = document.getElementById('loginError');
+            const $loginUser = document.getElementById('loginUsername');
+            const $loginPass = document.getElementById('loginPassword');
+            const $body = document.body;
+            const $toastContainer = document.getElementById('toastContainer');
+            const $modalForm = document.getElementById('modalForm');
+            const $dataForm = document.getElementById('dataForm');
+            const $loggedInUser = document.getElementById('loggedInUser');
+
+            console.log('✅ DOM elements loaded');
+
+            // ============ AUTH FUNCTIONS ============
+            function checkStoredAuth() {
+                const raw = localStorage.getItem(LS_AUTH);
+                if (!raw) return false;
+                try {
+                    const session = JSON.parse(raw);
+                    if (session.expires && Date.now() < session.expires && USERS[session.username]) {
+                        currentUser = { username: session.username, role: USERS[session.username].role };
+                        console.log('✅ Auto-login:', currentUser.username);
+                        return true;
+                    }
+                } catch (e) {}
+                return false;
+            }
+
+            function saveAuth(username) {
+                const session = {
+                    username: username,
+                    expires: Date.now() + 8 * 60 * 60 * 1000
+                };
+                localStorage.setItem(LS_AUTH, JSON.stringify(session));
+                currentUser = { username: username, role: USERS[username].role };
+                console.log('💾 Auth saved:', username);
+            }
+
+            function clearAuth() {
+                localStorage.removeItem(LS_AUTH);
+                currentUser = null;
+            }
+
+            function applyRoleClass() {
+                $body.classList.remove('role-admin', 'role-viewer', 'showing-login');
+                if (currentUser) {
+                    $body.classList.add(currentUser.role === 'admin' ? 'role-admin' : 'role-viewer');
+                }
+            }
+
+            function showLogin() {
+                $body.classList.add('showing-login');
+                $body.classList.remove('role-admin', 'role-viewer');
+                $loginScreen.style.display = 'flex';
+                $mainApp.classList.add('hidden');
+                $loginUser.value = '';
+                $loginPass.value = '';
+                $loginError.classList.add('hidden');
+                console.log('🔒 Showing login screen');
+            }
+
+            function showApp() {
+                $body.classList.remove('showing-login');
+                $loginScreen.style.display = 'none';
+                $mainApp.classList.remove('hidden');
+                applyRoleClass();
+                $loggedInUser.textContent = `👤 ${currentUser.username} (${currentUser.role})`;
+                console.log('✅ App shown for:', currentUser.username);
+                loadData().then(() => {
+                    navigateTo('dashboard');
+                });
+            }
+
+            // ============ LOGIN HANDLER ============
+            $loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                console.log('🔑 Login attempt...');
+                const username = $loginUser.value.trim();
+                const password = $loginPass.value;
+
+                const user = USERS[username];
+                if (user && user.password === password) {
+                    console.log('✅ Login SUCCESS:', username);
+                    saveAuth(username);
+                    $loginError.classList.add('hidden');
+                    showApp();
+                    showToast('Login berhasil! Selamat datang, ' + username, 'success');
+                } else {
+                    console.log('❌ Login FAILED');
+                    $loginError.textContent = 'Username atau password salah!';
+                    $loginError.classList.remove('hidden');
+                }
+            });
+
+            // ============ TOAST ============
+            function showToast(msg, type) {
+                const toast = document.createElement('div');
+                toast.className = 'toast toast-' + type;
+                toast.textContent = msg;
+                $toastContainer.appendChild(toast);
+                setTimeout(() => toast.remove(), 3500);
+            }
+
+            // ============ DATA LAYER ============
+            function getLocalData() {
+                try {
+                    return JSON.parse(localStorage.getItem(LS_DATA)) || [];
+                } catch (e) { return []; }
+            }
+
+            function saveLocalData(data) {
+                localStorage.setItem(LS_DATA, JSON.stringify(data));
+            }
+
+            async function fetchFromAPI() {
+                try {
+                    console.log('📡 Fetching API...');
+                    const resp = await fetch(API_URL + '?t=' + Date.now());
+                    const json = await resp.json();
+                    console.log('📦 API Response:', json);
+                    let data = [];
+                    if (json && Array.isArray(json.data)) data = json.data;
+                    else if (Array.isArray(json)) data = json;
+                    return normalizeData(data);
+                } catch (err) {
+                    console.warn('⚠️ API fetch failed:', err.message);
+                    return null;
+                }
+            }
+
+            function normalizeData(rows) {
+                return rows.map((row, i) => ({
+                    ticket: row.ticket || row.ticket_number || row.no_ticket || row[0] || '',
+                    event: row.event || row.event_name || row.nama_event || row[1] || '',
+                    pic: row.pic || row.peminjam || row.borrower || row[2] || '',
+                    date: row.date || row.tanggal || row.tgl_pinjam || row[3] || '',
+                    status: row.status || row.keadaan || row[4] || 'Dipinjam',
+                    item: row.item || row.barang || row.nama_item || row[5] || '',
+                    qty: parseInt(row.qty || row.quantity || row.jumlah || row[6] || 1),
+                    notes: row.notes || row.catatan || row.keterangan || row[7] || '',
+                    _idx: i
+                }));
+            }
+
+            async function loadData(forceSync = false) {
+                let data = getLocalData();
+                if (forceSync || data.length === 0) {
+                    const apiData = await fetchFromAPI();
+                    if (apiData && apiData.length > 0) {
+                        data = apiData;
+                        saveLocalData(data);
+                        if (forceSync) showToast(`✅ Sinkron ${data.length} data`, 'success');
+                    }
+                }
+                appData = data;
+                return data;
+            }
+
+            // ============ NAVIGATION ============
+            function navigateTo(page) {
+                document.querySelectorAll('.page-section').forEach(s => s.classList.add('hidden'));
+                const target = document.getElementById('page-' + page);
+                if (target) target.classList.remove('hidden');
+
+                document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+                const link = document.querySelector(`[data-page="${page}"]`);
+                if (link) link.classList.add('active');
+
+                if (page === 'dashboard') renderDashboard();
+                if (page === 'database') renderDatabase();
+                if (page === 'active') renderActive();
+                if (page === 'history') renderHistory();
+            }
+
+            document.querySelectorAll('.sidebar-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    navigateTo(this.dataset.page);
+                });
+            });
+
+            // ============ DASHBOARD ============
+            function renderDashboard() {
+                const total = appData.length;
+                const active = appData.filter(d => ['dipinjam', 'ongoing', 'active'].includes((d.status || '')
+                    .toLowerCase())).length;
+                const done = appData.filter(d => ['dikembalikan', 'done', 'selesai'].includes((d.status || '')
+                    .toLowerCase())).length;
+                const units = appData.reduce((s, d) => s + (d.qty || 0), 0);
+
+                document.getElementById('statTotal').textContent = total;
+                document.getElementById('statActive').textContent = active;
+                document.getElementById('statDone').textContent = done;
+                document.getElementById('statUnits').textContent = units;
+                document.getElementById('activeCountBadge').textContent = active;
+
+                renderCharts();
+            }
+
+            let chartBar, chartPie;
+
+            function renderCharts() {
+                const ctx1 = document.getElementById('chartBar');
+                const ctx2 = document.getElementById('chartPie');
+                if (!ctx1 || !ctx2) return;
+                if (chartBar) chartBar.destroy();
+                if (chartPie) chartPie.destroy();
+
+                const months = Array(12).fill(0);
+                appData.forEach(d => {
+                    if (d.date) {
+                        const m = new Date(d.date).getMonth();
+                        if (!isNaN(m)) months[m]++;
+                    }
+                });
+
+                chartBar = new Chart(ctx1, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
+                        datasets: [{
+                            label: 'Peminjaman',
+                            data: months,
+                            backgroundColor: '#9AC6C5',
+                            borderRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: { legend: { labels: { color: '#b0a8c0' } } },
+                        scales: {
+                            x: { ticks: { color: '#b0a8c0' }, grid: { color: '#3a2f50' } },
+                            y: { ticks: { color: '#b0a8c0' }, grid: { color: '#3a2f50' }, beginAtZero: true }
+                        }
+                    }
+                });
+
+                const active = appData.filter(d => ['dipinjam'].includes((d.status || '').toLowerCase())).length;
+                const done = appData.filter(d => ['dikembalikan', 'done'].includes((d.status || '').toLowerCase()))
+                    .length;
+                const other = appData.length - active - done;
+
+                chartPie = new Chart(ctx2, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Active', 'Done', 'Other'],
+                        datasets: [{ data: [active, done, other], backgroundColor:
