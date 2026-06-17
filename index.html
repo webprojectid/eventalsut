@@ -289,7 +289,9 @@
         // System Keys & API URL Endpoint
         const DB_KEY = 'binus_alsut_records';
         const USER_DB_KEY = 'binus_users_db';
-        const API_URL = 'https://script.google.com/macros/s/AKfycbzVE76sQcyYBrezCP-TeElMoF8kaIQ44n_qzgFb7EU42q2hlGRo2LhLNVCrKa06R0pkKQ/exec';
+        // Tambahkan prefix proxy ini di depan link Google Script lu
+const PROXY_URL = 'https://corsproxy.io/?'; 
+const API_URL = PROXY_URL + encodeURIComponent('https://script.google.com/macros/s/AKfycbzVE76sQcyYBrezCP-TeElMoF8kaIQ44n_qzgFb7EU42q2hlGRo2LhLNVCrKa06R0pkKQ/exec');
         let currentUser = null; 
         
         // Pagination States
