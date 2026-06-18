@@ -69,6 +69,15 @@
             --glass-border: rgba(45, 36, 63, 0.5);
             --login-overlay-1: rgba(124, 58, 237, 0.12);
             --login-overlay-2: rgba(6, 182, 212, 0.08);
+            --sidebar-bg: #14111e;
+            --sidebar-border: #2d243f;
+            --table-header-bg: #1b1729;
+            --table-row-hover: rgba(124, 58, 237, 0.05);
+            --badge-borrowed: rgba(245, 158, 11, 0.15);
+            --badge-returned: rgba(52, 211, 153, 0.15);
+            --heatmap-cell-border: rgba(255, 255, 255, 0.05);
+            --heatmap-empty-bg: rgba(45, 36, 63, 0.3);
+            --heatmap-empty-border: rgba(45, 36, 63, 0.4);
         }
 
         [data-theme="light"] {
@@ -80,10 +89,19 @@
             --text-primary: #1a1625;
             --text-muted: #6b6580;
             --shadow-color: rgba(0, 0, 0, 0.08);
-            --glass-bg: rgba(248, 246, 252, 0.75);
+            --glass-bg: rgba(248, 246, 252, 0.8);
             --glass-border: rgba(213, 207, 224, 0.5);
             --login-overlay-1: rgba(124, 58, 237, 0.06);
             --login-overlay-2: rgba(6, 182, 212, 0.04);
+            --sidebar-bg: #e8e4ef;
+            --sidebar-border: #d5cfe0;
+            --table-header-bg: #e8e4ef;
+            --table-row-hover: rgba(124, 58, 237, 0.04);
+            --badge-borrowed: rgba(245, 158, 11, 0.12);
+            --badge-returned: rgba(52, 211, 153, 0.12);
+            --heatmap-cell-border: rgba(0, 0, 0, 0.05);
+            --heatmap-empty-bg: rgba(213, 207, 224, 0.4);
+            --heatmap-empty-border: rgba(213, 207, 224, 0.4);
         }
 
         /* ===== GLOBAL ===== */
@@ -169,30 +187,6 @@
             box-shadow: 0 12px 40px rgba(124, 58, 237, 0.12);
         }
 
-        .nav-item {
-            position: relative;
-            transition: all 0.25s ease;
-        }
-        .nav-item::after {
-            content: '';
-            position: absolute;
-            left: 0;
-            bottom: 0;
-            width: 0;
-            height: 2px;
-            background: linear-gradient(90deg, #7c3aed, #06b6d4);
-            transition: width 0.3s ease;
-            border-radius: 2px;
-        }
-        .nav-item:hover::after,
-        .nav-item.active::after {
-            width: 100%;
-        }
-        .nav-item.active {
-            background: rgba(124, 58, 237, 0.15);
-            color: #fff;
-        }
-
         .btn-primary {
             background: linear-gradient(135deg, #7c3aed, #4f46e5);
             transition: all 0.3s ease;
@@ -239,7 +233,7 @@
             border-color: var(--border-color);
         }
         .table-row:hover {
-            background: rgba(124, 58, 237, 0.05);
+            background: var(--table-row-hover);
         }
 
         .badge-status {
@@ -314,10 +308,17 @@
             box-shadow: 0 0 12px rgba(52, 211, 153, 0.3);
         }
 
+        /* ===== SIDEBAR ===== */
+        #sidebar {
+            background: var(--sidebar-bg);
+            border-color: var(--sidebar-border);
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
         .sidebar-link {
             position: relative;
             overflow: hidden;
             color: var(--text-muted);
+            transition: all 0.2s ease;
         }
         .sidebar-link::before {
             content: '';
@@ -350,7 +351,7 @@
             border-radius: 4px;
         }
 
-        /* Heatmap grid */
+        /* ===== HEATMAP ===== */
         .heatmap-grid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
@@ -370,7 +371,7 @@
             cursor: default;
             min-height: 32px;
             min-width: 32px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--heatmap-cell-border);
         }
         .heatmap-cell:hover {
             transform: scale(1.1);
@@ -378,8 +379,8 @@
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
         }
         .heatmap-cell-empty {
-            background: rgba(45, 36, 63, 0.3);
-            border: 1px dashed rgba(45, 36, 63, 0.4);
+            background: var(--heatmap-empty-bg);
+            border: 1px dashed var(--heatmap-empty-border);
         }
         .heatmap-label {
             font-size: 9px;
@@ -403,7 +404,7 @@
             border: 1px solid rgba(255, 255, 255, 0.08);
         }
 
-        /* Minimalist interactive icons */
+        /* ===== ICON BUTTONS ===== */
         .icon-btn {
             display: inline-flex;
             align-items: center;
@@ -438,7 +439,7 @@
             border-radius: 8px;
         }
 
-        /* Theme toggle */
+        /* ===== THEME TOGGLE ===== */
         .theme-toggle {
             background: var(--bg-surface);
             border: 1px solid var(--border-color);
@@ -471,7 +472,7 @@
             color: var(--text-primary);
         }
 
-        /* Language toggle */
+        /* ===== LANGUAGE TOGGLE ===== */
         .lang-toggle {
             background: var(--bg-surface);
             border: 1px solid var(--border-color);
@@ -503,89 +504,261 @@
             color: var(--text-primary);
         }
 
-        /* Header controls */
-        .header-controls {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        [data-theme="light"] .heatmap-cell-empty {
-            background: rgba(213, 207, 224, 0.4);
-            border-color: rgba(213, 207, 224, 0.4);
-        }
-        [data-theme="light"] .heatmap-cell {
-            border-color: rgba(0, 0, 0, 0.05);
-        }
-        [data-theme="light"] .sidebar-link.active {
-            background: rgba(124, 58, 237, 0.1);
-        }
-        [data-theme="light"] .icon-btn {
-            background: rgba(213, 207, 224, 0.3);
-            border-color: rgba(213, 207, 224, 0.3);
-        }
-        [data-theme="light"] .icon-btn:hover {
-            background: rgba(124, 58, 237, 0.12);
-            border-color: #7c3aed;
-        }
-        [data-theme="light"] .theme-toggle,
-        [data-theme="light"] .lang-toggle {
-            background: var(--bg-card);
-            border-color: var(--border-color);
-        }
-        [data-theme="light"] .theme-toggle button.active,
-        [data-theme="light"] .lang-toggle button.active {
-            background: rgba(124, 58, 237, 0.15);
-            color: #7c3aed;
-        }
-        [data-theme="light"] .btn-outline {
-            border-color: var(--border-color);
-            color: var(--text-muted);
-        }
-        [data-theme="light"] .btn-outline:hover {
-            border-color: #7c3aed;
-            background: rgba(124, 58, 237, 0.06);
-            color: var(--text-primary);
-        }
-        [data-theme="light"] .stat-card {
-            background: var(--bg-card);
-            border-color: var(--border-color);
-        }
-        [data-theme="light"] .card-hover {
-            background: var(--bg-card);
-            border-color: var(--border-color);
-        }
-        [data-theme="light"] .glass {
-            background: var(--glass-bg);
-            border-color: var(--glass-border);
-        }
-        [data-theme="light"] .input-modern {
-            background: var(--bg-input);
-            border-color: var(--border-color);
-            color: var(--text-primary);
-        }
-        [data-theme="light"] .input-modern:focus {
-            border-color: #7c3aed;
-            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.12);
-        }
-        [data-theme="light"] #sidebar {
-            background: var(--bg-surface);
-            border-color: var(--border-color);
-        }
-        [data-theme="light"] .table-row {
-            border-color: var(--border-color);
-        }
-        [data-theme="light"] .table-row:hover {
-            background: rgba(124, 58, 237, 0.04);
-        }
-        [data-theme="light"] #loan-table-body tr {
-            border-color: var(--border-color);
-        }
+        /* ===== TABLE OVERRIDES FOR LIGHT MODE ===== */
         [data-theme="light"] #loan-table-body td {
             color: var(--text-primary);
         }
         [data-theme="light"] #loan-table-body .text-brand-muted {
             color: var(--text-muted);
+        }
+        [data-theme="light"] .badge-status.bg-emerald-500\/10 {
+            background: rgba(52, 211, 153, 0.12);
+        }
+        [data-theme="light"] .badge-status.bg-amber-500\/10 {
+            background: rgba(245, 158, 11, 0.12);
+        }
+        [data-theme="light"] #sidebar .bg-brand-primary\/5 {
+            background: rgba(124, 58, 237, 0.06);
+        }
+        [data-theme="light"] #sidebar .border-brand-border\/30 {
+            border-color: var(--border-color);
+        }
+        [data-theme="light"] #sidebar .border-brand-border\/40 {
+            border-color: var(--border-color);
+        }
+        [data-theme="light"] #sidebar .text-white {
+            color: var(--text-primary);
+        }
+        [data-theme="light"] #sidebar .text-brand-muted {
+            color: var(--text-muted);
+        }
+        [data-theme="light"] .glass .border-brand-border\/40 {
+            border-color: var(--border-color);
+        }
+        [data-theme="light"] .glass .border-brand-border\/30 {
+            border-color: var(--border-color);
+        }
+        [data-theme="light"] .stat-card .text-brand-muted {
+            color: var(--text-muted);
+        }
+        [data-theme="light"] .stat-card .text-white {
+            color: var(--text-primary);
+        }
+        [data-theme="light"] .stat-card .text-cyan-400 {
+            color: #0891b2;
+        }
+        [data-theme="light"] .stat-card .text-emerald-400 {
+            color: #059669;
+        }
+        [data-theme="light"] .stat-card .text-red-400 {
+            color: #dc2626;
+        }
+        [data-theme="light"] .card-hover .text-white {
+            color: var(--text-primary);
+        }
+        [data-theme="light"] .card-hover .text-brand-muted {
+            color: var(--text-muted);
+        }
+        [data-theme="light"] .text-cyan-400 {
+            color: #0891b2;
+        }
+        [data-theme="light"] .text-emerald-400 {
+            color: #059669;
+        }
+        [data-theme="light"] .text-red-400 {
+            color: #dc2626;
+        }
+        [data-theme="light"] .text-amber-400 {
+            color: #d97706;
+        }
+        [data-theme="light"] .text-brand-muted {
+            color: var(--text-muted);
+        }
+        [data-theme="light"] .text-white {
+            color: var(--text-primary);
+        }
+        [data-theme="light"] .bg-brand-primary\/20 {
+            background: rgba(124, 58, 237, 0.08);
+        }
+        [data-theme="light"] .bg-brand-surface\/30 {
+            background: rgba(232, 228, 239, 0.5);
+        }
+        [data-theme="light"] .bg-brand-surface\/50 {
+            background: rgba(232, 228, 239, 0.6);
+        }
+        [data-theme="light"] .bg-brand-surface {
+            background: var(--bg-surface);
+        }
+        [data-theme="light"] .bg-brand-bg {
+            background: var(--bg-body);
+        }
+        [data-theme="light"] .bg-brand-card {
+            background: var(--bg-card);
+        }
+        [data-theme="light"] .bg-brand-bg\/40 {
+            background: rgba(248, 246, 252, 0.4);
+        }
+        [data-theme="light"] .bg-brand-bg\/60 {
+            background: rgba(248, 246, 252, 0.6);
+        }
+        [data-theme="light"] .bg-brand-primary\/5 {
+            background: rgba(124, 58, 237, 0.05);
+        }
+        [data-theme="light"] .hover\:bg-brand-secondary\/20:hover {
+            background: rgba(79, 70, 229, 0.06);
+        }
+        [data-theme="light"] .hover\:bg-brand-primary\/40:hover {
+            background: rgba(124, 58, 237, 0.06);
+        }
+        [data-theme="light"] .border-brand-border\/40 {
+            border-color: var(--border-color);
+        }
+        [data-theme="light"] .border-brand-border\/30 {
+            border-color: var(--border-color);
+        }
+        [data-theme="light"] .border-brand-border\/20 {
+            border-color: var(--border-color);
+        }
+        [data-theme="light"] .border-brand-border\/50 {
+            border-color: var(--border-color);
+        }
+        [data-theme="light"] .bg-\[#1b1729\] {
+            background: var(--table-header-bg);
+        }
+        [data-theme="light"] .divide-brand-border\/20 > * {
+            border-color: var(--border-color);
+        }
+        [data-theme="light"] .bg-\[#160d22\] {
+            background: var(--bg-input);
+        }
+        [data-theme="light"] .bg-\[#221930\] {
+            background: var(--bg-surface);
+        }
+        [data-theme="light"] .bg-brand-primary\/10 {
+            background: rgba(124, 58, 237, 0.06);
+        }
+        [data-theme="light"] .text-brand-teal {
+            color: #0891b2;
+        }
+        [data-theme="light"] .text-brand-mint {
+            color: #059669;
+        }
+        [data-theme="light"] .text-brand-danger {
+            color: #dc2626;
+        }
+        [data-theme="light"] .bg-red-900\/30 {
+            background: rgba(220, 38, 38, 0.08);
+        }
+        [data-theme="light"] .border-red-500\/40 {
+            border-color: rgba(220, 38, 38, 0.2);
+        }
+        [data-theme="light"] .text-red-300 {
+            color: #dc2626;
+        }
+        [data-theme="light"] .bg-red-900\/20 {
+            background: rgba(220, 38, 38, 0.06);
+        }
+        [data-theme="light"] .bg-red-900\/40 {
+            background: rgba(220, 38, 38, 0.1);
+        }
+        [data-theme="light"] .border-red-500\/20 {
+            border-color: rgba(220, 38, 38, 0.15);
+        }
+        [data-theme="light"] .text-red-300 {
+            color: #dc2626;
+        }
+        [data-theme="light"] .text-red-400 {
+            color: #dc2626;
+        }
+        [data-theme="light"] .hover\:text-red-300:hover {
+            color: #b91c1c;
+        }
+        [data-theme="light"] .hover\:text-red-400:hover {
+            color: #b91c1c;
+        }
+        [data-theme="light"] .text-amber-400 {
+            color: #d97706;
+        }
+        [data-theme="light"] .bg-amber-500\/10 {
+            background: rgba(217, 119, 6, 0.08);
+        }
+        [data-theme="light"] .border-amber-500\/30 {
+            border-color: rgba(217, 119, 6, 0.15);
+        }
+        [data-theme="light"] .bg-emerald-500\/10 {
+            background: rgba(5, 150, 105, 0.08);
+        }
+        [data-theme="light"] .border-emerald-500\/30 {
+            border-color: rgba(5, 150, 105, 0.15);
+        }
+        [data-theme="light"] .bg-cyan-500\/80 {
+            background: #0891b2;
+        }
+        [data-theme="light"] .bg-cyan-500\/20 {
+            background: rgba(8, 145, 178, 0.08);
+        }
+        [data-theme="light"] .bg-emerald-500\/80 {
+            background: #059669;
+        }
+        [data-theme="light"] .bg-amber-500\/80 {
+            background: #d97706;
+        }
+        [data-theme="light"] .bg-amber-500\/20 {
+            background: rgba(217, 119, 6, 0.08);
+        }
+        [data-theme="light"] .shadow-cyan-500\/20 {
+            box-shadow: 0 4px 14px rgba(8, 145, 178, 0.15);
+        }
+        [data-theme="light"] .shadow-emerald-500\/20 {
+            box-shadow: 0 4px 14px rgba(5, 150, 105, 0.15);
+        }
+        [data-theme="light"] .shadow-amber-500\/20 {
+            box-shadow: 0 4px 14px rgba(217, 119, 6, 0.15);
+        }
+        [data-theme="light"] .shadow-brand-primary\/20 {
+            box-shadow: 0 4px 14px rgba(124, 58, 237, 0.15);
+        }
+        [data-theme="light"] .bg-red-900\/30 {
+            background: rgba(220, 38, 38, 0.08);
+        }
+        [data-theme="light"] .bg-red-900\/20 {
+            background: rgba(220, 38, 38, 0.06);
+        }
+        [data-theme="light"] .bg-red-900\/40 {
+            background: rgba(220, 38, 38, 0.1);
+        }
+        [data-theme="light"] .border-red-500\/20 {
+            border-color: rgba(220, 38, 38, 0.15);
+        }
+        [data-theme="light"] .border-red-500\/30 {
+            border-color: rgba(220, 38, 38, 0.15);
+        }
+        [data-theme="light"] .bg-red-900\/30 {
+            background: rgba(220, 38, 38, 0.08);
+        }
+        [data-theme="light"] .text-red-300 {
+            color: #dc2626;
+        }
+        [data-theme="light"] .bg-red-900\/30 {
+            background: rgba(220, 38, 38, 0.08);
+        }
+        [data-theme="light"] .bg-red-900\/20 {
+            background: rgba(220, 38, 38, 0.06);
+        }
+        [data-theme="light"] .bg-red-900\/40 {
+            background: rgba(220, 38, 38, 0.1);
+        }
+        [data-theme="light"] .border-red-500\/20 {
+            border-color: rgba(220, 38, 38, 0.15);
+        }
+        [data-theme="light"] .border-red-500\/30 {
+            border-color: rgba(220, 38, 38, 0.15);
+        }
+        [data-theme="light"] .bg-red-900\/30 {
+            background: rgba(220, 38, 38, 0.08);
+        }
+        [data-theme="light"] .text-red-300 {
+            color: #dc2626;
         }
         [data-theme="light"] .heatmap-legend .color-swatch {
             border-color: rgba(0, 0, 0, 0.08);
@@ -600,6 +773,25 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+        }
+        /* ===== MOBILE HEADER LIGHT ===== */
+        [data-theme="light"] .md\:hidden.glass {
+            background: var(--glass-bg);
+            border-color: var(--glass-border);
+        }
+        [data-theme="light"] .md\:hidden .text-white {
+            color: var(--text-primary);
+        }
+        [data-theme="light"] .md\:hidden .text-brand-muted {
+            color: var(--text-muted);
+        }
+        /* ===== SYNC STATUS ===== */
+        [data-theme="light"] #sync-status {
+            color: var(--text-muted);
+        }
+        /* ===== IMPORT MSG ===== */
+        [data-theme="light"] #import-msg {
+            color: #059669;
         }
     </style>
 </head>
@@ -678,7 +870,7 @@
     <div class="px-5 py-4 border-b border-brand-border/30 bg-brand-primary/5">
         <p class="text-[10px] font-semibold text-brand-muted uppercase tracking-wider mb-1" data-i18n="sidebar.status">Status</p>
         <p class="text-sm font-bold text-white" id="user-display-name">User</p>
-        <span class="inline-flex items-center mt-1.5 text-[10px] font-bold uppercase tracking-wide px-2.5 py-0.5 rounded-full border" id="user-role-badge">Role</span>
+        <span class="inline-flex items-center mt-1.5 text-[10px] font-bold uppercase tracking-wide px-2.5 py-0.5 rounded-full border border-brand-border/40" id="user-role-badge">Role</span>
     </div>
 
     <!-- Nav Links -->
@@ -804,10 +996,17 @@ class="sidebar-link w-full flex items-center px-4 py-2.5 rounded-xl text-sm font
             <div class="glass rounded-2xl p-5 border border-brand-border/40 shadow-lg card-hover">
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-sm font-bold text-white flex items-center">
-                        <span class="mr-2">▦</span> <span data-i18n="heatmap.title">Loan Heatmap (Last 30 Days)</span>
+                        <span class="mr-2">▦</span> <span data-i18n="heatmap.title">Loan Heatmap</span>
                         <span class="ml-2 text-[10px] font-normal text-brand-muted" data-i18n="heatmap.hint">darker = busier</span>
                     </h3>
-                    <span class="text-xs text-brand-muted" id="heatmap-month"></span>
+                    <div class="flex items-center gap-2">
+                        <!-- Month Navigation -->
+                        <button onclick="heatmapPrevMonth()" class="icon-btn icon-sm" aria-label="Previous month">◀</button>
+                        <select id="heatmap-month-select" onchange="heatmapJumpToMonth()" class="input-modern px-2 py-1 rounded-lg text-xs font-bold" style="min-width:100px;">
+                        </select>
+                        <button onclick="heatmapNextMonth()" class="icon-btn icon-sm" aria-label="Next month">▶</button>
+                        <button onclick="heatmapToday()" class="icon-btn icon-sm" aria-label="Today">📅</button>
+                    </div>
                 </div>
                 <div class="overflow-x-auto">
                     <div id="heatmap-container" class="min-w-[320px]">
@@ -1112,7 +1311,7 @@ class="sidebar-link w-full flex items-center px-4 py-2.5 rounded-xl text-sm font
             'chart.status': '📊 Status Distribution',
             'chart.bottom10': '📉 Top 10 Least Borrowed',
             'chart.trend': '📈 Monthly Loan Trend',
-            'heatmap.title': 'Loan Heatmap (Last 30 Days)',
+            'heatmap.title': 'Loan Heatmap',
             'heatmap.hint': 'darker = busier',
             'heatmap.low': 'Low',
             'heatmap.high': 'High',
@@ -1210,7 +1409,7 @@ class="sidebar-link w-full flex items-center px-4 py-2.5 rounded-xl text-sm font
             'chart.status': '📊 Distribusi Status',
             'chart.bottom10': '📉 Top 10 Paling Jarang Dipinjam',
             'chart.trend': '📈 Tren Peminjaman Bulanan',
-            'heatmap.title': 'Heatmap Peminjaman (30 Hari Terakhir)',
+            'heatmap.title': 'Heatmap Peminjaman',
             'heatmap.hint': 'semakin gelap = semakin padat',
             'heatmap.low': 'Rendah',
             'heatmap.high': 'Tinggi',
@@ -1298,11 +1497,13 @@ class="sidebar-link w-full flex items-center px-4 py-2.5 rounded-xl text-sm font
         const icon = document.getElementById('mobile-theme-icon');
         if (icon) icon.textContent = theme === 'dark' ? '🌙' : '☀️';
         Chart.defaults.color = theme === 'dark' ? '#8b8aa0' : '#6b6580';
-        // re-render charts to update grid colors
+        // Re-render dashboard to update chart grid colors
         if (document.getElementById('view-dashboard') && !document.getElementById('view-dashboard').classList.contains(
                 'hidden')) {
             renderDashboard();
         }
+        // Re-render heatmap to update colors
+        renderHeatmap();
     }
 
     function toggleTheme() {
@@ -1326,6 +1527,7 @@ class="sidebar-link w-full flex items-center px-4 py-2.5 rounded-xl text-sm font
         renderActiveLoans();
         renderHistory();
         renderDashboard();
+        populateMonthSelector();
     }
 
     function toggleLanguage() {
@@ -1348,6 +1550,70 @@ class="sidebar-link w-full flex items-center px-4 py-2.5 rounded-xl text-sm font
             const key = el.getAttribute('data-i18n');
             if (t[key]) el.textContent = t[key];
         });
+    }
+
+    // ===== HEATMAP MONTH NAVIGATION =====
+    let heatmapDate = new Date(); // current month being displayed
+
+    function populateMonthSelector() {
+        const select = document.getElementById('heatmap-month-select');
+        if (!select) return;
+        const currentYear = heatmapDate.getFullYear();
+        const currentMonth = heatmapDate.getMonth();
+        const monthNames = currentLanguage === 'id' ?
+            ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'] :
+            ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        // Build options for last 2 years and next 2 years
+        const startYear = currentYear - 2;
+        const endYear = currentYear + 2;
+        select.innerHTML = '';
+        for (let y = startYear; y <= endYear; y++) {
+            for (let m = 0; m < 12; m++) {
+                const label = `${monthNames[m]} ${y}`;
+                const value = `${y}-${String(m+1).padStart(2,'0')}`;
+                const opt = document.createElement('option');
+                opt.value = value;
+                opt.textContent = label;
+                if (y === currentYear && m === currentMonth) opt.selected = true;
+                select.appendChild(opt);
+            }
+        }
+    }
+
+    function heatmapJumpToMonth() {
+        const select = document.getElementById('heatmap-month-select');
+        if (!select) return;
+        const val = select.value;
+        const parts = val.split('-');
+        heatmapDate = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, 1);
+        renderHeatmap();
+    }
+
+    function heatmapPrevMonth() {
+        heatmapDate.setMonth(heatmapDate.getMonth() - 1);
+        syncMonthSelector();
+        renderHeatmap();
+    }
+
+    function heatmapNextMonth() {
+        heatmapDate.setMonth(heatmapDate.getMonth() + 1);
+        syncMonthSelector();
+        renderHeatmap();
+    }
+
+    function heatmapToday() {
+        heatmapDate = new Date();
+        syncMonthSelector();
+        renderHeatmap();
+    }
+
+    function syncMonthSelector() {
+        const select = document.getElementById('heatmap-month-select');
+        if (!select) return;
+        const year = heatmapDate.getFullYear();
+        const month = heatmapDate.getMonth() + 1;
+        const val = `${year}-${String(month).padStart(2,'0')}`;
+        select.value = val;
     }
 
     // ===== CONSTANTS =====
@@ -1405,6 +1671,7 @@ class="sidebar-link w-full flex items-center px-4 py-2.5 rounded-xl text-sm font
             }
         } catch (e) { localStorage.removeItem('binus_current_session'); }
         renderUsers();
+        populateMonthSelector();
         pullFromCloud(true);
     };
 
@@ -1862,9 +2129,6 @@ class="sidebar-link w-full flex items-center px-4 py-2.5 rounded-xl text-sm font
                 trackingRecords = data.map(rec => {
                     if (!rec.event || rec.event.trim() === '' || rec.event === 'Unnamed Event' || rec
                         .event === 'Unnamed') {
-                        // Skip Unnamed Event from being stored as valid event, but we keep it with a placeholder
-                        // Actually we want to skip it entirely from charts, but keep in DB for reference.
-                        // We'll just mark it but filter later.
                         rec.event = 'Unnamed Event';
                     }
                     return rec;
@@ -1927,7 +2191,6 @@ class="sidebar-link w-full flex items-center px-4 py-2.5 rounded-xl text-sm font
         trackingRecords.forEach(r => {
             const totalQty = r.items.reduce((sum, i) => sum + (parseInt(i.qty) || 0), 0);
             const eventName = (r.event || '').trim();
-            // Skip empty, Unnamed Event, or Unnamed
             if (!eventName || eventName === 'Unnamed Event' || eventName === 'Unnamed') return;
             if (!eventCounts[eventName]) eventCounts[eventName] = 0;
             eventCounts[eventName] += totalQty;
@@ -2066,7 +2329,7 @@ class="sidebar-link w-full flex items-center px-4 py-2.5 rounded-xl text-sm font
         renderHeatmap();
     }
 
-    // ===== HEATMAP (dengan warna dasar lebih terang) =====
+    // ===== HEATMAP =====
     function renderHeatmap() {
         const grid = document.getElementById('heatmap-grid');
         if (!grid) {
@@ -2074,56 +2337,50 @@ class="sidebar-link w-full flex items-center px-4 py-2.5 rounded-xl text-sm font
             return;
         }
         const monthDisplay = document.getElementById('heatmap-month');
-        const now = new Date();
-        const year = now.getFullYear();
-        const month = now.getMonth();
-        const today = new Date();
-        const startDate = new Date(today);
-        startDate.setDate(today.getDate() - 29);
-        const dates = [];
-        for (let i = 0; i < 30; i++) {
-            const d = new Date(startDate);
-            d.setDate(startDate.getDate() + i);
-            dates.push(d);
-        }
+        const year = heatmapDate.getFullYear();
+        const month = heatmapDate.getMonth();
+
+        // Build dates for the selected month
+        const firstDay = new Date(year, month, 1);
+        const lastDay = new Date(year, month + 1, 0);
+        const daysInMonth = lastDay.getDate();
+
+        // Get loan counts per day for this month
         const loanCountPerDay = {};
         trackingRecords.forEach(r => {
             const d = new Date(r.date);
-            const key = d.toISOString().split('T')[0];
-            loanCountPerDay[key] = (loanCountPerDay[key] || 0) + 1;
+            if (d.getFullYear() === year && d.getMonth() === month) {
+                const key = d.getDate();
+                loanCountPerDay[key] = (loanCountPerDay[key] || 0) + 1;
+            }
         });
 
-        const counts = dates.map(d => {
-            const key = d.toISOString().split('T')[0];
-            return loanCountPerDay[key] || 0;
-        });
-        const maxCount = Math.max(1, ...counts);
-
-        const firstDayOfWeek = dates[0].getDay();
-        const offset = (firstDayOfWeek === 0) ? 6 : firstDayOfWeek - 1;
+        // Build grid: 6 rows x 7 cols
+        const firstDayOfWeek = firstDay.getDay(); // 0=Sun
+        const offset = (firstDayOfWeek === 0) ? 6 : firstDayOfWeek - 1; // Mon=0
         const totalCells = 42;
         const cells = [];
         for (let i = 0; i < totalCells; i++) {
-            const dayIndex = i - offset;
+            const day = i - offset + 1;
             let date = null;
             let count = 0;
             let isInRange = false;
-            if (dayIndex >= 0 && dayIndex < dates.length) {
-                date = dates[dayIndex];
-                const key = date.toISOString().split('T')[0];
-                count = loanCountPerDay[key] || 0;
+            if (day >= 1 && day <= daysInMonth) {
+                date = new Date(year, month, day);
+                count = loanCountPerDay[day] || 0;
                 isInRange = true;
             }
             cells.push({ date, count, isInRange });
         }
 
-        // Color: low = #5a4a7a (visible purple), high = #f59e0b (bright orange)
+        const maxCount = Math.max(1, ...cells.filter(c => c.isInRange).map(c => c.count));
+
+        // Render cells
         grid.innerHTML = cells.map(cell => {
             if (!cell.isInRange || !cell.date) {
                 return `<div class="heatmap-cell heatmap-cell-empty"></div>`;
             }
             const intensity = maxCount > 0 ? cell.count / maxCount : 0;
-            // Interpolate from #5a4a7a (rgb 90,74,122) to #f59e0b (rgb 245,158,11)
             const r = Math.round(90 + intensity * 155);
             const g = Math.round(74 + intensity * 84);
             const b = Math.round(122 - intensity * 111);
@@ -2137,6 +2394,9 @@ class="sidebar-link w-full flex items-center px-4 py-2.5 rounded-xl text-sm font
             ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'] :
             ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
         monthDisplay.innerText = `${monthNames[month]} ${year}`;
+
+        // Sync select
+        syncMonthSelector();
     }
 
     // ===== ACTIVE LOANS =====
