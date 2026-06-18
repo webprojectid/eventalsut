@@ -41,6 +41,7 @@
                         'float': 'float 6s ease-in-out infinite',
                         'slide-in': 'slideIn 0.4s ease forwards',
                         'scale-in': 'scaleIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards',
+                        'pulse-dot': 'pulseDot 1.5s ease-in-out infinite',
                     },
                     keyframes: {
                         fadeUp: { '0%': { opacity: '0', transform: 'translateY(20px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
@@ -49,6 +50,7 @@
                         float: { '0%,100%': { transform: 'translateY(0px)' }, '50%': { transform: 'translateY(-8px)' } },
                         slideIn: { '0%': { opacity: '0', transform: 'translateX(-12px)' }, '100%': { opacity: '1', transform: 'translateX(0)' } },
                         scaleIn: { '0%': { opacity: '0', transform: 'scale(0.92)' }, '100%': { opacity: '1', transform: 'scale(1)' } },
+                        pulseDot: { '0%,100%': { opacity: '1', transform: 'scale(1)' }, '50%': { opacity: '0.3', transform: 'scale(0.7)' } },
                     }
                 }
             }
@@ -78,6 +80,7 @@
             --heatmap-cell-border: rgba(255, 255, 255, 0.05);
             --heatmap-empty-bg: rgba(45, 36, 63, 0.3);
             --heatmap-empty-border: rgba(45, 36, 63, 0.4);
+            --select-bg: rgba(12, 10, 18, 0.6);
         }
 
         [data-theme="light"] {
@@ -102,6 +105,7 @@
             --heatmap-cell-border: rgba(0, 0, 0, 0.05);
             --heatmap-empty-bg: rgba(213, 207, 224, 0.4);
             --heatmap-empty-border: rgba(213, 207, 224, 0.4);
+            --select-bg: rgba(255, 255, 255, 0.7);
         }
 
         /* ===== GLOBAL ===== */
@@ -143,48 +147,6 @@
             -webkit-backdrop-filter: blur(16px);
             border: 1px solid var(--glass-border);
             transition: background 0.3s ease, border-color 0.3s ease;
-        }
-
-        .glass-light {
-            background: rgba(27, 23, 41, 0.4);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(45, 36, 63, 0.3);
-        }
-
-        .gradient-text {
-            background: linear-gradient(135deg, #a78bfa 0%, #06b6d4 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .gradient-border {
-            position: relative;
-        }
-        .gradient-border::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: inherit;
-            padding: 1px;
-            background: linear-gradient(135deg, rgba(124, 58, 237, 0.4), rgba(6, 182, 212, 0.2));
-            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            -webkit-mask-composite: xor;
-            mask-composite: exclude;
-            pointer-events: none;
-        }
-
-        .stat-card {
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            background: var(--bg-card);
-            border-color: var(--border-color);
-        }
-        .stat-card:hover {
-            transform: translateY(-4px);
-            border-color: rgba(124, 58, 237, 0.4);
-            box-shadow: 0 12px 40px rgba(124, 58, 237, 0.12);
         }
 
         .btn-primary {
@@ -263,12 +225,6 @@
             }
         }
 
-        .shimmer-bg {
-            background: linear-gradient(90deg, transparent 0%, rgba(124, 58, 237, 0.05) 50%, transparent 100%);
-            background-size: 200% 100%;
-            animation: shimmer 3s ease-in-out infinite;
-        }
-
         .card-hover {
             transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
             background: var(--bg-card);
@@ -280,32 +236,27 @@
             box-shadow: 0 20px 60px rgba(124, 58, 237, 0.08);
         }
 
-        .grid-card {
-            transition: all 0.3s ease;
+        .stat-card {
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            background: var(--bg-card);
+            border-color: var(--border-color);
         }
-        .grid-card:hover {
+        .stat-card:hover {
             transform: translateY(-4px);
-            border-color: rgba(124, 58, 237, 0.25);
+            border-color: rgba(124, 58, 237, 0.4);
+            box-shadow: 0 12px 40px rgba(124, 58, 237, 0.12);
         }
 
-        .fade-enter {
-            animation: fadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        .view-transition {
+            animation: scaleIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
         }
 
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            display: inline-block;
-            margin-right: 6px;
+        .table-wrap::-webkit-scrollbar {
+            height: 4px;
         }
-        .status-dot.active {
-            background: #f59e0b;
-            box-shadow: 0 0 12px rgba(245, 158, 11, 0.4);
-        }
-        .status-dot.done {
-            background: #34d399;
-            box-shadow: 0 0 12px rgba(52, 211, 153, 0.3);
+        .table-wrap::-webkit-scrollbar-thumb {
+            background: #4f46e5;
+            border-radius: 4px;
         }
 
         /* ===== SIDEBAR ===== */
@@ -337,18 +288,6 @@
         .sidebar-link.active {
             background: rgba(124, 58, 237, 0.12);
             color: #fff;
-        }
-
-        .view-transition {
-            animation: scaleIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-        }
-
-        .table-wrap::-webkit-scrollbar {
-            height: 4px;
-        }
-        .table-wrap::-webkit-scrollbar-thumb {
-            background: #4f46e5;
-            border-radius: 4px;
         }
 
         /* ===== HEATMAP ===== */
@@ -402,6 +341,85 @@
             height: 16px;
             border-radius: 4px;
             border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        /* ===== HEATMAP CONTROLS ===== */
+        .heatmap-controls {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .heatmap-controls select {
+            background: var(--select-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 4px 8px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-height: 30px;
+            min-width: 80px;
+        }
+        .heatmap-controls select:focus {
+            border-color: #7c3aed;
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
+            outline: none;
+        }
+        .heatmap-controls select option {
+            background: var(--bg-card);
+            color: var(--text-primary);
+        }
+        [data-theme="light"] .heatmap-controls select {
+            background: var(--bg-input);
+            border-color: var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .heatmap-controls .icon-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        /* ===== LIVE BADGE ===== */
+        .live-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(220, 38, 38, 0.15);
+            border: 1px solid rgba(220, 38, 38, 0.4);
+            padding: 4px 12px 4px 8px;
+            border-radius: 20px;
+            font-weight: 800;
+            font-size: 11px;
+            letter-spacing: 0.06em;
+            color: #ef4444;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+        .live-badge:hover {
+            background: rgba(220, 38, 38, 0.25);
+            border-color: rgba(220, 38, 38, 0.6);
+        }
+        .live-badge .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ef4444;
+            animation: pulseDot 1.5s ease-in-out infinite;
+            box-shadow: 0 0 8px rgba(239, 68, 68, 0.5);
+            flex-shrink: 0;
+        }
+        [data-theme="light"] .live-badge {
+            background: rgba(220, 38, 38, 0.08);
+            border-color: rgba(220, 38, 38, 0.25);
+        }
+        [data-theme="light"] .live-badge:hover {
+            background: rgba(220, 38, 38, 0.18);
         }
 
         /* ===== ICON BUTTONS ===== */
@@ -504,60 +522,118 @@
             color: var(--text-primary);
         }
 
-        /* ===== TABLE OVERRIDES FOR LIGHT MODE ===== */
+        /* ===== LIGHT MODE OVERRIDES ===== */
+        [data-theme="light"] .heatmap-cell-empty {
+            background: rgba(213, 207, 224, 0.4);
+            border-color: rgba(213, 207, 224, 0.4);
+        }
+        [data-theme="light"] .heatmap-cell {
+            border-color: rgba(0, 0, 0, 0.05);
+        }
+        [data-theme="light"] .sidebar-link.active {
+            background: rgba(124, 58, 237, 0.1);
+        }
+        [data-theme="light"] .icon-btn {
+            background: rgba(213, 207, 224, 0.3);
+            border-color: rgba(213, 207, 224, 0.3);
+        }
+        [data-theme="light"] .icon-btn:hover {
+            background: rgba(124, 58, 237, 0.12);
+            border-color: #7c3aed;
+        }
+        [data-theme="light"] .theme-toggle,
+        [data-theme="light"] .lang-toggle {
+            background: var(--bg-card);
+            border-color: var(--border-color);
+        }
+        [data-theme="light"] .theme-toggle button.active,
+        [data-theme="light"] .lang-toggle button.active {
+            background: rgba(124, 58, 237, 0.15);
+            color: #7c3aed;
+        }
+        [data-theme="light"] .btn-outline {
+            border-color: var(--border-color);
+            color: var(--text-muted);
+        }
+        [data-theme="light"] .btn-outline:hover {
+            border-color: #7c3aed;
+            background: rgba(124, 58, 237, 0.06);
+            color: var(--text-primary);
+        }
+        [data-theme="light"] .stat-card {
+            background: var(--bg-card);
+            border-color: var(--border-color);
+        }
+        [data-theme="light"] .card-hover {
+            background: var(--bg-card);
+            border-color: var(--border-color);
+        }
+        [data-theme="light"] .glass {
+            background: var(--glass-bg);
+            border-color: var(--glass-border);
+        }
+        [data-theme="light"] .input-modern {
+            background: var(--bg-input);
+            border-color: var(--border-color);
+            color: var(--text-primary);
+        }
+        [data-theme="light"] .input-modern:focus {
+            border-color: #7c3aed;
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.12);
+        }
+        [data-theme="light"] #sidebar {
+            background: var(--bg-surface);
+            border-color: var(--border-color);
+        }
+        [data-theme="light"] .table-row {
+            border-color: var(--border-color);
+        }
+        [data-theme="light"] .table-row:hover {
+            background: rgba(124, 58, 237, 0.04);
+        }
         [data-theme="light"] #loan-table-body td {
             color: var(--text-primary);
         }
         [data-theme="light"] #loan-table-body .text-brand-muted {
             color: var(--text-muted);
         }
-        [data-theme="light"] .badge-status.bg-emerald-500\/10 {
-            background: rgba(52, 211, 153, 0.12);
+        [data-theme="light"] .heatmap-legend .color-swatch {
+            border-color: rgba(0, 0, 0, 0.08);
         }
-        [data-theme="light"] .badge-status.bg-amber-500\/10 {
-            background: rgba(245, 158, 11, 0.12);
+        [data-theme="light"] .login-bg {
+            background: radial-gradient(ellipse at 30% 20%, rgba(124, 58, 237, 0.05) 0%, transparent 60%),
+                radial-gradient(ellipse at 70% 80%, rgba(6, 182, 212, 0.03) 0%, transparent 50%),
+                var(--bg-body);
         }
-        [data-theme="light"] #sidebar .bg-brand-primary\/5 {
-            background: rgba(124, 58, 237, 0.06);
+        [data-theme="light"] .gradient-text {
+            background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
-        [data-theme="light"] #sidebar .border-brand-border\/30 {
+        [data-theme="light"] .bg-brand-primary\/20 {
+            background: rgba(124, 58, 237, 0.08);
+        }
+        [data-theme="light"] .bg-brand-surface\/30 {
+            background: rgba(232, 228, 239, 0.5);
+        }
+        [data-theme="light"] .bg-brand-surface\/50 {
+            background: rgba(232, 228, 239, 0.6);
+        }
+        [data-theme="light"] .bg-brand-bg\/40 {
+            background: rgba(248, 246, 252, 0.4);
+        }
+        [data-theme="light"] .bg-brand-bg\/60 {
+            background: rgba(248, 246, 252, 0.6);
+        }
+        [data-theme="light"] .bg-\[#1b1729\] {
+            background: var(--table-header-bg);
+        }
+        [data-theme="light"] .divide-brand-border\/20 > * {
             border-color: var(--border-color);
         }
-        [data-theme="light"] #sidebar .border-brand-border\/40 {
-            border-color: var(--border-color);
-        }
-        [data-theme="light"] #sidebar .text-white {
-            color: var(--text-primary);
-        }
-        [data-theme="light"] #sidebar .text-brand-muted {
-            color: var(--text-muted);
-        }
-        [data-theme="light"] .glass .border-brand-border\/40 {
-            border-color: var(--border-color);
-        }
-        [data-theme="light"] .glass .border-brand-border\/30 {
-            border-color: var(--border-color);
-        }
-        [data-theme="light"] .stat-card .text-brand-muted {
-            color: var(--text-muted);
-        }
-        [data-theme="light"] .stat-card .text-white {
-            color: var(--text-primary);
-        }
-        [data-theme="light"] .stat-card .text-cyan-400 {
-            color: #0891b2;
-        }
-        [data-theme="light"] .stat-card .text-emerald-400 {
-            color: #059669;
-        }
-        [data-theme="light"] .stat-card .text-red-400 {
-            color: #dc2626;
-        }
-        [data-theme="light"] .card-hover .text-white {
-            color: var(--text-primary);
-        }
-        [data-theme="light"] .card-hover .text-brand-muted {
-            color: var(--text-muted);
+        [data-theme="light"] .bg-\[#221930\] {
+            background: var(--bg-surface);
         }
         [data-theme="light"] .text-cyan-400 {
             color: #0891b2;
@@ -577,39 +653,6 @@
         [data-theme="light"] .text-white {
             color: var(--text-primary);
         }
-        [data-theme="light"] .bg-brand-primary\/20 {
-            background: rgba(124, 58, 237, 0.08);
-        }
-        [data-theme="light"] .bg-brand-surface\/30 {
-            background: rgba(232, 228, 239, 0.5);
-        }
-        [data-theme="light"] .bg-brand-surface\/50 {
-            background: rgba(232, 228, 239, 0.6);
-        }
-        [data-theme="light"] .bg-brand-surface {
-            background: var(--bg-surface);
-        }
-        [data-theme="light"] .bg-brand-bg {
-            background: var(--bg-body);
-        }
-        [data-theme="light"] .bg-brand-card {
-            background: var(--bg-card);
-        }
-        [data-theme="light"] .bg-brand-bg\/40 {
-            background: rgba(248, 246, 252, 0.4);
-        }
-        [data-theme="light"] .bg-brand-bg\/60 {
-            background: rgba(248, 246, 252, 0.6);
-        }
-        [data-theme="light"] .bg-brand-primary\/5 {
-            background: rgba(124, 58, 237, 0.05);
-        }
-        [data-theme="light"] .hover\:bg-brand-secondary\/20:hover {
-            background: rgba(79, 70, 229, 0.06);
-        }
-        [data-theme="light"] .hover\:bg-brand-primary\/40:hover {
-            background: rgba(124, 58, 237, 0.06);
-        }
         [data-theme="light"] .border-brand-border\/40 {
             border-color: var(--border-color);
         }
@@ -619,41 +662,14 @@
         [data-theme="light"] .border-brand-border\/20 {
             border-color: var(--border-color);
         }
-        [data-theme="light"] .border-brand-border\/50 {
-            border-color: var(--border-color);
+        [data-theme="light"] .bg-brand-primary\/5 {
+            background: rgba(124, 58, 237, 0.05);
         }
-        [data-theme="light"] .bg-\[#1b1729\] {
-            background: var(--table-header-bg);
-        }
-        [data-theme="light"] .divide-brand-border\/20 > * {
-            border-color: var(--border-color);
-        }
-        [data-theme="light"] .bg-\[#160d22\] {
-            background: var(--bg-input);
-        }
-        [data-theme="light"] .bg-\[#221930\] {
-            background: var(--bg-surface);
-        }
-        [data-theme="light"] .bg-brand-primary\/10 {
-            background: rgba(124, 58, 237, 0.06);
-        }
-        [data-theme="light"] .text-brand-teal {
-            color: #0891b2;
-        }
-        [data-theme="light"] .text-brand-mint {
-            color: #059669;
-        }
-        [data-theme="light"] .text-brand-danger {
-            color: #dc2626;
+        [data-theme="light"] .hover\:bg-brand-secondary\/20:hover {
+            background: rgba(79, 70, 229, 0.06);
         }
         [data-theme="light"] .bg-red-900\/30 {
             background: rgba(220, 38, 38, 0.08);
-        }
-        [data-theme="light"] .border-red-500\/40 {
-            border-color: rgba(220, 38, 38, 0.2);
-        }
-        [data-theme="light"] .text-red-300 {
-            color: #dc2626;
         }
         [data-theme="light"] .bg-red-900\/20 {
             background: rgba(220, 38, 38, 0.06);
@@ -664,20 +680,14 @@
         [data-theme="light"] .border-red-500\/20 {
             border-color: rgba(220, 38, 38, 0.15);
         }
-        [data-theme="light"] .text-red-300 {
-            color: #dc2626;
+        [data-theme="light"] .border-red-500\/30 {
+            border-color: rgba(220, 38, 38, 0.15);
         }
-        [data-theme="light"] .text-red-400 {
+        [data-theme="light"] .text-red-300 {
             color: #dc2626;
         }
         [data-theme="light"] .hover\:text-red-300:hover {
             color: #b91c1c;
-        }
-        [data-theme="light"] .hover\:text-red-400:hover {
-            color: #b91c1c;
-        }
-        [data-theme="light"] .text-amber-400 {
-            color: #d97706;
         }
         [data-theme="light"] .bg-amber-500\/10 {
             background: rgba(217, 119, 6, 0.08);
@@ -694,17 +704,11 @@
         [data-theme="light"] .bg-cyan-500\/80 {
             background: #0891b2;
         }
-        [data-theme="light"] .bg-cyan-500\/20 {
-            background: rgba(8, 145, 178, 0.08);
-        }
         [data-theme="light"] .bg-emerald-500\/80 {
             background: #059669;
         }
         [data-theme="light"] .bg-amber-500\/80 {
             background: #d97706;
-        }
-        [data-theme="light"] .bg-amber-500\/20 {
-            background: rgba(217, 119, 6, 0.08);
         }
         [data-theme="light"] .shadow-cyan-500\/20 {
             box-shadow: 0 4px 14px rgba(8, 145, 178, 0.15);
@@ -718,63 +722,15 @@
         [data-theme="light"] .shadow-brand-primary\/20 {
             box-shadow: 0 4px 14px rgba(124, 58, 237, 0.15);
         }
-        [data-theme="light"] .bg-red-900\/30 {
-            background: rgba(220, 38, 38, 0.08);
+        [data-theme="light"] .heatmap-controls select {
+            background: var(--bg-input);
+            border-color: var(--border-color);
+            color: var(--text-primary);
         }
-        [data-theme="light"] .bg-red-900\/20 {
-            background: rgba(220, 38, 38, 0.06);
+        [data-theme="light"] .heatmap-controls select option {
+            background: var(--bg-card);
+            color: var(--text-primary);
         }
-        [data-theme="light"] .bg-red-900\/40 {
-            background: rgba(220, 38, 38, 0.1);
-        }
-        [data-theme="light"] .border-red-500\/20 {
-            border-color: rgba(220, 38, 38, 0.15);
-        }
-        [data-theme="light"] .border-red-500\/30 {
-            border-color: rgba(220, 38, 38, 0.15);
-        }
-        [data-theme="light"] .bg-red-900\/30 {
-            background: rgba(220, 38, 38, 0.08);
-        }
-        [data-theme="light"] .text-red-300 {
-            color: #dc2626;
-        }
-        [data-theme="light"] .bg-red-900\/30 {
-            background: rgba(220, 38, 38, 0.08);
-        }
-        [data-theme="light"] .bg-red-900\/20 {
-            background: rgba(220, 38, 38, 0.06);
-        }
-        [data-theme="light"] .bg-red-900\/40 {
-            background: rgba(220, 38, 38, 0.1);
-        }
-        [data-theme="light"] .border-red-500\/20 {
-            border-color: rgba(220, 38, 38, 0.15);
-        }
-        [data-theme="light"] .border-red-500\/30 {
-            border-color: rgba(220, 38, 38, 0.15);
-        }
-        [data-theme="light"] .bg-red-900\/30 {
-            background: rgba(220, 38, 38, 0.08);
-        }
-        [data-theme="light"] .text-red-300 {
-            color: #dc2626;
-        }
-        [data-theme="light"] .heatmap-legend .color-swatch {
-            border-color: rgba(0, 0, 0, 0.08);
-        }
-        [data-theme="light"] .login-bg {
-            background: radial-gradient(ellipse at 30% 20%, rgba(124, 58, 237, 0.05) 0%, transparent 60%),
-                radial-gradient(ellipse at 70% 80%, rgba(6, 182, 212, 0.03) 0%, transparent 50%),
-                var(--bg-body);
-        }
-        [data-theme="light"] .gradient-text {
-            background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        /* ===== MOBILE HEADER LIGHT ===== */
         [data-theme="light"] .md\:hidden.glass {
             background: var(--glass-bg);
             border-color: var(--glass-border);
@@ -785,13 +741,39 @@
         [data-theme="light"] .md\:hidden .text-brand-muted {
             color: var(--text-muted);
         }
-        /* ===== SYNC STATUS ===== */
+        [data-theme="light"] .live-badge {
+            background: rgba(220, 38, 38, 0.08);
+            border-color: rgba(220, 38, 38, 0.25);
+        }
+        [data-theme="light"] .live-badge:hover {
+            background: rgba(220, 38, 38, 0.18);
+        }
+        [data-theme="light"] .bg-brand-bg {
+            background: var(--bg-body);
+        }
+        [data-theme="light"] .bg-brand-card {
+            background: var(--bg-card);
+        }
+        [data-theme="light"] .text-brand-teal {
+            color: #0891b2;
+        }
+        [data-theme="light"] .text-brand-mint {
+            color: #059669;
+        }
+        [data-theme="light"] .text-brand-danger {
+            color: #dc2626;
+        }
         [data-theme="light"] #sync-status {
             color: var(--text-muted);
         }
-        /* ===== IMPORT MSG ===== */
         [data-theme="light"] #import-msg {
             color: #059669;
+        }
+        [data-theme="light"] .bg-brand-primary\/10 {
+            background: rgba(124, 58, 237, 0.06);
+        }
+        [data-theme="light"] .hover\:bg-brand-primary\/40:hover {
+            background: rgba(124, 58, 237, 0.06);
         }
     </style>
 </head>
@@ -936,7 +918,11 @@ class="sidebar-link w-full flex items-center px-4 py-2.5 rounded-xl text-sm font
                         <button onclick="setLanguage('id')" id="lang-id" aria-label="Bahasa Indonesia">ID</button>
                         <button onclick="setLanguage('en')" id="lang-en" class="active" aria-label="English">EN</button>
                     </div>
-                    <span class="text-xs text-brand-muted bg-brand-surface px-3 py-1.5 rounded-full border border-brand-border/40">Live</span>
+                    <!-- LIVE BADGE -->
+                    <span class="live-badge">
+                        <span class="dot"></span>
+                        <span>Live</span>
+                    </span>
                 </div>
             </div>
 
@@ -994,16 +980,21 @@ class="sidebar-link w-full flex items-center px-4 py-2.5 rounded-xl text-sm font
 
             <!-- ===== HEATMAP (bottom) ===== -->
             <div class="glass rounded-2xl p-5 border border-brand-border/40 shadow-lg card-hover">
-                <div class="flex items-center justify-between mb-4">
+                <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
                     <h3 class="text-sm font-bold text-white flex items-center">
                         <span class="mr-2">▦</span> <span data-i18n="heatmap.title">Loan Heatmap</span>
                         <span class="ml-2 text-[10px] font-normal text-brand-muted" data-i18n="heatmap.hint">darker = busier</span>
                     </h3>
-                    <div class="flex items-center gap-2">
-                        <!-- Month Navigation -->
+                    <!-- Heatmap Controls: Month + Year dropdowns -->
+                    <div class="heatmap-controls">
                         <button onclick="heatmapPrevMonth()" class="icon-btn icon-sm" aria-label="Previous month">◀</button>
-                        <select id="heatmap-month-select" onchange="heatmapJumpToMonth()" class="input-modern px-2 py-1 rounded-lg text-xs font-bold" style="min-width:100px;">
+
+                        <select id="heatmap-month-select" onchange="heatmapJumpToMonth()" class="input-modern px-2 py-1 rounded-lg text-xs font-bold" style="min-width:90px;">
                         </select>
+
+                        <select id="heatmap-year-select" onchange="heatmapJumpToMonth()" class="input-modern px-2 py-1 rounded-lg text-xs font-bold" style="min-width:70px;">
+                        </select>
+
                         <button onclick="heatmapNextMonth()" class="icon-btn icon-sm" aria-label="Next month">▶</button>
                         <button onclick="heatmapToday()" class="icon-btn icon-sm" aria-label="Today">📅</button>
                     </div>
@@ -1497,12 +1488,10 @@ class="sidebar-link w-full flex items-center px-4 py-2.5 rounded-xl text-sm font
         const icon = document.getElementById('mobile-theme-icon');
         if (icon) icon.textContent = theme === 'dark' ? '🌙' : '☀️';
         Chart.defaults.color = theme === 'dark' ? '#8b8aa0' : '#6b6580';
-        // Re-render dashboard to update chart grid colors
         if (document.getElementById('view-dashboard') && !document.getElementById('view-dashboard').classList.contains(
                 'hidden')) {
             renderDashboard();
         }
-        // Re-render heatmap to update colors
         renderHeatmap();
     }
 
@@ -1528,6 +1517,7 @@ class="sidebar-link w-full flex items-center px-4 py-2.5 rounded-xl text-sm font
         renderHistory();
         renderDashboard();
         populateMonthSelector();
+        populateYearSelector();
     }
 
     function toggleLanguage() {
@@ -1553,67 +1543,82 @@ class="sidebar-link w-full flex items-center px-4 py-2.5 rounded-xl text-sm font
     }
 
     // ===== HEATMAP MONTH NAVIGATION =====
-    let heatmapDate = new Date(); // current month being displayed
+    let heatmapDate = new Date();
 
     function populateMonthSelector() {
         const select = document.getElementById('heatmap-month-select');
         if (!select) return;
-        const currentYear = heatmapDate.getFullYear();
-        const currentMonth = heatmapDate.getMonth();
         const monthNames = currentLanguage === 'id' ?
             ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'] :
             ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-        // Build options for last 2 years and next 2 years
-        const startYear = currentYear - 2;
+        const currentMonth = heatmapDate.getMonth();
+        select.innerHTML = '';
+        for (let m = 0; m < 12; m++) {
+            const opt = document.createElement('option');
+            opt.value = m;
+            opt.textContent = monthNames[m];
+            if (m === currentMonth) opt.selected = true;
+            select.appendChild(opt);
+        }
+    }
+
+    function populateYearSelector() {
+        const select = document.getElementById('heatmap-year-select');
+        if (!select) return;
+        const currentYear = heatmapDate.getFullYear();
+        const startYear = currentYear - 5;
         const endYear = currentYear + 2;
         select.innerHTML = '';
         for (let y = startYear; y <= endYear; y++) {
-            for (let m = 0; m < 12; m++) {
-                const label = `${monthNames[m]} ${y}`;
-                const value = `${y}-${String(m+1).padStart(2,'0')}`;
-                const opt = document.createElement('option');
-                opt.value = value;
-                opt.textContent = label;
-                if (y === currentYear && m === currentMonth) opt.selected = true;
-                select.appendChild(opt);
-            }
+            const opt = document.createElement('option');
+            opt.value = y;
+            opt.textContent = y;
+            if (y === currentYear) opt.selected = true;
+            select.appendChild(opt);
         }
     }
 
     function heatmapJumpToMonth() {
-        const select = document.getElementById('heatmap-month-select');
-        if (!select) return;
-        const val = select.value;
-        const parts = val.split('-');
-        heatmapDate = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, 1);
+        const monthSelect = document.getElementById('heatmap-month-select');
+        const yearSelect = document.getElementById('heatmap-year-select');
+        if (!monthSelect || !yearSelect) return;
+        const month = parseInt(monthSelect.value);
+        const year = parseInt(yearSelect.value);
+        heatmapDate = new Date(year, month, 1);
         renderHeatmap();
     }
 
     function heatmapPrevMonth() {
         heatmapDate.setMonth(heatmapDate.getMonth() - 1);
-        syncMonthSelector();
+        syncMonthYearSelectors();
         renderHeatmap();
     }
 
     function heatmapNextMonth() {
         heatmapDate.setMonth(heatmapDate.getMonth() + 1);
-        syncMonthSelector();
+        syncMonthYearSelectors();
         renderHeatmap();
     }
 
     function heatmapToday() {
         heatmapDate = new Date();
-        syncMonthSelector();
+        syncMonthYearSelectors();
         renderHeatmap();
     }
 
-    function syncMonthSelector() {
-        const select = document.getElementById('heatmap-month-select');
-        if (!select) return;
-        const year = heatmapDate.getFullYear();
-        const month = heatmapDate.getMonth() + 1;
-        const val = `${year}-${String(month).padStart(2,'0')}`;
-        select.value = val;
+    function syncMonthYearSelectors() {
+        const monthSelect = document.getElementById('heatmap-month-select');
+        const yearSelect = document.getElementById('heatmap-year-select');
+        if (monthSelect) monthSelect.value = heatmapDate.getMonth();
+        if (yearSelect) {
+            // Check if year exists in select, if not repopulate
+            let exists = false;
+            for (let opt of yearSelect.options) {
+                if (parseInt(opt.value) === heatmapDate.getFullYear()) { exists = true; break; }
+            }
+            if (!exists) populateYearSelector();
+            yearSelect.value = heatmapDate.getFullYear();
+        }
     }
 
     // ===== CONSTANTS =====
@@ -1672,6 +1677,7 @@ class="sidebar-link w-full flex items-center px-4 py-2.5 rounded-xl text-sm font
         } catch (e) { localStorage.removeItem('binus_current_session'); }
         renderUsers();
         populateMonthSelector();
+        populateYearSelector();
         pullFromCloud(true);
     };
 
@@ -2340,12 +2346,10 @@ class="sidebar-link w-full flex items-center px-4 py-2.5 rounded-xl text-sm font
         const year = heatmapDate.getFullYear();
         const month = heatmapDate.getMonth();
 
-        // Build dates for the selected month
         const firstDay = new Date(year, month, 1);
         const lastDay = new Date(year, month + 1, 0);
         const daysInMonth = lastDay.getDate();
 
-        // Get loan counts per day for this month
         const loanCountPerDay = {};
         trackingRecords.forEach(r => {
             const d = new Date(r.date);
@@ -2355,9 +2359,8 @@ class="sidebar-link w-full flex items-center px-4 py-2.5 rounded-xl text-sm font
             }
         });
 
-        // Build grid: 6 rows x 7 cols
-        const firstDayOfWeek = firstDay.getDay(); // 0=Sun
-        const offset = (firstDayOfWeek === 0) ? 6 : firstDayOfWeek - 1; // Mon=0
+        const firstDayOfWeek = firstDay.getDay();
+        const offset = (firstDayOfWeek === 0) ? 6 : firstDayOfWeek - 1;
         const totalCells = 42;
         const cells = [];
         for (let i = 0; i < totalCells; i++) {
@@ -2375,7 +2378,6 @@ class="sidebar-link w-full flex items-center px-4 py-2.5 rounded-xl text-sm font
 
         const maxCount = Math.max(1, ...cells.filter(c => c.isInRange).map(c => c.count));
 
-        // Render cells
         grid.innerHTML = cells.map(cell => {
             if (!cell.isInRange || !cell.date) {
                 return `<div class="heatmap-cell heatmap-cell-empty"></div>`;
@@ -2395,8 +2397,7 @@ class="sidebar-link w-full flex items-center px-4 py-2.5 rounded-xl text-sm font
             ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
         monthDisplay.innerText = `${monthNames[month]} ${year}`;
 
-        // Sync select
-        syncMonthSelector();
+        syncMonthYearSelectors();
     }
 
     // ===== ACTIVE LOANS =====
