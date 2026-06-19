@@ -59,86 +59,118 @@
     </script>
     <style>
         :root, [data-theme="light"] {
-            /* LIGHT MODE (Default) */
-            --brand-bg: #F9FAFB;
+            /* LIGHT MODE — "Aurora Day" */
+            --brand-bg: #F4F6FC;
+            --brand-bg-2: #ECEFFC;
             --brand-surface: #FFFFFF;
             --brand-card: #FFFFFF;
-            --brand-border: #7785AC;
-            --brand-primary: #7785AC;
-            --brand-primary-light: #9AC6CC;
-            --brand-secondary: #9AC6CC;
-            --brand-accent: #A5E6BA;
-            --brand-mint: #A5E6BA;
-            --brand-muted: #6b7280;
-            --brand-text: #111827;
-            
-            --glass-bg: rgba(255, 255, 255, 0.85);
-            --glass-border: rgba(119, 133, 172, 0.3);
-            --input-bg: rgba(255, 255, 255, 0.95);
-            --input-border: rgba(119, 133, 172, 0.4);
-            --table-header-bg: #F3F4F6;
-            
-            --brand-glow: rgba(119, 133, 172, 0.15);
-            --brand-glow-strong: rgba(119, 133, 172, 0.3);
+            --brand-border: #E1E5F5;
+            --brand-primary: #6D5DFC;
+            --brand-primary-light: #9B8CFF;
+            --brand-secondary: #3B82F6;
+            --brand-accent: #06B6D4;
+            --brand-mint: #10B981;
+            --brand-muted: #64748B;
+            --brand-text: #1E1B3A;
 
-            --chart-bg-top10: rgba(119, 133, 172, 0.8);
-            --chart-bg-top5: rgba(154, 198, 204, 0.8);
-            --chart-bg-bot10: rgba(165, 230, 186, 0.8);
+            --glass-bg: rgba(255, 255, 255, 0.72);
+            --glass-border: rgba(109, 93, 252, 0.16);
+            --input-bg: rgba(255, 255, 255, 0.92);
+            --input-border: rgba(109, 93, 252, 0.22);
+            --table-header-bg: #F0F2FC;
+
+            /* iOS Liquid Glass / Frosted Material — Card surfaces */
+            --card-glass-bg: linear-gradient(165deg, rgba(255,255,255,0.68) 0%, rgba(255,255,255,0.42) 100%);
+            --card-glass-border: rgba(255, 255, 255, 0.55);
+            --card-glass-border-soft: rgba(109, 93, 252, 0.10);
+            --card-glass-shadow: rgba(31, 41, 119, 0.14);
+            --card-glass-highlight: rgba(255, 255, 255, 0.85);
+            --card-glass-rim-dim: rgba(109, 93, 252, 0.12);
+            --card-glass-blur: 26px;
+            --card-glass-sat: 180%;
+
+            --brand-glow: rgba(109, 93, 252, 0.12);
+            --brand-glow-strong: rgba(109, 93, 252, 0.28);
+
+            --chart-bg-top10: rgba(109, 93, 252, 0.85);
+            --chart-bg-top5: rgba(59, 130, 246, 0.85);
+            --chart-bg-bot10: rgba(16, 185, 129, 0.85);
+
+            --aurora-1: rgba(109, 93, 252, 0.30);
+            --aurora-2: rgba(59, 130, 246, 0.24);
+            --aurora-3: rgba(6, 182, 212, 0.22);
+            --aurora-4: rgba(236, 72, 153, 0.14);
 
             /* Status Colors Light Mode */
-            --status-info-text: #0e7490;
-            --status-info-bg: rgba(6, 182, 212, 0.15);
-            --status-info-border: rgba(6, 182, 212, 0.4);
+            --status-info-text: #0369A1;
+            --status-info-bg: rgba(14, 165, 233, 0.13);
+            --status-info-border: rgba(14, 165, 233, 0.35);
             --status-success-text: #047857;
-            --status-success-bg: rgba(52, 211, 153, 0.15);
-            --status-success-border: rgba(52, 211, 153, 0.4);
-            --status-warn-text: #b45309;
+            --status-success-bg: rgba(16, 185, 129, 0.13);
+            --status-success-border: rgba(16, 185, 129, 0.35);
+            --status-warn-text: #B45309;
             --status-warn-bg: rgba(245, 158, 11, 0.15);
-            --status-warn-border: rgba(245, 158, 11, 0.4);
-            --status-danger-text: #b91c1c;
-            --status-danger-bg: rgba(239, 68, 68, 0.15);
-            --status-danger-border: rgba(239, 68, 68, 0.4);
+            --status-warn-border: rgba(245, 158, 11, 0.38);
+            --status-danger-text: #BE123C;
+            --status-danger-bg: rgba(244, 63, 94, 0.13);
+            --status-danger-border: rgba(244, 63, 94, 0.35);
         }
 
         [data-theme="dark"] {
-            /* DARK MODE */
-            --brand-bg: #0c0a12;
-            --brand-surface: #14111e;
-            --brand-card: #1b1729;
-            --brand-border: #2d243f;
-            --brand-primary: #7c3aed;
-            --brand-primary-light: #a78bfa;
-            --brand-secondary: #4f46e5;
-            --brand-accent: #06b6d4;
-            --brand-mint: #34d399;
-            --brand-muted: #8b8aa0;
-            --brand-text: #f1f0f5;
-            
-            --glass-bg: rgba(27, 23, 41, 0.7);
-            --glass-border: rgba(45, 36, 63, 0.5);
-            --input-bg: rgba(12, 10, 18, 0.6);
-            --input-border: rgba(45, 36, 63, 0.5);
-            --table-header-bg: #1b1729;
+            /* DARK MODE — "Aurora Night" */
+            --brand-bg: #0A0714;
+            --brand-bg-2: #120B26;
+            --brand-surface: #120D22;
+            --brand-card: #171029;
+            --brand-border: #271C42;
+            --brand-primary: #8B5CF6;
+            --brand-primary-light: #C4B5FD;
+            --brand-secondary: #6366F1;
+            --brand-accent: #22D3EE;
+            --brand-mint: #34D399;
+            --brand-muted: #9893B8;
+            --brand-text: #F4F2FF;
 
-            --brand-glow: rgba(124, 58, 237, 0.15);
-            --brand-glow-strong: rgba(124, 58, 237, 0.3);
+            --glass-bg: rgba(23, 16, 41, 0.62);
+            --glass-border: rgba(139, 92, 246, 0.20);
+            --input-bg: rgba(8, 6, 16, 0.55);
+            --input-border: rgba(139, 92, 246, 0.28);
+            --table-header-bg: #1A1330;
 
-            --chart-bg-top10: rgba(124, 58, 237, 0.8);
-            --chart-bg-top5: rgba(6, 182, 212, 0.8);
-            --chart-bg-bot10: rgba(79, 70, 229, 0.8);
+            /* iOS Liquid Glass / Frosted Material — Card surfaces */
+            --card-glass-bg: linear-gradient(165deg, rgba(60,48,92,0.50) 0%, rgba(23,16,41,0.38) 100%);
+            --card-glass-border: rgba(255, 255, 255, 0.10);
+            --card-glass-border-soft: rgba(139, 92, 246, 0.16);
+            --card-glass-shadow: rgba(0, 0, 0, 0.45);
+            --card-glass-highlight: rgba(255, 255, 255, 0.14);
+            --card-glass-rim-dim: rgba(0, 0, 0, 0.25);
+            --card-glass-blur: 26px;
+            --card-glass-sat: 180%;
 
-            --status-info-text: #22d3ee;
-            --status-info-bg: rgba(6, 182, 212, 0.1);
-            --status-info-border: rgba(6, 182, 212, 0.3);
-            --status-success-text: #34d399;
-            --status-success-bg: rgba(52, 211, 153, 0.1);
-            --status-success-border: rgba(52, 211, 153, 0.3);
-            --status-warn-text: #fbbf24;
-            --status-warn-bg: rgba(245, 158, 11, 0.1);
-            --status-warn-border: rgba(245, 158, 11, 0.3);
-            --status-danger-text: #f87171;
-            --status-danger-bg: rgba(239, 68, 68, 0.1);
-            --status-danger-border: rgba(239, 68, 68, 0.3);
+            --brand-glow: rgba(139, 92, 246, 0.20);
+            --brand-glow-strong: rgba(139, 92, 246, 0.40);
+
+            --chart-bg-top10: rgba(139, 92, 246, 0.85);
+            --chart-bg-top5: rgba(34, 211, 238, 0.85);
+            --chart-bg-bot10: rgba(99, 102, 241, 0.85);
+
+            --aurora-1: rgba(139, 92, 246, 0.45);
+            --aurora-2: rgba(34, 211, 238, 0.30);
+            --aurora-3: rgba(99, 102, 241, 0.35);
+            --aurora-4: rgba(236, 72, 153, 0.20);
+
+            --status-info-text: #38BDF8;
+            --status-info-bg: rgba(14, 165, 233, 0.12);
+            --status-info-border: rgba(14, 165, 233, 0.32);
+            --status-success-text: #34D399;
+            --status-success-bg: rgba(16, 185, 129, 0.12);
+            --status-success-border: rgba(16, 185, 129, 0.32);
+            --status-warn-text: #FBBF24;
+            --status-warn-bg: rgba(245, 158, 11, 0.12);
+            --status-warn-border: rgba(245, 158, 11, 0.32);
+            --status-danger-text: #FB7185;
+            --status-danger-bg: rgba(244, 63, 94, 0.12);
+            --status-danger-border: rgba(244, 63, 94, 0.32);
         }
 
         * { box-sizing: border-box; }
@@ -146,9 +178,57 @@
             background: var(--brand-bg);
             color: var(--brand-text);
             font-family: 'Inter', sans-serif;
-            transition: background 0.3s ease, color 0.3s ease;
+            transition: background 0.4s ease, color 0.4s ease;
+            position: relative;
         }
-        
+
+        #main-app { position: relative; z-index: 1; }
+        #login-page { z-index: 50; }
+
+        @keyframes auroraDrift {
+            0%   { background-position: 0% 0%, 100% 0%, 80% 100%, 0% 100%; }
+            50%  { background-position: 8% 6%, 92% 8%, 75% 92%, 8% 92%; }
+            100% { background-position: 0% 10%, 100% 0%, 85% 100%, 0% 95%; }
+        }
+        @keyframes auroraDriftNarrow {
+            0%   { background-position: 0% 0%, 100% 100%; }
+            50%  { background-position: 16% 10%, 84% 90%; }
+            100% { background-position: 0% 8%, 100% 92%; }
+        }
+
+        /* Ambient animated gradient — applied directly to the surfaces that are actually
+           visible (main content panel, sidebar) so it's never hidden behind opaque layers. */
+        .aurora-surface {
+            background-image:
+                radial-gradient(ellipse 45% 38% at 12% 15%, var(--aurora-1) 0%, transparent 60%),
+                radial-gradient(ellipse 40% 36% at 90% 10%, var(--aurora-3) 0%, transparent 60%),
+                radial-gradient(ellipse 42% 40% at 80% 92%, var(--aurora-2) 0%, transparent 58%),
+                radial-gradient(ellipse 36% 34% at 12% 90%, var(--aurora-4) 0%, transparent 55%);
+            background-size: 160% 160%;
+            background-repeat: no-repeat;
+            animation: auroraDrift 26s ease-in-out infinite alternate;
+            transition: background-image 0.4s ease;
+        }
+        .aurora-sidebar {
+            background-image:
+                radial-gradient(ellipse 70% 30% at 30% 8%, var(--aurora-1) 0%, transparent 65%),
+                radial-gradient(ellipse 65% 32% at 70% 96%, var(--aurora-3) 0%, transparent 60%);
+            background-size: 140% 140%;
+            background-repeat: no-repeat;
+            animation: auroraDriftNarrow 20s ease-in-out infinite alternate;
+            animation-delay: -6s;
+            transition: background-image 0.4s ease;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50%      { transform: translateY(-8px); }
+        }
+        @keyframes floatOrb {
+            0%, 100% { transform: translate(var(--ox, 0px), var(--oy, 0px)) translateY(0px) scale(1); }
+            50%      { transform: translate(var(--ox, 0px), var(--oy, 0px)) translateY(-16px) scale(1.04); }
+        }
+
         ::-webkit-scrollbar { width: 5px; height: 5px; }
         ::-webkit-scrollbar-track { background: var(--brand-surface); }
         ::-webkit-scrollbar-thumb { background: var(--brand-primary); border-radius: 8px; }
@@ -157,37 +237,71 @@
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
         .glass {
-            background: var(--glass-bg);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid var(--glass-border);
+            position: relative;
+            background: var(--card-glass-bg);
+            backdrop-filter: blur(var(--card-glass-blur)) saturate(var(--card-glass-sat));
+            -webkit-backdrop-filter: blur(var(--card-glass-blur)) saturate(var(--card-glass-sat));
+            border: 1px solid var(--card-glass-border);
+            box-shadow:
+                0 8px 32px var(--card-glass-shadow),
+                0 1px 1px var(--card-glass-border-soft),
+                inset 0 1px 0 var(--card-glass-highlight),
+                inset 0 0 0 1px var(--card-glass-border-soft) !important;
+            transition: background 0.4s ease, border-color 0.4s ease, box-shadow 0.3s ease, transform 0.3s ease;
+        }
+        /* Specular edge — light catching the top-left rim, like real refractive glass */
+        .glass::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            padding: 1px;
+            background: linear-gradient(135deg, var(--card-glass-highlight) 0%, transparent 32%, transparent 68%, var(--card-glass-rim-dim) 100%);
+            -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+            opacity: 0.9;
         }
 
         .gradient-text {
-            background: linear-gradient(135deg, var(--brand-primary-light) 0%, var(--brand-accent) 100%);
+            background: linear-gradient(120deg, var(--brand-primary) 0%, var(--brand-secondary) 35%, var(--brand-accent) 70%, var(--brand-primary) 100%);
+            background-size: 300% auto;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            animation: gradientShift 6s ease-in-out infinite;
+        }
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
         }
 
         .stat-card { transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
         .stat-card:hover {
             transform: translateY(-4px);
             border-color: var(--brand-primary);
-            box-shadow: 0 12px 40px var(--brand-glow);
+            box-shadow:
+                0 16px 40px var(--brand-glow-strong),
+                inset 0 1px 0 var(--card-glass-highlight),
+                inset 0 0 0 1px var(--card-glass-border-soft) !important;
         }
 
         .nav-item { position: relative; transition: all 0.25s ease; }
         .nav-item.active { background: var(--brand-glow); color: var(--brand-text); }
 
         .btn-primary {
-            background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
-            transition: all 0.3s ease;
+            background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-secondary) 50%, var(--brand-primary) 100%);
+            background-size: 200% auto;
+            background-position: 0% 50%;
+            transition: all 0.4s ease;
         }
         .btn-primary:hover {
-            transform: scale(1.02);
-            box-shadow: 0 8px 30px var(--brand-glow-strong);
+            transform: translateY(-2px) scale(1.015);
+            background-position: 100% 50%;
+            box-shadow: 0 10px 32px var(--brand-glow-strong);
         }
+        .btn-primary:active { transform: translateY(0) scale(0.99); }
 
         .btn-outline {
             border: 1px solid var(--glass-border);
@@ -215,19 +329,91 @@
         .badge-status { transition: all 0.2s ease; }
         .badge-status:hover { transform: scale(1.05); }
 
+        /* ===== LOGIN PAGE — animated aurora background ===== */
         .login-bg {
-            background: radial-gradient(ellipse at 30% 20%, var(--brand-glow-strong) 0%, transparent 60%),
-                        radial-gradient(ellipse at 70% 80%, var(--brand-glow) 0%, transparent 50%),
-                        var(--brand-bg);
-            transition: background 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            background-color: var(--brand-bg);
+            background-image:
+                radial-gradient(ellipse 60% 50% at 20% 15%, var(--aurora-1) 0%, transparent 60%),
+                radial-gradient(ellipse 55% 50% at 85% 25%, var(--aurora-3) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 55% at 75% 90%, var(--aurora-2) 0%, transparent 60%),
+                radial-gradient(ellipse 50% 45% at 15% 90%, var(--aurora-4) 0%, transparent 60%);
+            background-size: 160% 160%;
+            background-repeat: no-repeat;
+            animation: auroraDrift 30s ease-in-out infinite alternate;
+            transition: background-color 0.4s ease;
         }
-        .login-card { animation: float 6s ease-in-out infinite; }
+        /* Soft glow that follows the cursor in real time */
+        .login-cursor-glow {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle 420px at var(--cx, 50%) var(--cy, 38%), var(--aurora-1) 0%, transparent 70%);
+            opacity: 0.7;
+            pointer-events: none;
+            transition: opacity 0.5s ease, background-color 0.4s ease;
+            mix-blend-mode: screen;
+        }
+        [data-theme="light"] .login-cursor-glow { mix-blend-mode: multiply; opacity: 0.5; }
+
+        .login-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.85;
+            pointer-events: none;
+            animation: floatOrb 8s ease-in-out infinite;
+            will-change: transform;
+            --ox: 0px;
+            --oy: 0px;
+        }
+        .login-orb-1 { width: 340px; height: 340px; top: -8%; left: -8%; background: var(--aurora-1); animation-duration: 9s; }
+        .login-orb-2 { width: 300px; height: 300px; bottom: -10%; right: -6%; background: var(--aurora-3); animation-duration: 11s; animation-delay: -3s; }
+        .login-orb-3 { width: 220px; height: 220px; bottom: 12%; left: 8%; background: var(--aurora-2); animation-duration: 7s; animation-delay: -1.5s; }
+        .login-orb-4 { width: 180px; height: 180px; top: 12%; right: 12%; background: var(--aurora-4); animation-duration: 10s; animation-delay: -5s; }
+
+        .login-card { animation: float 6s ease-in-out infinite; position: relative; z-index: 1; }
+        .login-card-border {
+            position: relative;
+            isolation: isolate;
+        }
+        .login-card-border::before {
+            content: '';
+            position: absolute;
+            inset: -1.5px;
+            border-radius: inherit;
+            padding: 1.5px;
+            background: conic-gradient(from var(--border-angle, 0deg), var(--brand-primary), var(--brand-accent), var(--brand-secondary), var(--brand-primary));
+            -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            animation: borderSpin 6s linear infinite;
+            z-index: -1;
+        }
+        @property --border-angle {
+            syntax: '<angle>';
+            inherits: false;
+            initial-value: 0deg;
+        }
+        @keyframes borderSpin {
+            to { --border-angle: 360deg; }
+        }
+
+        .login-logo {
+            position: relative;
+            background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-secondary) 50%, var(--brand-accent) 100%);
+            background-size: 200% 200%;
+            animation: gradientShift 5s ease-in-out infinite, pulseGlow 3s ease-in-out infinite;
+        }
 
         .card-hover { transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
         .card-hover:hover {
             transform: translateY(-6px);
-            border-color: var(--glass-border);
-            box-shadow: 0 20px 60px var(--brand-glow);
+            border-color: var(--card-glass-highlight);
+            box-shadow:
+                0 24px 60px var(--brand-glow-strong),
+                inset 0 1px 0 var(--card-glass-highlight),
+                inset 0 0 0 1px var(--card-glass-border-soft) !important;
         }
 
         .status-dot {
@@ -289,12 +475,18 @@
 <body class="bg-brand-bg text-brand-text transition-colors duration-300">
 
     <div id="login-page" class="fixed inset-0 z-50 flex items-center justify-center login-bg px-4">
-        <div class="relative w-full max-w-md p-8 rounded-3xl glass login-card shadow-2xl">
+        <div class="login-cursor-glow" id="login-cursor-glow"></div>
+        <div class="login-orb login-orb-1"></div>
+        <div class="login-orb login-orb-2"></div>
+        <div class="login-orb login-orb-3"></div>
+        <div class="login-orb login-orb-4"></div>
+
+        <div class="relative w-full max-w-md p-8 rounded-3xl glass login-card login-card-border shadow-2xl">
             <div class="text-center mb-8">
-                <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-brand-primary to-brand-secondary text-white text-2xl font-extrabold shadow-lg mb-4">
+                <div class="login-logo inline-flex items-center justify-center w-16 h-16 rounded-2xl text-white text-2xl font-extrabold shadow-lg mb-4">
                     AS
                 </div>
-                <h1 class="text-2xl font-extrabold tracking-tight text-brand-text">Logistics Tracker</h1>
+                <h1 class="text-2xl font-extrabold tracking-tight gradient-text">Logistics Tracker</h1>
                 <p class="text-sm text-brand-muted mt-1 font-medium">Binus Alam Sutera · Event Management</p>
             </div>
 
@@ -329,6 +521,46 @@
         </div>
     </div>
 
+    <script>
+        // Login page — cursor-reactive aurora (orb parallax + spotlight glow).
+        // Self-contained: only touches decorative elements, never form/auth logic.
+        (function initLoginAuroraInteraction() {
+            const stage = document.getElementById('login-page');
+            if (!stage) return;
+            const orbs = stage.querySelectorAll('.login-orb');
+            const glow = document.getElementById('login-cursor-glow');
+            const depths = [26, 34, 20, 30];
+            let rafId = null, px = 0.5, py = 0.38;
+
+            function apply() {
+                const nx = px - 0.5;
+                const ny = py - 0.5;
+                orbs.forEach((orb, i) => {
+                    const d = depths[i % depths.length];
+                    orb.style.setProperty('--ox', (-nx * d).toFixed(1) + 'px');
+                    orb.style.setProperty('--oy', (-ny * d).toFixed(1) + 'px');
+                });
+                if (glow) {
+                    glow.style.setProperty('--cx', (px * 100).toFixed(1) + '%');
+                    glow.style.setProperty('--cy', (py * 100).toFixed(1) + '%');
+                }
+                rafId = null;
+            }
+
+            function onMove(clientX, clientY) {
+                if (window.innerWidth <= 0 || window.innerHeight <= 0) return;
+                px = clientX / window.innerWidth;
+                py = clientY / window.innerHeight;
+                if (!rafId) rafId = requestAnimationFrame(apply);
+            }
+
+            stage.addEventListener('mousemove', function (e) { onMove(e.clientX, e.clientY); });
+            stage.addEventListener('touchmove', function (e) {
+                if (e.touches && e.touches[0]) onMove(e.touches[0].clientX, e.touches[0].clientY);
+            }, { passive: true });
+        })();
+    </script>
+
     <div id="main-app" class="hidden flex-1 h-screen flex flex-col md:flex-row overflow-hidden bg-brand-bg">
 
         <div class="md:hidden flex items-center justify-between glass px-5 py-3.5 border-b border-brand-border z-20">
@@ -342,7 +574,7 @@
         </div>
 
         <nav id="sidebar"
-            class="fixed md:static inset-y-0 left-0 w-[270px] bg-brand-surface border-r border-brand-border transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] z-30 flex flex-col">
+            class="fixed md:static inset-y-0 left-0 w-[270px] bg-brand-surface border-r border-brand-border transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] z-30 flex flex-col aurora-sidebar">
             
             <div class="hidden md:flex items-center space-x-3 px-6 py-5 border-b border-brand-border">
                 <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-primary to-brand-secondary flex items-center justify-center font-extrabold text-white shadow-lg">AS</div>
@@ -396,7 +628,7 @@
             </div>
         </nav>
 
-        <main class="flex-1 overflow-y-auto relative w-full bg-brand-bg">
+        <main class="flex-1 overflow-y-auto relative w-full bg-brand-bg aurora-surface">
             <div id="mobile-overlay" onclick="toggleMobileMenu()" class="fixed inset-0 bg-black/70 z-20 hidden md:hidden"></div>
 
             <div class="p-4 sm:p-6 md:p-8 w-full max-w-7xl mx-auto space-y-8 pb-24">
@@ -628,6 +860,33 @@
                                 <span data-i18n="btn_download">Download File</span>
                             </button>
                         </div>
+                        
+                        <div class="glass rounded-2xl p-6 shadow-lg card-hover md:col-span-2 admin-only border border-brand-primary-light/50">
+                            <h3 class="text-lg font-bold text-brand-primary-light mb-2 flex items-center"><span class="text-2xl mr-2">🤖</span> <span data-i18n="ai_prompt_title">AI Report Prompt Generator</span></h3>
+                            <p class="text-sm text-brand-muted mb-4 leading-relaxed" data-i18n="ai_prompt_desc">Generate structured data prompt for AI to create your minimalist PPT.</p>
+                            
+                            <div class="grid grid-cols-2 gap-4 mb-4">
+                                <div>
+                                    <label class="block text-xs font-semibold text-brand-muted mb-1.5" data-i18n="lbl_month">Month</label>
+                                    <select id="prompt-month" class="w-full px-3 py-2.5 rounded-xl input-modern text-brand-text font-medium"></select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-brand-muted mb-1.5" data-i18n="lbl_year">Year</label>
+                                    <select id="prompt-year" class="w-full px-3 py-2.5 rounded-xl input-modern text-brand-text font-medium"></select>
+                                </div>
+                            </div>
+                            
+                            <button onclick="generateAIPrompt()" class="w-full py-3 rounded-xl btn-primary text-white font-bold transition shadow-lg mb-4 hover:opacity-90">
+                                <span data-i18n="btn_generate_prompt">Generate Prompt</span>
+                            </button>
+                            
+                            <div id="prompt-output-container" class="hidden">
+                                <textarea id="prompt-output" readonly class="w-full h-40 p-4 rounded-xl input-modern text-brand-text text-xs mb-3 no-scrollbar font-mono resize-none border-brand-primary/40 focus:border-brand-primary"></textarea>
+                                <button onclick="copyAIPrompt()" class="w-full py-2.5 rounded-xl bg-brand-surface border border-brand-primary text-brand-primary font-bold transition hover:bg-brand-primary hover:text-white">
+                                    <span id="btn-copy-text" data-i18n="btn_copy">Copy to Clipboard</span>
+                                </button>
+                            </div>
+                        </div>
 
                         <div class="glass rounded-2xl p-6 shadow-lg card-hover md:col-span-2 admin-only">
                             <h3 class="text-lg font-bold text-status-warn-text mb-2 flex items-center"><span class="text-2xl mr-2">⊞</span> <span data-i18n="import_title">Import Master Data (.xlsx)</span></h3>
@@ -768,7 +1027,9 @@
                 lbl_role: "Role", btn_create_user: "Create User", reg_accounts: "Registered Accounts", edit_mode: "✏️ Edit Mode",
                 btn_update: "Update Record", opt_viewer: "View Only", opt_admin: "Admin",
                 status_borrowed: "Borrowed", status_returned: "Returned", chart_borrowed: "Borrowed", chart_returned: "Returned",
-                badge_active: "Active", badge_overdue: "Overdue"
+                badge_active: "Active", badge_overdue: "Overdue", ai_prompt_title: "AI Report Prompt Generator", 
+                ai_prompt_desc: "Generate structured data prompt for AI to create your minimalist PPT.", lbl_month: "Month", lbl_year: "Year",
+                btn_generate_prompt: "Generate Prompt", btn_copy: "Copy to Clipboard", copy_success: "Copied!"
             },
             id: {
                 login_error: "Username atau password salah", lbl_username: "Nama Pengguna", lbl_password: "Kata Sandi", btn_login: "Masuk",
@@ -796,7 +1057,9 @@
                 lbl_role: "Peran", btn_create_user: "Buat Pengguna", reg_accounts: "Akun Terdaftar", edit_mode: "✏️ Mode Edit",
                 btn_update: "Perbarui Catatan", opt_viewer: "Hanya Lihat", opt_admin: "Admin",
                 status_borrowed: "Dipinjam", status_returned: "Kembali", chart_borrowed: "Dipinjam", chart_returned: "Kembali",
-                badge_active: "Aktif", badge_overdue: "Terlambat"
+                badge_active: "Aktif", badge_overdue: "Terlambat", ai_prompt_title: "Generator Prompt Laporan AI",
+                ai_prompt_desc: "Buat prompt berisi data bulanan untuk di-paste ke AI pembuatan PPT.", lbl_month: "Bulan", lbl_year: "Tahun",
+                btn_generate_prompt: "Buat Prompt", btn_copy: "Salin ke Papan Klip", copy_success: "Tersalin!"
             }
         };
 
@@ -1150,6 +1413,91 @@
             document.body.appendChild(link); link.click(); document.body.removeChild(link);
         }
 
+        // ===== AI PROMPT GENERATOR =====
+        function generateAIPrompt() {
+            const mSelect = document.getElementById('prompt-month');
+            const ySelect = document.getElementById('prompt-year');
+            
+            if(!mSelect || !ySelect || !mSelect.value || !ySelect.value) return;
+
+            const m = parseInt(mSelect.value);
+            const y = parseInt(ySelect.value);
+            
+            const filtered = trackingRecords.filter(r => {
+                const d = new Date(r.date);
+                if (isNaN(d)) return false;
+                return d.getFullYear() === y && d.getMonth() === m;
+            });
+
+            const mNames = currentLang === 'en' ? 
+                ['January','February','March','April','May','June','July','August','September','October','November','December'] : 
+                ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+            const monthName = mNames[m];
+
+            let totalLoans = filtered.length;
+            let active = 0;
+            let returned = 0;
+            let overdue = 0;
+            let itemsCount = {};
+            let eventsCount = {};
+            
+            const now = new Date();
+
+            filtered.forEach(r => {
+                if (r.status === 'Dipinjam') {
+                    active++;
+                    const diffDays = Math.ceil((now - new Date(r.date)) / (1000 * 60 * 60 * 24));
+                    if(diffDays > 7) overdue++;
+                } else {
+                    returned++;
+                }
+                
+                let ev = (r.event || 'Unknown').trim();
+                if(!eventsCount[ev]) eventsCount[ev] = 0;
+                
+                r.items.forEach(i => {
+                    let q = parseInt(i.qty) || 0;
+                    itemsCount[i.name] = (itemsCount[i.name] || 0) + q;
+                    eventsCount[ev] += q;
+                });
+            });
+
+            const topItems = Object.entries(itemsCount).sort((a,b)=>b[1]-a[1]).slice(0,5).map(x => `- ${x[0]}: ${x[1]} unit`).join('\n');
+            const topEvents = Object.entries(eventsCount).sort((a,b)=>b[1]-a[1]).slice(0,5).map(x => `- ${x[0]} (${x[1]} unit)`).join('\n');
+
+            // HACKING THE PROMPT - Membuat instruksi yang jauh lebih kritis dan analitis
+            let prompt = `Sebagai Senior Data Analyst, tolong buatkan draf materi presentasi (PPT) logistik operasional untuk periode ${monthName} ${y}.\n\n`;
+            
+            prompt += `[DATA OPERASIONAL]\n`;
+            prompt += `- Total Tiket Peminjaman: ${totalLoans}\n`;
+            prompt += `- Tiket Selesai (Returned): ${returned}\n`;
+            prompt += `- Tiket Aktif (Borrowed): ${active}\n`;
+            prompt += `- Tiket Terlambat (Overdue >7 Hari): ${overdue}\n\n`;
+            
+            prompt += `[TOP 5 BARANG KELUAR]\n${topItems || '- Tidak ada data'}\n\n`;
+            prompt += `[TOP 5 EVENT (Beban Unit Tertinggi)]\n${topEvents || '- Tidak ada data'}\n\n`;
+            
+            prompt += `[INSTRUKSI KRITIS & ANALISIS]\n`;
+            prompt += `Berdasarkan data mentah di atas, tolong susun output menjadi slide PPT dengan rincian berikut:\n`;
+            prompt += `1. Executive Summary: Berikan ringkasan tajam (maksimal 2 kalimat) mengenai status kesehatan operasional logistik bulan ini.\n`;
+            prompt += `2. Analisis Kritis: Jangan hanya mengulang angka. Soroti metrik 'Tiket Terlambat' dibandingkan dengan 'Total Tiket'. Buat deduksi logis apakah ini menunjukkan adanya bottleneck dalam alur pengembalian barang atau indikasi pelanggaran SOP peminjam.\n`;
+            prompt += `3. Rekomendasi Strategis: Berdasarkan distribusi 'Top 5 Barang' dan 'Top 5 Event', berikan 2 rekomendasi preventif terkait pengadaan, penjadwalan maintenance, atau alokasi resource untuk menghadapi pola event yang sama di masa depan.\n`;
+            prompt += `4. Format & Tone: Gunakan format pelaporan korporat yang terstruktur. Pastikan bahasa yang digunakan ringkas, streamlined, profesional, dan to-the-point. Hilangkan kata-kata pengantar yang tidak perlu. Output harus langsung siap disajikan ke level audiens Senior Manager.\n`;
+
+            document.getElementById('prompt-output').value = prompt;
+            document.getElementById('prompt-output-container').classList.remove('hidden');
+        }
+
+        function copyAIPrompt() {
+            const text = document.getElementById('prompt-output');
+            text.select();
+            document.execCommand("copy");
+            const btn = document.getElementById('btn-copy-text');
+            const original = btn.innerText;
+            btn.innerText = tk('copy_success');
+            setTimeout(() => btn.innerText = original, 2000);
+        }
+
         // ===== TABLE & PAGINATION =====
         function renderTableResetPage() { currentPage = 1; renderTable(); }
 
@@ -1447,10 +1795,13 @@
             renderHeatmap();
         }
 
-        // ===== HEATMAP =====
+        // ===== HEATMAP & PROMPT SELECTORS =====
         function setupHeatmapSelectors() {
             const mSelect = document.getElementById('heatmap-month-select');
             const yrSelect = document.getElementById('heatmap-year-select');
+            
+            const promptMSelect = document.getElementById('prompt-month');
+            const promptYrSelect = document.getElementById('prompt-year');
             
             const mNames = currentLang === 'en' ?
                 ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'] :
@@ -1463,6 +1814,11 @@
             mSelect.innerHTML = mHtml;
             mSelect.value = currVal;
             
+            if(promptMSelect) {
+                promptMSelect.innerHTML = mHtml;
+                promptMSelect.value = currVal;
+            }
+            
             if(!yrSelect.innerHTML) {
                 const currentYear = new Date().getFullYear();
                 let yrHtml = '';
@@ -1470,6 +1826,10 @@
                     yrHtml += `<option value="${y}" ${y === currentYear ? 'selected' : ''}>${y}</option>`;
                 }
                 yrSelect.innerHTML = yrHtml;
+                if(promptYrSelect) {
+                    promptYrSelect.innerHTML = yrHtml;
+                    promptYrSelect.value = currentYear;
+                }
             }
         }
 
@@ -1519,13 +1879,13 @@
                     const intensity = count / maxCount; // 0 to 1
                     let r, g, b;
                     if (theme === 'light') {
-                        r = Math.round(119 + (intensity * (255 - 119)));
-                        g = Math.round(133 + (intensity * (255 - 133)));
-                        b = Math.round(172 + (intensity * (255 - 172)));
+                        r = Math.round(91 + (intensity * (255 - 91)));
+                        g = Math.round(74 + (intensity * (255 - 74)));
+                        b = Math.round(217 + (intensity * (255 - 217)));
                     } else {
-                        r = Math.round(45 + (intensity * (167 - 45)));
-                        g = Math.round(36 + (intensity * (139 - 36)));
-                        b = Math.round(63 + (intensity * (250 - 63)));
+                        r = Math.round(124 + (intensity * (224 - 124)));
+                        g = Math.round(108 + (intensity * (214 - 108)));
+                        b = Math.round(200 + (intensity * (255 - 200)));
                     }
                     
                     const tooltip = `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')} : ${count} loans`;
