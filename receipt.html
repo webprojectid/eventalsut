@@ -477,16 +477,14 @@
             padding: 5px;
             text-align: center;
         }
-
-        /* REVISI BOX TANDA TANGAN */
         #receipt-preview table.sig-table td {
-            height: 190px; /* Tambahin tinggi biar lebih luas buat ttd gede */
+            height: 220px; 
             vertical-align: bottom;
             padding: 15px;
             position: relative;
         }
         #receipt-preview .sig-details {
-            margin-top: 100px; /* Teks didorong ke bawah banget biar ga nabrak */
+            margin-top: 120px; 
         }
         #receipt-preview .sig-row {
             display: flex;
@@ -503,11 +501,11 @@
             top: 15px;
             left: 50%;
             transform: translateX(-50%);
-            max-height: 85px; /* Batesin tinggi maksimal TTD */
+            max-height: 130px; 
             width: auto;
+            max-width: 90%; 
             object-fit: contain;
         }
-        /* END REVISI BOX TANDA TANGAN */
 
         @media print {
             @page { size: A4 portrait; margin: 15mm; }
@@ -620,7 +618,7 @@
         }
 
         /* ============================================================ */
-        /* FORM ITEMS — UKURAN PROPORSIONAL */
+        /* FORM ITEMS — UKURAN PROPORSIONAL (FIX PENUH & PAS) */
         /* ============================================================ */
         .item-row {
             display: flex;
@@ -635,9 +633,11 @@
             overflow-x: auto;
             width: 100%;
         }
-        .item-row .item-name { flex: 2 1 160px; min-width: 120px; max-width: none; } 
-        .item-row .item-spec { flex: 2 1 140px; min-width: 100px; } 
-        .item-row .item-qty { flex: 0 0 65px; min-width: 60px; } 
+        
+        /* max-width dibuang biar bisa ngisi container, flex disetel biar seimbang */
+        .item-row .item-name { flex: 2 1 160px; min-width: 120px; max-width: none; }
+        .item-row .item-spec { flex: 2 1 140px; min-width: 100px; }
+        .item-row .item-qty { flex: 0 0 65px; min-width: 60px; }
         .item-row .item-fa { flex: 1 1 100px; min-width: 80px; }
         .item-row .item-sn { flex: 1 1 100px; min-width: 80px; }
         .item-row .item-kondisi { flex: 1 1 110px; min-width: 90px; }
@@ -788,7 +788,7 @@
                                 </div>
                                 <div>
                                     <label class="block text-[10px] font-bold text-brand-muted uppercase tracking-wider mb-1">Binusian ID</label>
-                                    <input type="text" id="given-id" class="w-full px-3 py-2.5 rounded-xl input-modern text-brand-text text-sm" placeholder="Contoh: BIN12345" />
+                                    <input type="text" id="given-id" class="w-full px-3 py-2.5 rounded-xl input-modern text-brand-text text-sm" placeholder="Contoh: BN123456" />
                                 </div>
                             </div>
 
@@ -799,7 +799,7 @@
                                 </div>
                                 <div>
                                     <label class="block text-[10px] font-bold text-brand-muted uppercase tracking-wider mb-1">Binusian ID</label>
-                                    <input type="text" id="received-id" class="w-full px-3 py-2.5 rounded-xl input-modern text-brand-text text-sm" placeholder="Contoh: BIN67890" />
+                                    <input type="text" id="received-id" class="w-full px-3 py-2.5 rounded-xl input-modern text-brand-text text-sm" placeholder="Contoh: BN123456" />
                                 </div>
                             </div>
 
@@ -1401,7 +1401,16 @@
                     backgroundColor: '#FFFFFF',
                     allowTaint: true,
                     useCORS: true,
-                    logging: false
+                    logging: false,
+                    onclone: (clonedDoc) => {
+                        clonedDoc.querySelectorAll('.sig-image').forEach(img => {
+                            img.style.maxHeight = '130px'; 
+                            img.style.maxWidth = '90%';
+                            img.style.objectFit = 'contain';
+                            img.style.background = 'transparent';
+                            img.style.width = 'auto'; 
+                        });
+                    }
                 });
 
                 const link = document.createElement('a');
