@@ -1115,7 +1115,7 @@
             if (url.hostname.includes("cloud.finance.binus.edu") && fa) {
                 const companyCode = p["companycode"] || "1000";
 
-                if (ASSET_LOOKUP_API_URL.includes("https://script.google.com/macros/s/AKfycbz9A3SBoD1JyISyntl32t0h2b4ojYWWVtPRZcdc75et4YnomuekLDTTU_veWx4SufTlHg/exec")) {
+                if (!ASSET_LOOKUP_API_URL || !ASSET_LOOKUP_API_URL.startsWith("https://script.google.com/macros/")) {
                     alert("⚠️ Proxy belum di-setup. FA ke-isi (" + fa + "), tapi Nama/S-N harus manual dulu sampai ASSET_LOOKUP_API_URL di-set.");
                     injectScannedData(fa, "", "");
                     return;
