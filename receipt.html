@@ -1071,38 +1071,77 @@
             document.getElementById('scanner-container').classList.add('hidden');
         }
 
-        function onScanSuccess(decodedText, decodedResult) {
+        // GANTI URL INI DENGAN URL WEB APP APPS SCRIPT LO SETELAH DI-DEPLOY
+        // (lihat panduan deploy di file asset-lookup-proxy.gs)
+        const ASSET_LOOKUP_API_URL = "https://script.google.com/macros/s/AKfycbz9A3SBoD1JyISyntl32t0h2b4ojYWWVtPRZcdc75et4YnomuekLDTTU_veWx4SufTlHg/exec";
+
+        async function onScanSuccess(decodedText, decodedResult) {
             stopScanner();
-            
+
             let fa = "";
             let name = "";
             let sn = "";
 
+            // 1) Coba parse sebagai JSON langsung (barcode custom non-link)
             try {
                 let data = JSON.parse(decodedText);
                 fa = data.asset_no || data.fa || "";
                 name = data.asset_name || data.name || "";
                 sn = data.serial_number || data.sn || "";
+                injectScannedData(fa, name, sn);
+                return;
             } catch (e) {
-                try {
-                    let url = new URL(decodedText);
+                // bukan JSON, lanjut cek apakah ini link URL
+            }
 
-                    // Normalisasi semua query param ke lowercase biar gak peduli casing
-                    // (link asset BINUS pake "AssetNo", bukan "asset_no")
-                    let p = {};
-                    url.searchParams.forEach((value, key) => {
-                        p[key.toLowerCase()] = value;
-                    });
+            let url;
+            try {
+                url = new URL(decodedText);
+            } catch (err) {
+                console.log("Raw Scanned Data: ", decodedText);
+                alert("Format Barcode/QR tidak sesuai standar (Bukan URL/JSON Parameter). Raw Output: " + decodedText);
+                return;
+            }
 
-                    fa = p["assetno"] || p["asset_no"] || p["fa"] || "";
-                    name = p["assetname"] || p["asset_name"] || p["name"] || "";
-                    sn = p["serialnumber"] || p["serial_number"] || p["sn"] || "";
-                } catch(err) {
-                    console.log("Raw Scanned Data: ", decodedText);
-                    alert("Format Barcode/QR tidak sesuai standar (Bukan URL/JSON Parameter). Raw Output: " + decodedText);
+            // Normalisasi semua query param ke lowercase biar gak peduli casing
+            let p = {};
+            url.searchParams.forEach((value, key) => {
+                p[key.toLowerCase()] = value;
+            });
+            fa = p["assetno"] || p["asset_no"] || p["fa"] || "";
+
+            // 2) Kalau ini link Asset System BINUS, panggil proxy buat ambil data LENGKAP
+            //    (Nama, Brand, Serial Number) lewat endpoint GetAssetInfo asli mereka.
+            if (url.hostname.includes("cloud.finance.binus.edu") && fa) {
+                const companyCode = p["companycode"] || "1000";
+
+                if (ASSET_LOOKUP_API_URL.includes("https://script.google.com/macros/s/AKfycbz9A3SBoD1JyISyntl32t0h2b4ojYWWVtPRZcdc75et4YnomuekLDTTU_veWx4SufTlHg/exec")) {
+                    alert("⚠️ Proxy belum di-setup. FA ke-isi (" + fa + "), tapi Nama/S-N harus manual dulu sampai ASSET_LOOKUP_API_URL di-set.");
+                    injectScannedData(fa, "", "");
                     return;
                 }
+
+                try {
+                    const res = await fetch(`${ASSET_LOOKUP_API_URL}?assetNo=${encodeURIComponent(fa)}&companyCode=${encodeURIComponent(companyCode)}`);
+                    const info = await res.json();
+
+                    if (info.found) {
+                        injectScannedData(info.assetNo || fa, info.assetName || "", info.serialNumber || "");
+                    } else {
+                        alert("AssetNo " + fa + " gak ketemu di sistem finance. FA tetep diisi, Nama/S-N isi manual ya.");
+                        injectScannedData(fa, "", "");
+                    }
+                } catch (err) {
+                    console.error("Gagal ambil data dari proxy:", err);
+                    alert("Gagal konek ke server lookup asset (cek koneksi/proxy). FA tetep diisi, Nama/S-N isi manual ya.");
+                    injectScannedData(fa, "", "");
+                }
+                return;
             }
+
+            // 3) Fallback generic: barcode link biasa yang bawa data di query param sendiri
+            name = p["assetname"] || p["asset_name"] || p["name"] || "";
+            sn = p["serialnumber"] || p["serial_number"] || p["sn"] || "";
 
             if (fa || name || sn) {
                 injectScannedData(fa, name, sn);
