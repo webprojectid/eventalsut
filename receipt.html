@@ -1086,9 +1086,17 @@
             } catch (e) {
                 try {
                     let url = new URL(decodedText);
-                    fa = url.searchParams.get("asset_no") || url.searchParams.get("fa") || "";
-                    name = url.searchParams.get("asset_name") || url.searchParams.get("name") || "";
-                    sn = url.searchParams.get("serial_number") || url.searchParams.get("sn") || "";
+
+                    // Normalisasi semua query param ke lowercase biar gak peduli casing
+                    // (link asset BINUS pake "AssetNo", bukan "asset_no")
+                    let p = {};
+                    url.searchParams.forEach((value, key) => {
+                        p[key.toLowerCase()] = value;
+                    });
+
+                    fa = p["assetno"] || p["asset_no"] || p["fa"] || "";
+                    name = p["assetname"] || p["asset_name"] || p["name"] || "";
+                    sn = p["serialnumber"] || p["serial_number"] || p["sn"] || "";
                 } catch(err) {
                     console.log("Raw Scanned Data: ", decodedText);
                     alert("Format Barcode/QR tidak sesuai standar (Bukan URL/JSON Parameter). Raw Output: " + decodedText);
@@ -1130,8 +1138,9 @@
             if (name) targetRow.querySelector('.item-name').value = name;
             if (fa) targetRow.querySelector('.item-fa').value = fa;
             if (sn) targetRow.querySelector('.item-sn').value = sn;
-            
-            alert(`✅ Scan Berhasil!\n\nNama: ${name || '-'}\nFA: ${fa || '-'}\nS/N: ${sn || '-'}`);
+
+            const missingNote = (!name || !sn) ? '\n\n⚠️ Nama/S-N tidak tersedia di barcode ini, mohon isi manual.' : '';
+            alert(`✅ Scan Berhasil!\n\nNama: ${name || '-'}\nFA: ${fa || '-'}\nS/N: ${sn || '-'}${missingNote}`);
         }
 
         // ================================================================
