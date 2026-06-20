@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&display=swap" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 
     <script>
         (function() {
@@ -634,7 +635,6 @@
             width: 100%;
         }
         
-        /* max-width dibuang biar bisa ngisi container, flex disetel biar seimbang */
         .item-row .item-name { flex: 2 1 160px; min-width: 120px; max-width: none; }
         .item-row .item-spec { flex: 2 1 140px; min-width: 100px; }
         .item-row .item-qty { flex: 0 0 65px; min-width: 60px; }
@@ -664,13 +664,21 @@
             .item-row .item-kondisi { flex: 1 1 80px; min-width: 70px; }
             .item-row .item-status { flex: 1 1 90px; min-width: 80px; }
         }
+        
+        /* SCANNER CAMERA FIX UI */
+        #reader video {
+            border-radius: 0.5rem;
+            width: 100%;
+        }
+        #reader {
+            border: none !important;
+            background: #000;
+            border-radius: 0.5rem;
+        }
     </style>
 </head>
 <body>
 
-    <!-- ============================================================ -->
-    <!-- LOGIN PAGE -->
-    <!-- ============================================================ -->
     <div id="login-page" class="login-bg px-4">
         <div class="login-cursor-glow" id="login-cursor-glow"></div>
         <div class="login-orb login-orb-1"></div>
@@ -712,12 +720,8 @@
         </div>
     </div>
 
-    <!-- ============================================================ -->
-    <!-- MAIN APP: TANDA TERIMA BARANG -->
-    <!-- ============================================================ -->
     <div id="main-app" class="flex-col h-screen overflow-hidden bg-brand-bg aurora-surface">
 
-        <!-- HEADER NAVBAR -->
         <header class="flex-none header-glass z-30 w-full sticky top-0 px-4 py-3 lg:px-6">
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
 
@@ -759,7 +763,6 @@
             </div>
         </header>
 
-        <!-- MAIN CONTENT -->
         <main class="flex-1 overflow-y-auto relative w-full px-4 sm:px-6 md:px-8 py-6 pb-24">
 
             <div class="w-full max-w-5xl mx-auto space-y-6">
@@ -774,10 +777,8 @@
                     </button>
                 </div>
 
-                <!-- VERTICAL LAYOUT -->
                 <div class="flex flex-col gap-6">
 
-                    <!-- FORM -->
                     <div class="glass rounded-2xl p-6 shadow-lg">
                         <form id="receipt-form" onsubmit="generateReceipt(event)" class="space-y-4">
 
@@ -808,7 +809,6 @@
                                 <input type="date" id="receipt-date" class="w-full px-3 py-2.5 rounded-xl input-modern text-brand-text text-sm" required />
                             </div>
 
-                            <!-- SIGNATURE PADS -->
                             <div class="border-t border-brand-border pt-3 mt-2">
                                 <p class="text-[10px] font-bold text-brand-muted uppercase tracking-wider mb-2">Tanda Tangan</p>
 
@@ -837,13 +837,29 @@
                                 </div>
                             </div>
 
-                            <!-- ITEMS -->
+                            <div id="scanner-container" class="hidden border border-brand-primary p-2 rounded-xl mb-3 mt-4 bg-[#1E1B3A] shadow-lg">
+                                <div class="flex justify-between items-center mb-2 px-1">
+                                    <span class="text-xs font-bold text-[#A7F3D0]">📸 Arahkan kamera ke Barcode/QR Aset</span>
+                                    <button type="button" onclick="stopScanner()" class="text-[10px] font-bold text-white bg-red-500 hover:bg-red-600 px-3 py-1.5 rounded-md transition">Tutup Kamera</button>
+                                </div>
+                                <div id="reader" style="width: 100%; max-width: 500px; margin: 0 auto;"></div>
+                                <p class="text-[9px] text-center text-gray-400 mt-2">Sistem otomatis mendeteksi URL atau JSON Data Aset</p>
+                            </div>
+
                             <div class="border-t border-brand-border pt-3">
                                 <div class="flex items-center justify-between mb-2">
                                     <label class="block text-[10px] font-bold text-brand-muted uppercase tracking-wider">Daftar Barang</label>
-                                    <button type="button" onclick="addItemRow()" class="text-xs font-bold text-status-info-text hover:opacity-80 transition flex items-center gap-1 bg-brand-surface px-3 py-1 rounded-lg border border-brand-border">
-                                        <span class="text-base">+</span> Tambah
-                                    </button>
+                                    
+                                    <div class="flex gap-2">
+                                        <button type="button" onclick="startScanner()" class="text-xs font-bold text-status-warn-text hover:opacity-80 transition flex items-center gap-1 bg-brand-surface px-3 py-1 rounded-lg border border-brand-border">
+                                            📸 Scan Aset
+                                        </button>
+
+                                        <button type="button" onclick="addItemRow()" class="text-xs font-bold text-status-info-text hover:opacity-80 transition flex items-center gap-1 bg-brand-surface px-3 py-1 rounded-lg border border-brand-border">
+                                            <span class="text-base">+</span> Tambah
+                                        </button>
+                                    </div>
+
                                 </div>
                                 <div id="items-container" class="space-y-1.5 max-h-[300px] overflow-y-auto no-scrollbar pr-1"></div>
                             </div>
@@ -865,7 +881,6 @@
                         </form>
                     </div>
 
-                    <!-- PREVIEW -->
                     <div class="glass rounded-2xl p-4 shadow-lg flex justify-center min-h-[600px] bg-gray-200">
                         <div id="receipt-wrapper" class="w-full flex justify-center">
                             <div id="receipt-preview">
@@ -884,9 +899,6 @@
         </main>
     </div>
 
-    <!-- ============================================================ -->
-    <!-- JAVASCRIPT -->
-    <!-- ============================================================ -->
     <script>
         // ================================================================
         // USER AUTH
@@ -998,6 +1010,112 @@
             document.getElementById('theme-text').innerText = themeLabel;
             document.getElementById('login-theme-text').innerText = themeLabel;
             localStorage.setItem('binus_lang', currentLang);
+        }
+
+        // ================================================================
+        // SCANNER LOGIC BARU 🔥
+        // ================================================================
+        let html5QrcodeScanner = null;
+
+        function startScanner() {
+            const scannerContainer = document.getElementById('scanner-container');
+            scannerContainer.classList.remove('hidden');
+            
+            // Inisialisasi scanner jika belum ada
+            if (!html5QrcodeScanner) {
+                html5QrcodeScanner = new Html5QrcodeScanner(
+                    "reader", 
+                    { fps: 10, qrbox: {width: 250, height: 250} }, 
+                    false
+                );
+            }
+            
+            html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+            
+            // Auto scroll ke area kamera biar user tau
+            scannerContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function stopScanner() {
+            if (html5QrcodeScanner) {
+                html5QrcodeScanner.clear().catch(error => {
+                    console.error("Gagal menutup scanner.", error);
+                });
+            }
+            document.getElementById('scanner-container').classList.add('hidden');
+        }
+
+        function onScanSuccess(decodedText, decodedResult) {
+            // Berhentikan kamera setelah berhasil scan
+            stopScanner();
+            
+            let fa = "";
+            let name = "";
+            let sn = "";
+
+            try {
+                // Skenario 1: Jika QR/Barcode berisi JSON langsung
+                // Contoh: {"asset_no": "FA-001", "asset_name": "Laptop Thinkpad", "sn": "SN-99X"}
+                let data = JSON.parse(decodedText);
+                fa = data.asset_no || data.fa || "";
+                name = data.asset_name || data.name || "";
+                sn = data.serial_number || data.sn || "";
+            } catch (e) {
+                // Skenario 2: Jika QR/Barcode berisi Web Link URL Parameters
+                // Contoh: https://asset.binus.edu/item?asset_no=FA-001&asset_name=Laptop&serial_number=SN-99X
+                try {
+                    let url = new URL(decodedText);
+                    fa = url.searchParams.get("asset_no") || url.searchParams.get("fa") || "";
+                    name = url.searchParams.get("asset_name") || url.searchParams.get("name") || "";
+                    sn = url.searchParams.get("serial_number") || url.searchParams.get("sn") || "";
+                } catch(err) {
+                    // Skenario 3: Barcode gak terdeteksi strukturnya.
+                    console.log("Raw Scanned Data: ", decodedText);
+                    alert("Format Barcode/QR tidak sesuai standar (Bukan URL/JSON Parameter). Raw Output: " + decodedText);
+                    return;
+                }
+            }
+
+            // Jika ada minimal salah satu data (FA / Name / SN) yang kedetect, kita inject!
+            if (fa || name || sn) {
+                injectScannedData(fa, name, sn);
+            } else {
+                alert("Data aset gagal diekstrak dari link barcode yang di-scan.");
+            }
+        }
+
+        function onScanFailure(error) {
+            // Biasanya diabaikan saja karena kamera akan terus mencoba mencari fokus Barcode/QR.
+        }
+
+        function injectScannedData(fa, name, sn) {
+            const container = document.getElementById('items-container');
+            const rows = container.querySelectorAll('.item-row');
+            let targetRow = null;
+            
+            // Cari baris form yang masih kosong (Nama & FA masih kosong)
+            for (let i = 0; i < rows.length; i++) {
+                const rowName = rows[i].querySelector('.item-name').value.trim();
+                const rowFa = rows[i].querySelector('.item-fa').value.trim();
+                if (!rowName && !rowFa) {
+                    targetRow = rows[i];
+                    break;
+                }
+            }
+
+            // Kalau semua baris udah kepake, bikin baris baru otomatis
+            if (!targetRow) {
+                addItemRow(); 
+                const newRows = container.querySelectorAll('.item-row');
+                targetRow = newRows[newRows.length - 1];
+            }
+
+            // Inject value ke HTML
+            if (name) targetRow.querySelector('.item-name').value = name;
+            if (fa) targetRow.querySelector('.item-fa').value = fa;
+            if (sn) targetRow.querySelector('.item-sn').value = sn;
+            
+            alert(`✅ Scan Berhasil!\n\nNama: ${name || '-'}\nFA: ${fa || '-'}\nS/N: ${sn || '-'}`);
         }
 
         // ================================================================
