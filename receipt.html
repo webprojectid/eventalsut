@@ -1133,7 +1133,7 @@
                     }
                 } catch (err) {
                     console.error("Gagal ambil data dari proxy:", err);
-                    alert("Gagal konek ke server lookup asset (cek koneksi/proxy). FA tetep diisi, Nama/S-N isi manual ya.");
+                    alert("Gagal konek ke server lookup asset:\n\n" + err.message + "\n\nFA tetep diisi, Nama/S-N isi manual ya.\n\n(Cek console browser buat detail lengkap)");
                     injectScannedData(fa, "", "");
                 }
                 return;
