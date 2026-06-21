@@ -22,11 +22,19 @@
                     if (u && u.role) {
                         window.__SESSION_VALID = true;
                         window.__SESSION_USER = u;
+                        // Tandain di <html> SEBELUM body sempet ke-render,
+                        // biar CSS bisa langsung nyembunyiin login-page dari frame pertama
+                        // (gak nunggu DOMContentLoaded yang baru jalan belakangan = kedipan).
+                        document.documentElement.classList.add('session-restored');
                     }
                 }
             } catch (e) {}
         })();
     </script>
+    <style>
+        /* Cegah flash login-page: kalau session valid, sembunyiin dari awal banget */
+        html.session-restored #login-page { display: none !important; }
+    </style>
 
     <script>
         tailwind.config = {
@@ -836,22 +844,22 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
                                     <label class="block text-[10px] font-bold text-brand-muted uppercase tracking-wider mb-1">Diberikan Oleh</label>
-                                    <input type="text" id="given-by" class="w-full px-3 py-2.5 rounded-xl input-modern text-brand-text text-sm" placeholder="Nama Lengkap" required />
+                                    <input type="text" id="given-by" data-voice-mode="spaced" class="w-full px-3 py-2.5 rounded-xl input-modern text-brand-text text-sm" placeholder="Nama Lengkap" required />
                                 </div>
                                 <div>
                                     <label class="block text-[10px] font-bold text-brand-muted uppercase tracking-wider mb-1">Binusian ID</label>
-                                    <input type="text" id="given-id" class="w-full px-3 py-2.5 rounded-xl input-modern text-brand-text text-sm" placeholder="Contoh: BN123456" />
+                                    <input type="text" id="given-id" data-voice-mode="compact" class="w-full px-3 py-2.5 rounded-xl input-modern text-brand-text text-sm" placeholder="Contoh: BN123456" />
                                 </div>
                             </div>
 
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
                                     <label class="block text-[10px] font-bold text-brand-muted uppercase tracking-wider mb-1">Diterima Oleh</label>
-                                    <input type="text" id="received-by" class="w-full px-3 py-2.5 rounded-xl input-modern text-brand-text text-sm" placeholder="Nama Lengkap" required />
+                                    <input type="text" id="received-by" data-voice-mode="spaced" class="w-full px-3 py-2.5 rounded-xl input-modern text-brand-text text-sm" placeholder="Nama Lengkap" required />
                                 </div>
                                 <div>
                                     <label class="block text-[10px] font-bold text-brand-muted uppercase tracking-wider mb-1">Binusian ID</label>
-                                    <input type="text" id="received-id" class="w-full px-3 py-2.5 rounded-xl input-modern text-brand-text text-sm" placeholder="Contoh: BN123456" />
+                                    <input type="text" id="received-id" data-voice-mode="compact" class="w-full px-3 py-2.5 rounded-xl input-modern text-brand-text text-sm" placeholder="Contoh: BN123456" />
                                 </div>
                             </div>
 
@@ -1396,12 +1404,12 @@
         }
         let activeRecognition = null;
         let voiceTargetInput = null;
-        const VOICE_ENABLED_FIELDS = '.item-name, .item-spec, .item-fa, .item-sn';
 
         // Tandain field mana yang lagi jadi target, tiap kali user nge-klik/fokus ke salah satu field
-        // (pake event delegation di container, jadi otomatis kepasang ke row baru juga)
-        document.getElementById('items-container').addEventListener('focusin', (e) => {
-            if (e.target.matches(VOICE_ENABLED_FIELDS)) {
+        // bertanda data-voice-mode (pake event delegation di #main-app, jadi nyakup field statis
+        // kayak Nama Lengkap/Binusian ID DAN row item barang yang dibuat dinamis)
+        document.getElementById('main-app').addEventListener('focusin', (e) => {
+            if (e.target.matches('[data-voice-mode]')) {
                 if (voiceTargetInput) voiceTargetInput.classList.remove('voice-target');
                 voiceTargetInput = e.target;
                 voiceTargetInput.classList.add('voice-target');
@@ -1423,7 +1431,7 @@
             }
 
             if (!voiceTargetInput || !document.body.contains(voiceTargetInput)) {
-                alert('Klik dulu kolom yang mau diisi (Nama Barang/Spesifikasi/FA/S-N), baru tap mic ini.');
+                alert('Klik dulu kolom yang mau diisi (Nama Lengkap/Binusian ID/Nama Barang/Spesifikasi/FA/S-N), baru tap mic ini.');
                 return;
             }
 
@@ -1439,9 +1447,11 @@
             recognition.onresult = (event) => {
                 let transcript = event.results[0][0].transcript.trim();
 
-                // FA & S/N itu satu string angka/huruf utuh — jeda napas pas ngomong
-                // gak boleh ke-translate jadi spasi pemisah.
-                const isCompactField = voiceTargetInput.matches('.item-fa, .item-sn');
+                // Field "compact" (FA, S/N, Binusian ID) itu satu string angka/huruf
+                // utuh tanpa spasi — jeda napas pas ngomong gak boleh ke-translate
+                // jadi spasi pemisah. Field "spaced" (Nama Barang, Spesifikasi,
+                // Nama Lengkap) tetep pake spasi normal antar kata.
+                const isCompactField = voiceTargetInput.dataset.voiceMode === 'compact';
                 if (isCompactField) {
                     transcript = transcript.replace(/\s+/g, '');
                 }
@@ -1484,11 +1494,11 @@
             ).join('');
 
             div.innerHTML = `
-                <input type="text" class="item-name input-modern text-brand-text text-xs" placeholder="Nama Barang" value="${data?.name || ''}" />
-                <input type="text" class="item-spec input-modern text-brand-text text-xs" placeholder="Spesifikasi" value="${data?.spec || ''}" />
+                <input type="text" class="item-name input-modern text-brand-text text-xs" data-voice-mode="spaced" placeholder="Nama Barang" value="${data?.name || ''}" />
+                <input type="text" class="item-spec input-modern text-brand-text text-xs" data-voice-mode="spaced" placeholder="Spesifikasi" value="${data?.spec || ''}" />
                 <input type="number" class="item-qty input-modern text-brand-text text-xs text-center" placeholder="Qty" value="${data?.qty || 1}" min="1" />
-                <input type="text" class="item-fa input-modern text-brand-text text-xs" placeholder="FA" value="${data?.fa || ''}" />
-                <input type="text" class="item-sn input-modern text-brand-text text-xs" placeholder="S/N" value="${data?.sn || ''}" />
+                <input type="text" class="item-fa input-modern text-brand-text text-xs" data-voice-mode="compact" placeholder="FA" value="${data?.fa || ''}" />
+                <input type="text" class="item-sn input-modern text-brand-text text-xs" data-voice-mode="compact" placeholder="S/N" value="${data?.sn || ''}" />
                 <select class="item-kondisi input-modern text-brand-text text-xs">${kondisiOpts}</select>
                 <select class="item-status input-modern text-brand-text text-xs">${statusOpts}</select>
                 <button type="button" onclick="removeItemRow('${rowId}')" class="item-remove p-1.5 text-brand-muted hover:text-status-danger-text rounded-lg bg-brand-surface border border-brand-border hover:border-status-danger-text transition text-xs">✕</button>
