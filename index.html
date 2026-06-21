@@ -868,9 +868,9 @@
         }
 
         // ================================================================
-        // CEK SESSION SAAT LOAD
+        // CEK SESSION SAAT LOAD (DIPERBAIKI BIAR INSTAN & BISA BACK)
         // ================================================================
-        window.onload = function() {
+        document.addEventListener('DOMContentLoaded', function() {
             const savedTheme = localStorage.getItem('binus_theme');
             if (savedTheme) document.documentElement.setAttribute('data-theme', savedTheme);
             const savedLang = localStorage.getItem('binus_lang');
@@ -890,7 +890,7 @@
                 badge.innerText = user.role === 'admin' ? 'Admin' : 'View Only';
                 badge.className = `text-[9px] font-bold uppercase px-2 py-0.5 rounded-full border ${user.role === 'admin' ? 'border-status-success-border text-status-success-text' : 'border-status-info-border text-status-info-text'}`;
             }
-        };
+        });
     </script>
 </body>
 </html>
