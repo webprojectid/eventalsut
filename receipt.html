@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&display=swap" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <!-- LIBRARY UNTUK SCAN BARCODE/QR KAMERA -->
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 
     <script>
@@ -118,14 +119,6 @@
             --form-border: #D1D5F0;
             --form-focus-border: #10B981;
             --form-focus-shadow: rgba(16, 185, 129, 0.25);
-
-            --receipt-bg: #FFFFFF;
-            --receipt-text: #000000;
-            --receipt-border: #000000;
-            --receipt-header-bg: #FFFFFF;
-            --receipt-title-color: #000000;
-            --signature-bg: transparent;
-            --signature-border: #000000;
         }
 
         [data-theme="dark"] {
@@ -173,14 +166,6 @@
             --form-border: #342A54;
             --form-focus-border: #34D399;
             --form-focus-shadow: rgba(52, 211, 153, 0.35);
-
-            --receipt-bg: #FFFFFF;
-            --receipt-text: #000000;
-            --receipt-border: #000000;
-            --receipt-header-bg: #FFFFFF;
-            --receipt-title-color: #000000;
-            --signature-bg: transparent;
-            --signature-border: #000000;
         }
 
         * { box-sizing: border-box; }
@@ -414,34 +399,18 @@
         /* ============================================================ */
         /* RECEIPT STYLES (A4 FORMAL LAYOUT) */
         /* ============================================================ */
-        #receipt-wrapper {
-            width: 100%;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch; 
-        }
-
         #receipt-preview {
             background: #FFFFFF;
             color: #000000;
             padding: 40px; 
             font-family: Arial, Helvetica, sans-serif; 
-            
-            /* FIX OFFSIDE: Kunci di ukuran A4, gak bakal gepeng di HP */
-            width: 800px;
-            min-width: 800px; 
-            min-height: 1131px; 
-            
+            max-width: 800px;
+            min-height: 1131px; /* A4 aspect ratio approximation */
             margin: 0 auto;
             box-shadow: 0 4px 20px rgba(0,0,0,0.08);
             font-size: 13px;
+            width: 100%;
         }
-
-        @media (max-width: 850px) {
-            #receipt-preview {
-                margin: 0; /* Biar scroll horizontal di HP gak kepotong bagian kirinya */
-            }
-        }
-
         #receipt-preview .receipt-title {
             text-align: center;
             font-size: 16px;
@@ -548,8 +517,7 @@
                 position: absolute;
                 left: 0;
                 top: 0;
-                width: 100% !important;
-                min-width: 0 !important; /* Dihapus biar printer yang ngatur pas nge-print */
+                width: 100%;
                 height: auto;
                 max-width: none;
                 min-height: 0;
@@ -677,6 +645,41 @@
         .item-row .item-status { flex: 1 1 120px; min-width: 100px; }
         .item-row .item-remove { flex: 0 0 auto; padding: 0.35rem 0.6rem; }
 
+        /* Highlight field yang lagi jadi target voice input */
+        .voice-target {
+            outline: 2px solid #f59e0b !important;
+            outline-offset: 1px;
+        }
+
+        /* Floating mic button — satu aja, fixed di pojok layar */
+        #global-mic-btn {
+            position: fixed;
+            right: 1.25rem;
+            bottom: 1.25rem;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            background: var(--brand-surface);
+            border: 2px solid var(--brand-border);
+            box-shadow: 0 4px 14px rgba(0,0,0,0.35);
+            cursor: pointer;
+            z-index: 1000;
+            transition: all 0.2s ease;
+        }
+        #global-mic-btn:active { transform: scale(0.92); }
+        #global-mic-btn.mic-active {
+            background: #ef4444;
+            border-color: #ef4444;
+            animation: micPulse 1s ease-in-out infinite;
+        }
+        @keyframes micPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.55; } }
+        /* Sembunyiin tombol mic kalau browser gak support Web Speech API */
+        body.no-speech-support #global-mic-btn { display: none; }
+
         @media (max-width: 768px) {
             .item-row { gap: 0.35rem; padding: 0.4rem; }
             .item-row .item-name { flex: 2 1 120px; min-width: 100px; }
@@ -712,7 +715,12 @@
     </style>
 </head>
 <body>
+    <button type="button" id="global-mic-btn" title="Voice input — klik field dulu, baru klik sini">🎤</button>
 
+
+    <!-- ============================================================ -->
+    <!-- LOGIN PAGE -->
+    <!-- ============================================================ -->
     <div id="login-page" class="login-bg px-4">
         <div class="login-cursor-glow" id="login-cursor-glow"></div>
         <div class="login-orb login-orb-1"></div>
@@ -754,8 +762,12 @@
         </div>
     </div>
 
+    <!-- ============================================================ -->
+    <!-- MAIN APP: TANDA TERIMA BARANG -->
+    <!-- ============================================================ -->
     <div id="main-app" class="flex-col h-screen overflow-hidden bg-brand-bg aurora-surface">
 
+        <!-- HEADER NAVBAR -->
         <header class="flex-none header-glass z-30 w-full sticky top-0 px-4 py-3 lg:px-6">
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
 
@@ -797,6 +809,7 @@
             </div>
         </header>
 
+        <!-- MAIN CONTENT -->
         <main class="flex-1 overflow-y-auto relative w-full px-4 sm:px-6 md:px-8 py-6 pb-24">
 
             <div class="w-full max-w-5xl mx-auto space-y-6">
@@ -811,8 +824,10 @@
                     </button>
                 </div>
 
+                <!-- VERTICAL LAYOUT -->
                 <div class="flex flex-col gap-6">
 
+                    <!-- FORM -->
                     <div class="glass rounded-2xl p-6 shadow-lg">
                         <form id="receipt-form" onsubmit="generateReceipt(event)" class="space-y-4">
 
@@ -843,34 +858,8 @@
                                 <input type="date" id="receipt-date" class="w-full px-3 py-2.5 rounded-xl input-modern text-brand-text text-sm" required />
                             </div>
 
-                            <div id="scanner-container" class="hidden border border-brand-primary p-2 rounded-xl mb-3 mt-4 bg-[#1E1B3A] shadow-lg">
-                                <div class="flex justify-between items-center mb-2 px-1">
-                                    <span class="text-xs font-bold text-[#A7F3D0]">📸 Arahkan kamera ke Barcode/QR Aset</span>
-                                    <button type="button" onclick="stopScanner()" class="text-[10px] font-bold text-white bg-red-500 hover:bg-red-600 px-3 py-1.5 rounded-md transition">Tutup Kamera</button>
-                                </div>
-                                <div id="reader" style="width: 100%; max-width: 500px; margin: 0 auto; min-height: 250px;"></div>
-                                <p class="text-[9px] text-center text-gray-400 mt-2">Sistem otomatis mendeteksi URL atau JSON Data Aset</p>
-                            </div>
-
+                            <!-- SIGNATURE PADS -->
                             <div class="border-t border-brand-border pt-3 mt-2">
-                                <div class="flex items-center justify-between mb-2">
-                                    <label class="block text-[10px] font-bold text-brand-muted uppercase tracking-wider">Daftar Barang</label>
-                                    
-                                    <div class="flex gap-2">
-                                        <button type="button" onclick="startScanner()" class="text-xs font-bold text-status-warn-text hover:opacity-80 transition flex items-center gap-1 bg-brand-surface px-3 py-1 rounded-lg border border-brand-border">
-                                            📸 Scan Aset
-                                        </button>
-
-                                        <button type="button" onclick="addItemRow()" class="text-xs font-bold text-status-info-text hover:opacity-80 transition flex items-center gap-1 bg-brand-surface px-3 py-1 rounded-lg border border-brand-border">
-                                            <span class="text-base">+</span> Tambah
-                                        </button>
-                                    </div>
-
-                                </div>
-                                <div id="items-container" class="space-y-1.5 max-h-[300px] overflow-y-auto no-scrollbar pr-1"></div>
-                            </div>
-
-                            <div class="border-t border-brand-border pt-3 mt-4">
                                 <p class="text-[10px] font-bold text-brand-muted uppercase tracking-wider mb-2">Tanda Tangan</p>
 
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -898,7 +887,37 @@
                                 </div>
                             </div>
 
-                            <button type="submit" id="generate-btn" class="w-full py-3.5 mt-4 rounded-xl btn-primary text-white font-bold shadow-lg transition hover:opacity-90">
+                            <!-- SCANNER UI (DISEMBUNYIKAN SECARA DEFAULT) -->
+                            <div id="scanner-container" class="hidden border border-brand-primary p-2 rounded-xl mb-3 mt-4 bg-[#1E1B3A] shadow-lg">
+                                <div class="flex justify-between items-center mb-2 px-1">
+                                    <span class="text-xs font-bold text-[#A7F3D0]">📸 Arahkan kamera ke Barcode/QR Aset</span>
+                                    <button type="button" onclick="stopScanner()" class="text-[10px] font-bold text-white bg-red-500 hover:bg-red-600 px-3 py-1.5 rounded-md transition">Tutup Kamera</button>
+                                </div>
+                                <div id="reader" style="width: 100%; max-width: 500px; margin: 0 auto; min-height: 250px;"></div>
+                                <p class="text-[9px] text-center text-gray-400 mt-2">Sistem otomatis mendeteksi URL atau JSON Data Aset</p>
+                            </div>
+
+                            <!-- ITEMS -->
+                            <div class="border-t border-brand-border pt-3">
+                                <div class="flex items-center justify-between mb-2">
+                                    <label class="block text-[10px] font-bold text-brand-muted uppercase tracking-wider">Daftar Barang</label>
+                                    
+                                    <div class="flex gap-2">
+                                        <!-- TOMBOL SCAN BARCODE BARU -->
+                                        <button type="button" onclick="startScanner()" class="text-xs font-bold text-status-warn-text hover:opacity-80 transition flex items-center gap-1 bg-brand-surface px-3 py-1 rounded-lg border border-brand-border">
+                                            📸 Scan Aset
+                                        </button>
+
+                                        <button type="button" onclick="addItemRow()" class="text-xs font-bold text-status-info-text hover:opacity-80 transition flex items-center gap-1 bg-brand-surface px-3 py-1 rounded-lg border border-brand-border">
+                                            <span class="text-base">+</span> Tambah
+                                        </button>
+                                    </div>
+
+                                </div>
+                                <div id="items-container" class="space-y-1.5 max-h-[300px] overflow-y-auto no-scrollbar pr-1"></div>
+                            </div>
+
+                            <button type="submit" id="generate-btn" class="w-full py-3.5 rounded-xl btn-primary text-white font-bold shadow-lg transition hover:opacity-90">
                                 <span id="gen-btn-text">📄 Generate Tanda Terima</span>
                             </button>
 
@@ -915,8 +934,9 @@
                         </form>
                     </div>
 
-                    <div class="glass rounded-2xl p-4 shadow-lg min-h-[600px] bg-gray-200 overflow-hidden">
-                        <div id="receipt-wrapper" class="w-full overflow-x-auto no-scrollbar">
+                    <!-- PREVIEW -->
+                    <div class="glass rounded-2xl p-4 shadow-lg flex justify-center min-h-[600px] bg-gray-200">
+                        <div id="receipt-wrapper" class="w-full flex justify-center">
                             <div id="receipt-preview">
                                 <div class="text-center text-gray-400 py-16" style="padding-top: 150px;">
                                     <span class="text-6xl block mb-4 opacity-30">📋</span>
@@ -933,6 +953,9 @@
         </main>
     </div>
 
+    <!-- ============================================================ -->
+    <!-- JAVASCRIPT -->
+    <!-- ============================================================ -->
     <script>
         // ================================================================
         // USER AUTH
@@ -1047,7 +1070,7 @@
         }
 
         // ================================================================
-        // SCANNER LOGIC BARU
+        // SCANNER LOGIC BARU (MEMAKSA KAMERA BELAKANG OTOMATIS MUNCUL) 🔥
         // ================================================================
         let html5QrCode = null;
 
@@ -1059,6 +1082,7 @@
                 html5QrCode = new Html5Qrcode("reader");
             }
             
+            // Bypass tampilan "Choose Image", langsung tembak ke kamera belakang
             html5QrCode.start(
                 { facingMode: "environment" }, 
                 { fps: 10, qrbox: { width: 250, height: 250 } },
@@ -1069,6 +1093,7 @@
                 alert("Gagal mengakses kamera! Pastikan izin kamera di browser sudah di-Allow.");
             });
             
+            // Auto scroll ke area kamera biar user tau
             scannerContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
 
@@ -1083,6 +1108,8 @@
             document.getElementById('scanner-container').classList.add('hidden');
         }
 
+        // GANTI URL INI DENGAN URL WEB APP APPS SCRIPT LO SETELAH DI-DEPLOY
+        // (lihat panduan deploy di file asset-lookup-proxy.gs)
         const ASSET_LOOKUP_API_URL = "https://script.google.com/macros/s/AKfycbz9A3SBoD1JyISyntl32t0h2b4ojYWWVtPRZcdc75et4YnomuekLDTTU_veWx4SufTlHg/exec";
 
         async function onScanSuccess(decodedText, decodedResult) {
@@ -1092,6 +1119,7 @@
             let name = "";
             let sn = "";
 
+            // 1) Coba parse sebagai JSON langsung (barcode custom non-link)
             try {
                 let data = JSON.parse(decodedText);
                 fa = data.asset_no || data.fa || "";
@@ -1099,57 +1127,58 @@
                 sn = data.serial_number || data.sn || "";
                 injectScannedData(fa, name, sn);
                 return;
-            } catch (e) { }
+            } catch (e) {
+                // bukan JSON, lanjut cek apakah ini link URL
+            }
 
             let url;
             try {
                 url = new URL(decodedText);
             } catch (err) {
-                // Skenario text/ID polos
-                fa = decodedText.trim();
-                if(fa) {
+                console.log("Raw Scanned Data: ", decodedText);
+                alert("Format Barcode/QR tidak sesuai standar (Bukan URL/JSON Parameter). Raw Output: " + decodedText);
+                return;
+            }
+
+            // Normalisasi semua query param ke lowercase biar gak peduli casing
+            let p = {};
+            url.searchParams.forEach((value, key) => {
+                p[key.toLowerCase()] = value;
+            });
+            fa = p["assetno"] || p["asset_no"] || p["fa"] || "";
+
+            // 2) Kalau ini link Asset System BINUS, panggil proxy buat ambil data LENGKAP
+            //    (Nama, Brand, Serial Number) lewat endpoint GetAssetInfo asli mereka.
+            if (url.hostname.includes("cloud.finance.binus.edu") && fa) {
+                const companyCode = p["companycode"] || "1000";
+
+                if (!ASSET_LOOKUP_API_URL || !ASSET_LOOKUP_API_URL.startsWith("https://script.google.com/macros/")) {
+                    alert("⚠️ Proxy belum di-setup. FA ke-isi (" + fa + "), tapi Nama/S-N harus manual dulu sampai ASSET_LOOKUP_API_URL di-set.");
                     injectScannedData(fa, "", "");
                     return;
                 }
-            }
 
-            let p = {};
-            if(url) {
-                url.searchParams.forEach((value, key) => {
-                    p[key.toLowerCase()] = value;
-                });
-                fa = p["assetno"] || p["asset_no"] || p["fa"] || "";
+                try {
+                    const res = await fetch(`${ASSET_LOOKUP_API_URL}?assetNo=${encodeURIComponent(fa)}&companyCode=${encodeURIComponent(companyCode)}`);
+                    const info = await res.json();
 
-                if (url.hostname.includes("cloud.finance.binus.edu") && fa) {
-                    const companyCode = p["companycode"] || "1000";
-
-                    if (!ASSET_LOOKUP_API_URL || !ASSET_LOOKUP_API_URL.startsWith("https://script.google.com/macros/")) {
-                        alert("⚠️ Proxy belum di-setup. FA ke-isi (" + fa + "), tapi Nama/S-N harus manual dulu sampai ASSET_LOOKUP_API_URL di-set.");
-                        injectScannedData(fa, "", "");
-                        return;
-                    }
-
-                    try {
-                        const res = await fetch(`${ASSET_LOOKUP_API_URL}?assetNo=${encodeURIComponent(fa)}&companyCode=${encodeURIComponent(companyCode)}`);
-                        const info = await res.json();
-
-                        if (info.found) {
-                            injectScannedData(info.assetNo || fa, info.brand || "", info.serialNumber || "");
-                        } else {
-                            alert("AssetNo " + fa + " gak ketemu di sistem finance. FA tetep diisi, Nama/S-N isi manual ya.");
-                            injectScannedData(fa, "", "");
-                        }
-                    } catch (err) {
-                        console.error("Gagal ambil data dari proxy:", err);
-                        alert("Gagal konek ke server lookup asset:\n\n" + err.message + "\n\nFA tetep diisi, Nama/S-N isi manual ya.");
+                    if (info.found) {
+                        injectScannedData(info.assetNo || fa, info.brand || "", info.serialNumber || "");
+                    } else {
+                        alert("AssetNo " + fa + " gak ketemu di sistem finance. FA tetep diisi, Nama/S-N isi manual ya.");
                         injectScannedData(fa, "", "");
                     }
-                    return;
+                } catch (err) {
+                    console.error("Gagal ambil data dari proxy:", err);
+                    alert("Gagal konek ke server lookup asset:\n\n" + err.message + "\n\nFA tetep diisi, Nama/S-N isi manual ya.\n\n(Cek console browser buat detail lengkap)");
+                    injectScannedData(fa, "", "");
                 }
-
-                name = p["assetname"] || p["asset_name"] || p["name"] || "";
-                sn = p["serialnumber"] || p["serial_number"] || p["sn"] || "";
+                return;
             }
+
+            // 3) Fallback generic: barcode link biasa yang bawa data di query param sendiri
+            name = p["assetname"] || p["asset_name"] || p["name"] || "";
+            sn = p["serialnumber"] || p["serial_number"] || p["sn"] || "";
 
             if (fa || name || sn) {
                 injectScannedData(fa, name, sn);
@@ -1158,7 +1187,9 @@
             }
         }
 
-        function onScanFailure(error) { }
+        function onScanFailure(error) {
+            // Abaikan error saat proses nyari fokus/barcode
+        }
 
         function injectScannedData(fa, name, sn) {
             const container = document.getElementById('items-container');
@@ -1184,7 +1215,8 @@
             if (fa) targetRow.querySelector('.item-fa').value = fa;
             if (sn) targetRow.querySelector('.item-sn').value = sn;
 
-            alert(`✅ Scan Berhasil!\n\nNama: ${name || '-'}\nFA: ${fa || '-'}\nS/N: ${sn || '-'}`);
+            const missingNote = (!name || !sn) ? '\n\n⚠️ Nama/S-N tidak tersedia di barcode ini, mohon isi manual.' : '';
+            alert(`✅ Scan Berhasil!\n\nNama: ${name || '-'}\nFA: ${fa || '-'}\nS/N: ${sn || '-'}${missingNote}`);
         }
 
         // ================================================================
@@ -1249,18 +1281,11 @@
                 newCtx.lineJoin = 'round';
 
                 const events = {
-                    mousedown: (e) => {
-                        if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
-                        startDrawing(e, id, newCtx);
-                    },
+                    mousedown: (e) => startDrawing(e, id, newCtx),
                     mousemove: (e) => draw(e, id, newCtx),
                     mouseup: () => stopDrawing(id),
                     mouseleave: () => stopDrawing(id),
-                    touchstart: (e) => { 
-                        if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
-                        e.preventDefault(); 
-                        startDrawing(e.touches[0], id, newCtx); 
-                    },
+                    touchstart: (e) => { e.preventDefault(); startDrawing(e.touches[0], id, newCtx); },
                     touchmove: (e) => { e.preventDefault(); draw(e.touches[0], id, newCtx); },
                     touchend: (e) => { e.preventDefault(); stopDrawing(id); },
                     touchcancel: () => stopDrawing(id),
@@ -1356,6 +1381,82 @@
             document.getElementById('items-container').innerHTML = '';
             for (let i = 0; i < 3; i++) addItemRow();
         }
+
+        // ============================================================
+        // VOICE INPUT — Web Speech API (built-in Chrome, gak butuh API key)
+        // Cuma jalan di Chrome (desktop & Android) dan butuh HTTPS.
+        // Alur: klik field yang mau diisi (jadi "target") -> klik tombol
+        // mic tunggal -> ngomong -> hasilnya nempel ke field target itu.
+        // ============================================================
+        const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognitionAPI) {
+            document.body.classList.add('no-speech-support');
+        }
+        let activeRecognition = null;
+        let voiceTargetInput = null;
+        const VOICE_ENABLED_FIELDS = '.item-name, .item-spec, .item-fa, .item-sn';
+
+        // Tandain field mana yang lagi jadi target, tiap kali user nge-klik/fokus ke salah satu field
+        // (pake event delegation di container, jadi otomatis kepasang ke row baru juga)
+        document.getElementById('items-container').addEventListener('focusin', (e) => {
+            if (e.target.matches(VOICE_ENABLED_FIELDS)) {
+                if (voiceTargetInput) voiceTargetInput.classList.remove('voice-target');
+                voiceTargetInput = e.target;
+                voiceTargetInput.classList.add('voice-target');
+            }
+        });
+
+        const globalMicBtn = document.getElementById('global-mic-btn');
+
+        globalMicBtn.addEventListener('click', () => {
+            if (!SpeechRecognitionAPI) {
+                alert('Browser ini gak support voice input. Pake Chrome ya bro.');
+                return;
+            }
+
+            // Kalau lagi nge-record, tap lagi buat stop manual
+            if (activeRecognition) {
+                activeRecognition.stop();
+                return;
+            }
+
+            if (!voiceTargetInput || !document.body.contains(voiceTargetInput)) {
+                alert('Klik dulu kolom yang mau diisi (Nama Barang/Spesifikasi/FA/S-N), baru tap mic ini.');
+                return;
+            }
+
+            const recognition = new SpeechRecognitionAPI();
+            recognition.lang = 'id-ID';
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+
+            activeRecognition = recognition;
+            globalMicBtn.classList.add('mic-active');
+            globalMicBtn.textContent = '⏺';
+
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript.trim();
+                voiceTargetInput.value = transcript.toUpperCase();
+                voiceTargetInput.dispatchEvent(new Event('input', { bubbles: true }));
+            };
+
+            recognition.onerror = (event) => {
+                console.error('Voice input error:', event.error);
+                if (event.error === 'not-allowed') {
+                    alert('Akses mic ditolak. Cek permission mic browser lo (klik ikon gembok di address bar).');
+                } else if (event.error === 'no-speech') {
+                    // diem aja, biasa kepencet tapi gak ngomong apa-apa
+                }
+            };
+
+            recognition.onend = () => {
+                globalMicBtn.classList.remove('mic-active');
+                globalMicBtn.textContent = '🎤';
+                activeRecognition = null;
+            };
+
+            recognition.start();
+        });
 
         function addItemRow(data = null) {
             const container = document.getElementById('items-container');
@@ -1596,7 +1697,6 @@
                     allowTaint: true,
                     useCORS: true,
                     logging: false,
-                    windowWidth: 800, // Force engine baca width A4
                     onclone: (clonedDoc) => {
                         clonedDoc.querySelectorAll('.sig-image').forEach(img => {
                             img.style.maxHeight = '130px'; 
@@ -1669,52 +1769,20 @@
             } catch (e) { localStorage.removeItem('binus_current_session'); }
         });
 
-        // ================================================================
-        // SMART RESIZE: MENCEGAH TTD TERHAPUS SAAT KEYBOARD HP MUNCUL/HILANG
-        // ================================================================
-        let lastInnerWidth = window.innerWidth;
         let resizeTimeout;
-        
         window.addEventListener('resize', () => {
             clearTimeout(resizeTimeout);
             resizeTimeout = setTimeout(() => {
-                if (window.innerWidth === lastInnerWidth) return; 
-                lastInnerWidth = window.innerWidth;
-
                 const wrapper = document.getElementById('sig-given-wrapper');
                 if (wrapper) {
                     const canvas = document.getElementById('sig-given');
                     const rect = wrapper.getBoundingClientRect();
-                    
                     if (canvas && Math.abs(canvas.width - rect.width * (window.devicePixelRatio || 1)) > 10) {
-                        
-                        const savedGiven = getSignatureDataURL('given');
-                        const savedReceived = getSignatureDataURL('received');
-                        
                         initSignaturePads();
-
-                        if (savedGiven) {
-                            const imgGiven = new Image();
-                            imgGiven.src = savedGiven;
-                            imgGiven.onload = () => {
-                                const c = document.getElementById('sig-given');
-                                c.getContext('2d').drawImage(imgGiven, 0, 0, c.width, c.height);
-                            };
-                            document.getElementById('sig-given-wrapper').classList.add('signed');
-                        }
-                        if (savedReceived) {
-                            const imgRec = new Image();
-                            imgRec.src = savedReceived;
-                            imgRec.onload = () => {
-                                const c = document.getElementById('sig-received');
-                                c.getContext('2d').drawImage(imgRec, 0, 0, c.width, c.height);
-                            };
-                            document.getElementById('sig-received-wrapper').classList.add('signed');
-                        }
                     }
                 }
             }, 300);
         });
     </script>
-</body>
+
 </html>
