@@ -13,6 +13,10 @@
     <!-- LIBRARY UNTUK SCAN BARCODE/QR KAMERA -->
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 
+    <!-- ===== TAMBAHAN LIBRARY UNTUK DOCX ===== -->
+    <script src="https://cdn.jsdelivr.net/npm/docx@8.2.3/build/index.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+
     <script>
         (function() {
             try {
@@ -22,9 +26,6 @@
                     if (u && u.role) {
                         window.__SESSION_VALID = true;
                         window.__SESSION_USER = u;
-                        // Tandain di <html> SEBELUM body sempet ke-render,
-                        // biar CSS bisa langsung nyembunyiin login-page dari frame pertama
-                        // (gak nunggu DOMContentLoaded yang baru jalan belakangan = kedipan).
                         document.documentElement.classList.add('session-restored');
                     }
                 }
@@ -932,11 +933,15 @@
                             </button>
 
                             <div class="flex gap-2">
-                                <button type="button" onclick="downloadReceipt()" id="download-btn" class="w-1/2 py-2.5 rounded-xl bg-status-success-text hover:opacity-90 text-white font-bold transition shadow-lg text-sm flex items-center justify-center gap-2" disabled>
+                                <button type="button" onclick="downloadReceipt()" id="download-btn" class="w-1/3 py-2.5 rounded-xl bg-status-success-text hover:opacity-90 text-white font-bold transition shadow-lg text-sm flex items-center justify-center gap-2" disabled>
                                     ⬇ Download PNG
                                 </button>
-                                <button type="button" onclick="printReceipt()" id="print-btn" class="w-1/2 py-2.5 rounded-xl bg-status-info-text hover:opacity-90 text-white font-bold transition shadow-lg text-sm flex items-center justify-center gap-2" disabled>
+                                <button type="button" onclick="printReceipt()" id="print-btn" class="w-1/3 py-2.5 rounded-xl bg-status-info-text hover:opacity-90 text-white font-bold transition shadow-lg text-sm flex items-center justify-center gap-2" disabled>
                                     🖨 Print
+                                </button>
+                                <!-- ===== TOMBOL DOWNLOAD DOCX (TAMBAHAN) ===== -->
+                                <button type="button" onclick="downloadDocx()" id="download-docx-btn" class="w-1/3 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold transition shadow-lg text-sm flex items-center justify-center gap-2" disabled>
+                                    📄 Download DOCX
                                 </button>
                             </div>
 
@@ -1531,6 +1536,7 @@
             document.getElementById('form-error').classList.add('hidden');
             document.getElementById('download-btn').disabled = true;
             document.getElementById('print-btn').disabled = true;
+            document.getElementById('download-docx-btn').disabled = true; // <-- tambahan
         }
 
         // ================================================================
@@ -1689,6 +1695,7 @@
             document.getElementById('receipt-preview').innerHTML = receiptHTML;
             document.getElementById('download-btn').disabled = false;
             document.getElementById('print-btn').disabled = false;
+            document.getElementById('download-docx-btn').disabled = false; // <-- tambahan
             document.getElementById('gen-btn-text').innerText = '✅ Tanda Terima Siap!';
             setTimeout(() => document.getElementById('gen-btn-text').innerText = '📄 Generate Tanda Terima', 3000);
         }
@@ -1759,6 +1766,262 @@
         }
 
         // ================================================================
+        // ===== FITUR BARU: DOWNLOAD DOCX =====
+        // ================================================================
+        async function downloadDocx() {
+            const btn = document.getElementById('download-docx-btn');
+            const preview = document.getElementById('receipt-preview');
+
+            if (!preview.querySelector('table')) {
+                alert('Generate tanda terima terlebih dahulu!');
+                return;
+            }
+
+            btn.innerText = '⏳ Generating...';
+            btn.disabled = true;
+
+            try {
+                // Ambil data dari form (sama seperti di generateReceipt)
+                const givenBy = document.getElementById('given-by').value.trim();
+                const givenId = document.getElementById('given-id').value.trim() || '-';
+                const receivedBy = document.getElementById('received-by').value.trim();
+                const receivedId = document.getElementById('received-id').value.trim() || '-';
+                const date = document.getElementById('receipt-date').value;
+                const dateObj = new Date(date + 'T00:00:00');
+                const formattedDate = dateObj.toLocaleDateString(currentLang === 'en' ? 'en-GB' : 'id-ID', {
+                    day: '2-digit',
+                    month: 'long',
+                    year: 'numeric'
+                });
+
+                // Ambil data items dari DOM (sama seperti di generateReceipt)
+                const rows = document.querySelectorAll('#items-container > .item-row');
+                const items = [];
+                rows.forEach(row => {
+                    const name = row.querySelector('.item-name').value.trim();
+                    const spec = row.querySelector('.item-spec').value.trim() || '-';
+                    const qty = parseInt(row.querySelector('.item-qty').value) || 0;
+                    const fa = row.querySelector('.item-fa').value.trim() || '-';
+                    const sn = row.querySelector('.item-sn').value.trim() || '-';
+                    const kondisi = row.querySelector('.item-kondisi').value;
+                    const status = row.querySelector('.item-status').value;
+                    if (name && qty > 0) {
+                        items.push({ name, spec, qty, fa, sn, kondisi, status });
+                    }
+                });
+
+                if (items.length === 0) {
+                    alert('Tidak ada data item!');
+                    btn.innerText = '📄 Download DOCX';
+                    btn.disabled = false;
+                    return;
+                }
+
+                // Ambil signature images
+                const sigGiven = getSignatureDataURL('given');
+                const sigReceived = getSignatureDataURL('received');
+                if (!sigGiven || !sigReceived) {
+                    alert('Tanda tangan belum diisi!');
+                    btn.innerText = '📄 Download DOCX';
+                    btn.disabled = false;
+                    return;
+                }
+
+                // ===== Gunakan library docx =====
+                const { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, ImageRun, AlignmentType, HeadingLevel, WidthType, TableLayoutType } = docx;
+
+                // Helper untuk membuat sel tabel dengan border
+                const createCell = (text, width = 2000, align = 'center') => {
+                    const p = new Paragraph({
+                        children: [new TextRun({ text: text, size: 20, font: "Arial" })],
+                        alignment: align === 'center' ? AlignmentType.CENTER : align === 'left' ? AlignmentType.LEFT : AlignmentType.RIGHT,
+                        spacing: { before: 100, after: 100 }
+                    });
+                    return new TableCell({
+                        children: [p],
+                        width: { size: width, type: WidthType.DXA },
+                        borders: {
+                            top: { style: docx.BorderStyle.SINGLE, size: 1, color: "000000" },
+                            bottom: { style: docx.BorderStyle.SINGLE, size: 1, color: "000000" },
+                            left: { style: docx.BorderStyle.SINGLE, size: 1, color: "000000" },
+                            right: { style: docx.BorderStyle.SINGLE, size: 1, color: "000000" }
+                        }
+                    });
+                };
+
+                // Buat tabel items
+                const itemRows = [];
+                // Header
+                const headerCells = ['NAMA BARANG', 'SPESIFIKASI', 'QTY', 'FA', 'S/N', 'KONDISI', 'STATUS'].map(text => {
+                    const cell = createCell(text, 1500, 'center');
+                    // Tebalkan header
+                    cell.children[0].children[0].bold = true;
+                    return cell;
+                });
+                itemRows.push(new TableRow({ children: headerCells }));
+
+                // Data items
+                items.forEach(item => {
+                    const cells = [
+                        createCell(item.name, 2000, 'left'),
+                        createCell(item.spec, 2000, 'left'),
+                        createCell(String(item.qty), 800, 'center'),
+                        createCell(item.fa, 1200, 'center'),
+                        createCell(item.sn, 1000, 'center'),
+                        createCell(item.kondisi, 1000, 'center'),
+                        createCell(item.status, 1000, 'center')
+                    ];
+                    itemRows.push(new TableRow({ children: cells }));
+                });
+
+                const itemTable = new Table({
+                    rows: itemRows,
+                    layout: TableLayoutType.FIXED,
+                    width: { size: 100, type: WidthType.PERCENTAGE },
+                });
+
+                // ===== Buat gambar signature =====
+                // Data URL berupa base64, kita perlu ubah ke buffer
+                const imageBufferGiven = Buffer.from(sigGiven.split(',')[1], 'base64');
+                const imageBufferReceived = Buffer.from(sigReceived.split(',')[1], 'base64');
+
+                // Buat image run (dengan ukuran proporsional)
+                const imageRunGiven = new ImageRun({
+                    data: imageBufferGiven,
+                    transformation: { width: 150, height: 60 },
+                    type: "png",
+                });
+                const imageRunReceived = new ImageRun({
+                    data: imageBufferReceived,
+                    transformation: { width: 150, height: 60 },
+                    type: "png",
+                });
+
+                // Buat paragraf untuk gambar
+                const imgGivenPar = new Paragraph({
+                    children: [imageRunGiven],
+                    alignment: AlignmentType.CENTER,
+                    spacing: { after: 150 }
+                });
+                const imgReceivedPar = new Paragraph({
+                    children: [imageRunReceived],
+                    alignment: AlignmentType.CENTER,
+                    spacing: { after: 150 }
+                });
+
+                // Detail tanda tangan (nama, id, tanggal)
+                const detailGiven = new Paragraph({
+                    children: [
+                        new TextRun({ text: `Nama : ${givenBy}`, size: 20, font: "Arial", break: 1 }),
+                        new TextRun({ text: `Binusian ID : ${givenId !== '-' ? givenId : ''}`, size: 20, font: "Arial", break: 1 }),
+                        new TextRun({ text: `Tanggal : ${formattedDate}`, size: 20, font: "Arial" })
+                    ],
+                    alignment: AlignmentType.LEFT,
+                    spacing: { before: 100, after: 100 }
+                });
+                const detailReceived = new Paragraph({
+                    children: [
+                        new TextRun({ text: `Nama : ${receivedBy}`, size: 20, font: "Arial", break: 1 }),
+                        new TextRun({ text: `Binusian ID : ${receivedId !== '-' ? receivedId : ''}`, size: 20, font: "Arial", break: 1 }),
+                        new TextRun({ text: `Tanggal : ${formattedDate}`, size: 20, font: "Arial" })
+                    ],
+                    alignment: AlignmentType.LEFT,
+                    spacing: { before: 100, after: 100 }
+                });
+
+                // Buat tabel tanda tangan (2 kolom)
+                const sigTable = new Table({
+                    rows: [
+                        new TableRow({
+                            children: [
+                                new TableCell({
+                                    children: [
+                                        new Paragraph({ children: [new TextRun({ text: "Diserahkan Oleh", size: 22, bold: true, font: "Arial" })], alignment: AlignmentType.CENTER }),
+                                        imgGivenPar,
+                                        detailGiven
+                                    ],
+                                    borders: {
+                                        top: { style: docx.BorderStyle.SINGLE, size: 1, color: "000000" },
+                                        bottom: { style: docx.BorderStyle.SINGLE, size: 1, color: "000000" },
+                                        left: { style: docx.BorderStyle.SINGLE, size: 1, color: "000000" },
+                                        right: { style: docx.BorderStyle.SINGLE, size: 1, color: "000000" }
+                                    }
+                                }),
+                                new TableCell({
+                                    children: [
+                                        new Paragraph({ children: [new TextRun({ text: "Diterima Oleh", size: 22, bold: true, font: "Arial" })], alignment: AlignmentType.CENTER }),
+                                        imgReceivedPar,
+                                        detailReceived
+                                    ],
+                                    borders: {
+                                        top: { style: docx.BorderStyle.SINGLE, size: 1, color: "000000" },
+                                        bottom: { style: docx.BorderStyle.SINGLE, size: 1, color: "000000" },
+                                        left: { style: docx.BorderStyle.SINGLE, size: 1, color: "000000" },
+                                        right: { style: docx.BorderStyle.SINGLE, size: 1, color: "000000" }
+                                    }
+                                })
+                            ]
+                        })
+                    ],
+                    width: { size: 100, type: WidthType.PERCENTAGE },
+                });
+
+                // Buat dokumen
+                const doc = new Document({
+                    sections: [{
+                        properties: {
+                            page: {
+                                margin: {
+                                    top: 1440,   // 1 inch
+                                    bottom: 1440,
+                                    left: 1440,
+                                    right: 1440,
+                                },
+                            },
+                        },
+                        children: [
+                            new Paragraph({
+                                children: [new TextRun({ text: "TANDA TERIMA BARANG", size: 32, bold: true, font: "Arial", underline: { type: docx.UnderlineType.SINGLE } })],
+                                alignment: AlignmentType.CENTER,
+                                spacing: { after: 300 }
+                            }),
+                            new Paragraph({
+                                children: [
+                                    new TextRun({ text: `TELAH TERIMA DARI : ${givenBy}`, size: 24, font: "Arial", break: 1 }),
+                                    new TextRun({ text: `DIBERIKAN KEPADA : ${receivedBy}`, size: 24, font: "Arial" })
+                                ],
+                                spacing: { after: 300 }
+                            }),
+                            new Paragraph({
+                                children: [new TextRun({ text: "Daftar Barang", size: 26, bold: true, font: "Arial" })],
+                                spacing: { after: 200 }
+                            }),
+                            itemTable,
+                            new Paragraph({ spacing: { after: 300 } }),
+                            sigTable
+                        ]
+                    }]
+                });
+
+                // Generate dan download
+                const blob = await Packer.toBlob(doc);
+                saveAs(blob, `Tanda_Terima_Barang_${new Date().toISOString().slice(0,10)}.docx`);
+
+                btn.innerText = '✅ DOCX Downloaded!';
+                setTimeout(() => {
+                    btn.innerText = '📄 Download DOCX';
+                    btn.disabled = false;
+                }, 3000);
+
+            } catch (err) {
+                console.error('Gagal generate DOCX:', err);
+                alert('Terjadi kesalahan saat generate DOCX. Coba lagi.');
+                btn.innerText = '📄 Download DOCX';
+                btn.disabled = false;
+            }
+        }
+
+        // ================================================================
         // INIT
         // ================================================================
         document.addEventListener('DOMContentLoaded', function() {
@@ -1805,4 +2068,5 @@
         });
     </script>
 
+</body>
 </html>
