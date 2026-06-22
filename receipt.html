@@ -14,7 +14,7 @@
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 
     <!-- ===== TAMBAHAN LIBRARY UNTUK DOCX ===== -->
-    <script src="https://cdn.jsdelivr.net/npm/docx@8.2.3/build/index.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/docx@8.2.3/build/index.umd.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
 
     <script>
@@ -1774,6 +1774,18 @@
 
             if (!preview.querySelector('table')) {
                 alert('Generate tanda terima terlebih dahulu!');
+                return;
+            }
+
+            // Cek dulu apakah library docx & FileSaver berhasil dimuat dari CDN.
+            // Kalau gagal (koneksi lambat, CDN diblokir, dll), beri pesan yang jelas
+            // daripada error teknis "docx is not defined".
+            if (typeof docx === 'undefined') {
+                alert('Library DOCX gagal dimuat dari CDN. Coba refresh halaman ini (pastikan koneksi internet stabil), lalu coba lagi.');
+                return;
+            }
+            if (typeof saveAs === 'undefined') {
+                alert('Library FileSaver gagal dimuat dari CDN. Coba refresh halaman ini (pastikan koneksi internet stabil), lalu coba lagi.');
                 return;
             }
 
