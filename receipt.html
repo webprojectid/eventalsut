@@ -1766,7 +1766,7 @@
         }
 
         // ================================================================
-        // ===== FITUR BARU: DOWNLOAD DOCX =====
+        // ===== FITUR BARU: DOWNLOAD DOCX (DIPERBAIKI) =====
         // ================================================================
         async function downloadDocx() {
             const btn = document.getElementById('download-docx-btn');
@@ -1827,8 +1827,23 @@
                     return;
                 }
 
+                // ===== PERBAIKAN: Konversi base64 ke Uint8Array (tanpa Buffer) =====
+                function base64ToUint8Array(base64) {
+                    const raw = atob(base64);
+                    const array = new Uint8Array(raw.length);
+                    for (let i = 0; i < raw.length; i++) {
+                        array[i] = raw.charCodeAt(i);
+                    }
+                    return array;
+                }
+
+                const base64Given = sigGiven.split(',')[1];
+                const base64Received = sigReceived.split(',')[1];
+                const imageDataGiven = base64ToUint8Array(base64Given);
+                const imageDataReceived = base64ToUint8Array(base64Received);
+
                 // ===== Gunakan library docx =====
-                const { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, ImageRun, AlignmentType, HeadingLevel, WidthType, TableLayoutType } = docx;
+                const { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, ImageRun, AlignmentType, WidthType, TableLayoutType, BorderStyle } = docx;
 
                 // Helper untuk membuat sel tabel dengan border
                 const createCell = (text, width = 2000, align = 'center') => {
@@ -1841,10 +1856,10 @@
                         children: [p],
                         width: { size: width, type: WidthType.DXA },
                         borders: {
-                            top: { style: docx.BorderStyle.SINGLE, size: 1, color: "000000" },
-                            bottom: { style: docx.BorderStyle.SINGLE, size: 1, color: "000000" },
-                            left: { style: docx.BorderStyle.SINGLE, size: 1, color: "000000" },
-                            right: { style: docx.BorderStyle.SINGLE, size: 1, color: "000000" }
+                            top: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
+                            bottom: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
+                            left: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
+                            right: { style: BorderStyle.SINGLE, size: 1, color: "000000" }
                         }
                     });
                 };
@@ -1854,7 +1869,6 @@
                 // Header
                 const headerCells = ['NAMA BARANG', 'SPESIFIKASI', 'QTY', 'FA', 'S/N', 'KONDISI', 'STATUS'].map(text => {
                     const cell = createCell(text, 1500, 'center');
-                    // Tebalkan header
                     cell.children[0].children[0].bold = true;
                     return cell;
                 });
@@ -1881,18 +1895,13 @@
                 });
 
                 // ===== Buat gambar signature =====
-                // Data URL berupa base64, kita perlu ubah ke buffer
-                const imageBufferGiven = Buffer.from(sigGiven.split(',')[1], 'base64');
-                const imageBufferReceived = Buffer.from(sigReceived.split(',')[1], 'base64');
-
-                // Buat image run (dengan ukuran proporsional)
                 const imageRunGiven = new ImageRun({
-                    data: imageBufferGiven,
+                    data: imageDataGiven,
                     transformation: { width: 150, height: 60 },
                     type: "png",
                 });
                 const imageRunReceived = new ImageRun({
-                    data: imageBufferReceived,
+                    data: imageDataReceived,
                     transformation: { width: 150, height: 60 },
                     type: "png",
                 });
@@ -1941,10 +1950,10 @@
                                         detailGiven
                                     ],
                                     borders: {
-                                        top: { style: docx.BorderStyle.SINGLE, size: 1, color: "000000" },
-                                        bottom: { style: docx.BorderStyle.SINGLE, size: 1, color: "000000" },
-                                        left: { style: docx.BorderStyle.SINGLE, size: 1, color: "000000" },
-                                        right: { style: docx.BorderStyle.SINGLE, size: 1, color: "000000" }
+                                        top: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
+                                        bottom: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
+                                        left: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
+                                        right: { style: BorderStyle.SINGLE, size: 1, color: "000000" }
                                     }
                                 }),
                                 new TableCell({
@@ -1954,10 +1963,10 @@
                                         detailReceived
                                     ],
                                     borders: {
-                                        top: { style: docx.BorderStyle.SINGLE, size: 1, color: "000000" },
-                                        bottom: { style: docx.BorderStyle.SINGLE, size: 1, color: "000000" },
-                                        left: { style: docx.BorderStyle.SINGLE, size: 1, color: "000000" },
-                                        right: { style: docx.BorderStyle.SINGLE, size: 1, color: "000000" }
+                                        top: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
+                                        bottom: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
+                                        left: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
+                                        right: { style: BorderStyle.SINGLE, size: 1, color: "000000" }
                                     }
                                 })
                             ]
