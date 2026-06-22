@@ -1098,7 +1098,10 @@
                             <div id="scanner-container" class="hidden border border-brand-primary p-2 rounded-xl mb-3 mt-4 bg-[#1E1B3A] shadow-lg">
                                 <div class="flex justify-between items-center mb-2 px-1">
                                     <span class="text-xs font-bold text-[#A7F3D0]">📸 Arahkan kamera ke Barcode/QR Aset</span>
-                                    <button type="button" onclick="stopScanner()" class="text-[10px] font-bold text-white bg-red-500 hover:bg-red-600 px-3 py-1.5 rounded-md transition">Tutup Kamera</button>
+                                    <div class="flex gap-2 items-center">
+                                        <button id="switch-camera-btn" type="button" onclick="switchCamera()" style="display:none;" class="text-[10px] font-bold text-white bg-blue-500 hover:bg-blue-600 px-3 py-1.5 rounded-md transition inline-flex items-center gap-1">🔄 Ganti Kamera</button>
+                                        <button type="button" onclick="stopScanner()" class="text-[10px] font-bold text-white bg-red-500 hover:bg-red-600 px-3 py-1.5 rounded-md transition">Tutup Kamera</button>
+                                    </div>
                                 </div>
                                 <div id="reader" style="width: 100%; max-width: 500px; margin: 0 auto; min-height: 250px;"></div>
                                 <p class="text-[9px] text-center text-gray-400 mt-2">Sistem otomatis mendeteksi URL atau JSON Data Aset</p>
@@ -1317,8 +1320,21 @@
         // SCANNER LOGIC BARU (MEMAKSA KAMERA BELAKANG OTOMATIS MUNCUL) 🔥
         // ================================================================
         let html5QrCode = null;
+        let availableCameras = [];
+        let currentCameraIndex = 0;
 
-        function startScanner() {
+        // Pilih kamera terbaik: hindari ultrawide, prioritaskan main/wide camera
+        function pickBestCameraIndex(cameras) {
+            const ultraWideKeywords = /ultra|wide|0\.6|macro|depth|tele|telephoto/i;
+            const mainKeywords = /back|rear|environment|camera2 0|facing back/i;
+            let mainIdx = cameras.findIndex(c => mainKeywords.test(c.label) && !ultraWideKeywords.test(c.label));
+            if (mainIdx !== -1) return mainIdx;
+            let nonUltraIdx = cameras.findIndex(c => !ultraWideKeywords.test(c.label));
+            if (nonUltraIdx !== -1) return nonUltraIdx;
+            return 0;
+        }
+
+        async function startScanner() {
             const scannerContainer = document.getElementById('scanner-container');
             scannerContainer.classList.remove('hidden');
 
@@ -1326,17 +1342,56 @@
                 html5QrCode = new Html5Qrcode("reader");
             }
 
-            // Bypass tampilan "Choose Image", langsung tembak ke kamera belakang
-            html5QrCode.start({ facingMode: "environment" }, { fps: 10, qrbox: { width: 250, height: 250 } },
-                onScanSuccess,
-                onScanFailure
-            ).catch(err => {
+            try {
+                const cameras = await Html5Qrcode.getCameras();
+                if (!cameras || cameras.length === 0) {
+                    alert("Tidak ada kamera yang terdeteksi!");
+                    return;
+                }
+                availableCameras = cameras;
+                currentCameraIndex = pickBestCameraIndex(cameras);
+
+                const switchBtn = document.getElementById('switch-camera-btn');
+                if (switchBtn) {
+                    switchBtn.style.display = cameras.length > 1 ? 'inline-flex' : 'none';
+                }
+
+                await startCameraByIndex(currentCameraIndex);
+
+            } catch (err) {
                 console.error("Gagal start kamera:", err);
                 alert("Gagal mengakses kamera! Pastikan izin kamera di browser sudah di-Allow.");
-            });
+            }
 
-            // Auto scroll ke area kamera biar user tau
             scannerContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        async function startCameraByIndex(idx) {
+            if (!availableCameras[idx]) return;
+            const cameraId = availableCameras[idx].id;
+
+            if (html5QrCode.isScanning) {
+                await html5QrCode.stop();
+                html5QrCode.clear();
+                html5QrCode = new Html5Qrcode("reader");
+            }
+
+            await html5QrCode.start(
+                { deviceId: { exact: cameraId } },
+                { fps: 10, qrbox: { width: 250, height: 250 } },
+                onScanSuccess,
+                onScanFailure
+            );
+        }
+
+        async function switchCamera() {
+            if (availableCameras.length < 2) return;
+            currentCameraIndex = (currentCameraIndex + 1) % availableCameras.length;
+            try {
+                await startCameraByIndex(currentCameraIndex);
+            } catch (err) {
+                console.error("Gagal ganti kamera:", err);
+            }
         }
 
         function stopScanner() {
