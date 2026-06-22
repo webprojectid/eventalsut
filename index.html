@@ -23,6 +23,8 @@
                     if (u && u.role) {
                         window.__SESSION_VALID = true;
                         window.__SESSION_USER = u;
+                        // Tambahkan kelas ke <html> agar CSS langsung sembunyikan login
+                        document.documentElement.classList.add('session-restored');
                     }
                 }
             } catch (e) {}
@@ -192,6 +194,15 @@
             display: flex;
             align-items: center;
             justify-content: center;
+        }
+
+        /* ===== LANGSUNG SEMBUNYIKAN LOGIN JIKA SESI VALID ===== */
+        html.session-restored #login-page {
+            display: none !important;
+        }
+        html.session-restored #main-content {
+            display: block !important;
+            animation: pageIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
         }
 
         @keyframes auroraDrift {
@@ -916,6 +927,7 @@
         // (fix browser cache issue ketika back dari event.html/receipt.html)
         // ================================================================
         window.addEventListener('pageshow', function(e) {
+            // Selalu cek localStorage, karena bisa jadi session berubah
             try {
                 const saved = localStorage.getItem('binus_current_session');
                 if (saved && saved !== "undefined") {
@@ -936,19 +948,26 @@
                             'text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded border border-status-success-border text-status-success-text' :
                             'text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded border border-status-info-border text-status-info-text';
                         
+                        // Pastikan class session-restored tetap ada di html
+                        document.documentElement.classList.add('session-restored');
+                        
                         setupPageTransitions();
-                    } else {
-                        throw new Error("Invalid session");
+                        return; // keluar agar tidak menjalankan bagian else
                     }
-                } else {
-                    throw new Error("No session");
                 }
-            } catch (err) {
-                // Session tidak valid, tampilkan login page
+                // Jika sampai sini, berarti session tidak valid
                 window.__SESSION_VALID = false;
                 window.__SESSION_USER = null;
                 document.getElementById('login-page').classList.remove('hidden-early');
                 document.getElementById('main-content').classList.remove('show');
+                document.documentElement.classList.remove('session-restored');
+            } catch (err) {
+                // error, anggap tidak valid
+                window.__SESSION_VALID = false;
+                window.__SESSION_USER = null;
+                document.getElementById('login-page').classList.remove('hidden-early');
+                document.getElementById('main-content').classList.remove('show');
+                document.documentElement.classList.remove('session-restored');
             }
         });
     </script>
