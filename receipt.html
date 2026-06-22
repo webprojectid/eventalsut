@@ -8,14 +8,19 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&display=swap" rel="stylesheet" />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <script src="https://cdn.tailwindcss.com">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js">
+    </script>
     <!-- LIBRARY UNTUK SCAN BARCODE/QR KAMERA -->
-    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript">
+    </script>
 
     <!-- ===== TAMBAHAN LIBRARY UNTUK DOCX ===== -->
-    <script src="https://cdn.jsdelivr.net/npm/docx@8.2.3/build/index.umd.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/docx@8.2.3/build/index.umd.js">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js">
+    </script>
 
     <script>
         (function() {
@@ -34,7 +39,9 @@
     </script>
     <style>
         /* Cegah flash login-page: kalau session valid, sembunyiin dari awal banget */
-        html.session-restored #login-page { display: none !important; }
+        html.session-restored #login-page {
+            display: none !important;
+        }
     </style>
 
     <script>
@@ -118,10 +125,18 @@
             --aurora-3: rgba(16, 185, 129, 0.22);
             --aurora-4: rgba(6, 182, 212, 0.14);
 
-            --status-info-text: #0369A1; --status-info-bg: rgba(14, 165, 233, 0.13); --status-info-border: rgba(14, 165, 233, 0.35);
-            --status-success-text: #047857; --status-success-bg: rgba(16, 185, 129, 0.13); --status-success-border: rgba(16, 185, 129, 0.35);
-            --status-warn-text: #B45309; --status-warn-bg: rgba(245, 158, 11, 0.15); --status-warn-border: rgba(245, 158, 11, 0.38);
-            --status-danger-text: #BE123C; --status-danger-bg: rgba(244, 63, 94, 0.13); --status-danger-border: rgba(244, 63, 94, 0.35);
+            --status-info-text: #0369A1;
+            --status-info-bg: rgba(14, 165, 233, 0.13);
+            --status-info-border: rgba(14, 165, 233, 0.35);
+            --status-success-text: #047857;
+            --status-success-bg: rgba(16, 185, 129, 0.13);
+            --status-success-border: rgba(16, 185, 129, 0.35);
+            --status-warn-text: #B45309;
+            --status-warn-bg: rgba(245, 158, 11, 0.15);
+            --status-warn-border: rgba(245, 158, 11, 0.38);
+            --status-danger-text: #BE123C;
+            --status-danger-bg: rgba(244, 63, 94, 0.13);
+            --status-danger-border: rgba(244, 63, 94, 0.35);
 
             --form-bg: #FFFFFF;
             --form-text: #1E1B3A;
@@ -165,10 +180,18 @@
             --aurora-3: rgba(16, 185, 129, 0.35);
             --aurora-4: rgba(139, 92, 246, 0.20);
 
-            --status-info-text: #38BDF8; --status-info-bg: rgba(14, 165, 233, 0.12); --status-info-border: rgba(14, 165, 233, 0.32);
-            --status-success-text: #34D399; --status-success-bg: rgba(16, 185, 129, 0.12); --status-success-border: rgba(16, 185, 129, 0.32);
-            --status-warn-text: #FBBF24; --status-warn-bg: rgba(245, 158, 11, 0.12); --status-warn-border: rgba(245, 158, 11, 0.32);
-            --status-danger-text: #FB7185; --status-danger-bg: rgba(244, 63, 94, 0.12); --status-danger-border: rgba(244, 63, 94, 0.32);
+            --status-info-text: #38BDF8;
+            --status-info-bg: rgba(14, 165, 233, 0.12);
+            --status-info-border: rgba(14, 165, 233, 0.32);
+            --status-success-text: #34D399;
+            --status-success-bg: rgba(16, 185, 129, 0.12);
+            --status-success-border: rgba(16, 185, 129, 0.32);
+            --status-warn-text: #FBBF24;
+            --status-warn-bg: rgba(245, 158, 11, 0.12);
+            --status-warn-border: rgba(245, 158, 11, 0.32);
+            --status-danger-text: #FB7185;
+            --status-danger-bg: rgba(244, 63, 94, 0.12);
+            --status-danger-border: rgba(244, 63, 94, 0.32);
 
             --form-bg: #1A1330;
             --form-text: #F4F2FF;
@@ -177,7 +200,9 @@
             --form-focus-shadow: rgba(52, 211, 153, 0.35);
         }
 
-        * { box-sizing: border-box; }
+        * {
+            box-sizing: border-box;
+        }
         body {
             background: var(--brand-bg);
             color: var(--brand-text);
@@ -188,16 +213,34 @@
             touch-action: manipulation;
         }
 
-        #main-app { position: relative; z-index: 1; display: none; }
-        #main-app.show { display: flex !important; }
-        #login-page { z-index: 50; }
-        #login-page.hidden-early { display: none !important; }
-        .login-bg.hidden { display: none; }
+        #main-app {
+            position: relative;
+            z-index: 1;
+            display: none;
+        }
+        #main-app.show {
+            display: flex !important;
+        }
+        #login-page {
+            z-index: 50;
+        }
+        #login-page.hidden-early {
+            display: none !important;
+        }
+        .login-bg.hidden {
+            display: none;
+        }
 
         @keyframes auroraDrift {
-            0% { background-position: 0% 0%, 100% 0%, 80% 100%, 0% 100%; }
-            50% { background-position: 8% 6%, 92% 8%, 75% 92%, 8% 92%; }
-            100% { background-position: 0% 10%, 100% 0%, 85% 100%, 0% 95%; }
+            0% {
+                background-position: 0% 0%, 100% 0%, 80% 100%, 0% 100%;
+            }
+            50% {
+                background-position: 8% 6%, 92% 8%, 75% 92%, 8% 92%;
+            }
+            100% {
+                background-position: 0% 10%, 100% 0%, 85% 100%, 0% 95%;
+            }
         }
 
         .aurora-surface {
@@ -255,8 +298,13 @@
             animation: gradientShift 6s ease-in-out infinite;
         }
         @keyframes gradientShift {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
+            0%,
+            100% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
         }
 
         .btn-primary {
@@ -270,7 +318,9 @@
             background-position: 100% 50%;
             box-shadow: 0 10px 32px var(--brand-glow-strong);
         }
-        .btn-primary:active { transform: translateY(0) scale(0.99); }
+        .btn-primary:active {
+            transform: translateY(0) scale(0.99);
+        }
 
         .input-modern {
             background: var(--form-bg);
@@ -327,10 +377,18 @@
             background: #F87171;
             box-shadow: 0 0 10px rgba(220, 38, 38, 0.6);
         }
-        .live-text { animation: pulseLiveText 2.4s ease-in-out infinite; font-weight: 800; }
+        .live-text {
+            animation: pulseLiveText 2.4s ease-in-out infinite;
+            font-weight: 800;
+        }
         @keyframes pulseLiveText {
-            0%, 100% { opacity: 0.85; }
-            50% { opacity: 1; }
+            0%,
+            100% {
+                opacity: 0.85;
+            }
+            50% {
+                opacity: 1;
+            }
         }
 
         .login-bg {
@@ -360,7 +418,10 @@
             transition: opacity 0.5s ease;
             mix-blend-mode: screen;
         }
-        [data-theme="light"] .login-cursor-glow { mix-blend-mode: multiply; opacity: 0.5; }
+        [data-theme="light"] .login-cursor-glow {
+            mix-blend-mode: multiply;
+            opacity: 0.5;
+        }
         .login-orb {
             position: absolute;
             border-radius: 50%;
@@ -369,13 +430,51 @@
             pointer-events: none;
             animation: float 8s ease-in-out infinite;
         }
-        .login-orb-1 { width: 340px; height: 340px; top: -8%; left: -8%; background: var(--aurora-1); animation-duration: 9s; }
-        .login-orb-2 { width: 300px; height: 300px; bottom: -10%; right: -6%; background: var(--aurora-3); animation-duration: 11s; animation-delay: -3s; }
-        .login-orb-3 { width: 220px; height: 220px; bottom: 12%; left: 8%; background: var(--aurora-2); animation-duration: 7s; animation-delay: -1.5s; }
-        .login-orb-4 { width: 180px; height: 180px; top: 12%; right: 12%; background: var(--aurora-4); animation-duration: 10s; animation-delay: -5s; }
+        .login-orb-1 {
+            width: 340px;
+            height: 340px;
+            top: -8%;
+            left: -8%;
+            background: var(--aurora-1);
+            animation-duration: 9s;
+        }
+        .login-orb-2 {
+            width: 300px;
+            height: 300px;
+            bottom: -10%;
+            right: -6%;
+            background: var(--aurora-3);
+            animation-duration: 11s;
+            animation-delay: -3s;
+        }
+        .login-orb-3 {
+            width: 220px;
+            height: 220px;
+            bottom: 12%;
+            left: 8%;
+            background: var(--aurora-2);
+            animation-duration: 7s;
+            animation-delay: -1.5s;
+        }
+        .login-orb-4 {
+            width: 180px;
+            height: 180px;
+            top: 12%;
+            right: 12%;
+            background: var(--aurora-4);
+            animation-duration: 10s;
+            animation-delay: -5s;
+        }
 
-        .login-card { animation: float 6s ease-in-out infinite; position: relative; z-index: 1; }
-        .login-card-border { position: relative; isolation: isolate; }
+        .login-card {
+            animation: float 6s ease-in-out infinite;
+            position: relative;
+            z-index: 1;
+        }
+        .login-card-border {
+            position: relative;
+            isolation: isolate;
+        }
         .login-card-border::before {
             content: '';
             position: absolute;
@@ -389,16 +488,28 @@
             animation: borderSpin 6s linear infinite;
             z-index: -1;
         }
-        @property --border-angle { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
-        @keyframes borderSpin { to { --border-angle: 360deg; } }
+        @property --border-angle {
+            syntax: '<angle>';
+            inherits: false;
+            initial-value: 0deg;
+        }
+        @keyframes borderSpin {
+            to {
+                --border-angle: 360deg;
+            }
+        }
         .login-logo {
             background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-secondary) 50%, var(--brand-accent) 100%);
             background-size: 200% 200%;
             animation: gradientShift 5s ease-in-out infinite;
         }
 
-        .view-transition { animation: scaleIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
-        .card-hover { transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
+        .view-transition {
+            animation: scaleIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+        .card-hover {
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
         .card-hover:hover {
             transform: translateY(-6px);
             border-color: var(--card-glass-highlight);
@@ -411,12 +522,13 @@
         #receipt-preview {
             background: #FFFFFF;
             color: #000000;
-            padding: 40px; 
-            font-family: Arial, Helvetica, sans-serif; 
+            padding: 40px;
+            font-family: Arial, Helvetica, sans-serif;
             max-width: 800px;
-            min-height: 1131px; /* A4 aspect ratio approximation */
+            min-height: 1131px;
+            /* A4 aspect ratio approximation */
             margin: 0 auto;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             font-size: 13px;
             width: 100%;
         }
@@ -471,7 +583,7 @@
         }
         #receipt-preview table.main-table td:first-child,
         #receipt-preview table.main-table td:nth-child(2) {
-            text-align: left; 
+            text-align: left;
         }
 
         #receipt-preview table.sig-table {
@@ -489,13 +601,13 @@
             text-align: center;
         }
         #receipt-preview table.sig-table td {
-            height: 220px; 
+            height: 220px;
             vertical-align: bottom;
             padding: 15px;
             position: relative;
         }
         #receipt-preview .sig-details {
-            margin-top: 120px; 
+            margin-top: 120px;
         }
         #receipt-preview .sig-row {
             display: flex;
@@ -512,16 +624,24 @@
             top: 15px;
             left: 50%;
             transform: translateX(-50%);
-            max-height: 130px; 
+            max-height: 130px;
             width: auto;
-            max-width: 90%; 
+            max-width: 90%;
             object-fit: contain;
         }
 
         @media print {
-            @page { size: A4 portrait; margin: 15mm; }
-            body * { visibility: hidden; }
-            #receipt-preview, #receipt-preview * { visibility: visible; }
+            @page {
+                size: A4 portrait;
+                margin: 15mm;
+            }
+            body * {
+                visibility: hidden;
+            }
+            #receipt-preview,
+            #receipt-preview * {
+                visibility: visible;
+            }
             #receipt-preview {
                 position: absolute;
                 left: 0;
@@ -534,7 +654,9 @@
                 box-shadow: none;
                 border: none;
             }
-            .no-print { display: none !important; }
+            .no-print {
+                display: none !important;
+            }
         }
 
         /* ============================================================ */
@@ -614,14 +736,33 @@
             transition: all 0.2s ease;
             opacity: 0.6;
         }
-        .remove-item-btn:hover { opacity: 1; transform: scale(1.1); }
+        .remove-item-btn:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
 
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: var(--brand-muted); border-radius: 8px; opacity: 0.5; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--brand-primary); }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--brand-muted);
+            border-radius: 8px;
+            opacity: 0.5;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--brand-primary);
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
 
         #receipt-wrapper.loading {
             opacity: 0.5;
@@ -644,15 +785,40 @@
             overflow-x: auto;
             width: 100%;
         }
-        
-        .item-row .item-name { flex: 2 1 160px; min-width: 120px; max-width: none; }
-        .item-row .item-spec { flex: 2 1 140px; min-width: 100px; }
-        .item-row .item-qty { flex: 0 0 65px; min-width: 60px; }
-        .item-row .item-fa { flex: 1 1 100px; min-width: 80px; }
-        .item-row .item-sn { flex: 1 1 100px; min-width: 80px; }
-        .item-row .item-kondisi { flex: 1 1 110px; min-width: 90px; }
-        .item-row .item-status { flex: 1 1 120px; min-width: 100px; }
-        .item-row .item-remove { flex: 0 0 auto; padding: 0.35rem 0.6rem; }
+
+        .item-row .item-name {
+            flex: 2 1 160px;
+            min-width: 120px;
+            max-width: none;
+        }
+        .item-row .item-spec {
+            flex: 2 1 140px;
+            min-width: 100px;
+        }
+        .item-row .item-qty {
+            flex: 0 0 65px;
+            min-width: 60px;
+        }
+        .item-row .item-fa {
+            flex: 1 1 100px;
+            min-width: 80px;
+        }
+        .item-row .item-sn {
+            flex: 1 1 100px;
+            min-width: 80px;
+        }
+        .item-row .item-kondisi {
+            flex: 1 1 110px;
+            min-width: 90px;
+        }
+        .item-row .item-status {
+            flex: 1 1 120px;
+            min-width: 100px;
+        }
+        .item-row .item-remove {
+            flex: 0 0 auto;
+            padding: 0.35rem 0.6rem;
+        }
 
         /* Highlight field yang lagi jadi target voice input */
         .voice-target {
@@ -676,42 +842,99 @@
             font-size: 1.4rem;
             background: var(--brand-surface);
             border: 2px solid var(--brand-border);
-            box-shadow: 0 4px 14px rgba(0,0,0,0.35);
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
             cursor: pointer;
             z-index: 1000;
             transition: background 0.2s ease, border-color 0.2s ease;
         }
-        #global-mic-btn:active { transform: translateY(-50%) scale(0.92); }
+        #global-mic-btn:active {
+            transform: translateY(-50%) scale(0.92);
+        }
         #global-mic-btn.mic-active {
             background: #ef4444;
             border-color: #ef4444;
             animation: micPulse 1s ease-in-out infinite;
         }
-        @keyframes micPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.55; } }
+        @keyframes micPulse {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.55;
+            }
+        }
         /* Sembunyiin tombol mic kalau browser gak support Web Speech API */
-        body.no-speech-support #global-mic-btn { display: none; }
+        body.no-speech-support #global-mic-btn {
+            display: none;
+        }
 
         @media (max-width: 768px) {
-            .item-row { gap: 0.35rem; padding: 0.4rem; }
-            .item-row .item-name { flex: 2 1 120px; min-width: 100px; }
-            .item-row .item-spec { flex: 2 1 100px; min-width: 80px; }
-            .item-row .item-qty { flex: 0 0 55px; min-width: 50px; }
-            .item-row .item-fa { flex: 1 1 80px; min-width: 70px; }
-            .item-row .item-sn { flex: 1 1 80px; min-width: 70px; }
-            .item-row .item-kondisi { flex: 1 1 90px; min-width: 80px; }
-            .item-row .item-status { flex: 1 1 100px; min-width: 90px; }
+            .item-row {
+                gap: 0.35rem;
+                padding: 0.4rem;
+            }
+            .item-row .item-name {
+                flex: 2 1 120px;
+                min-width: 100px;
+            }
+            .item-row .item-spec {
+                flex: 2 1 100px;
+                min-width: 80px;
+            }
+            .item-row .item-qty {
+                flex: 0 0 55px;
+                min-width: 50px;
+            }
+            .item-row .item-fa {
+                flex: 1 1 80px;
+                min-width: 70px;
+            }
+            .item-row .item-sn {
+                flex: 1 1 80px;
+                min-width: 70px;
+            }
+            .item-row .item-kondisi {
+                flex: 1 1 90px;
+                min-width: 80px;
+            }
+            .item-row .item-status {
+                flex: 1 1 100px;
+                min-width: 90px;
+            }
         }
 
         @media (max-width: 480px) {
-            .item-row .item-name { flex: 2 1 100px; min-width: 80px; }
-            .item-row .item-spec { flex: 2 1 80px; min-width: 60px; }
-            .item-row .item-qty { flex: 0 0 50px; min-width: 45px; }
-            .item-row .item-fa { flex: 1 1 70px; min-width: 60px; }
-            .item-row .item-sn { flex: 1 1 70px; min-width: 60px; }
-            .item-row .item-kondisi { flex: 1 1 80px; min-width: 70px; }
-            .item-row .item-status { flex: 1 1 90px; min-width: 80px; }
+            .item-row .item-name {
+                flex: 2 1 100px;
+                min-width: 80px;
+            }
+            .item-row .item-spec {
+                flex: 2 1 80px;
+                min-width: 60px;
+            }
+            .item-row .item-qty {
+                flex: 0 0 50px;
+                min-width: 45px;
+            }
+            .item-row .item-fa {
+                flex: 1 1 70px;
+                min-width: 60px;
+            }
+            .item-row .item-sn {
+                flex: 1 1 70px;
+                min-width: 60px;
+            }
+            .item-row .item-kondisi {
+                flex: 1 1 80px;
+                min-width: 70px;
+            }
+            .item-row .item-status {
+                flex: 1 1 90px;
+                min-width: 80px;
+            }
         }
-        
+
         /* SCANNER CAMERA FIX UI */
         #reader video {
             border-radius: 0.5rem;
@@ -823,7 +1046,8 @@
         <!-- MAIN CONTENT -->
         <main class="flex-1 overflow-y-auto relative w-full px-4 sm:px-6 md:px-8 py-6 pb-24">
 
-            <div class="w-full max-w-5xl mx-auto space-y-6">
+            <!-- ===== CONTAINER UTAMA DIPERLEBAR: max-w-5xl → max-w-7xl ===== -->
+            <div class="w-full max-w-7xl mx-auto space-y-6">
 
                 <div class="flex items-center justify-between">
                     <div>
@@ -842,6 +1066,7 @@
                     <div class="glass rounded-2xl p-6 shadow-lg">
                         <form id="receipt-form" onsubmit="generateReceipt(event)" class="space-y-4">
 
+                            <!-- ===== IDENTITAS PEMBERI & PENERIMA ===== -->
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
                                     <label class="block text-[10px] font-bold text-brand-muted uppercase tracking-wider mb-1">Diberikan Oleh</label>
@@ -869,7 +1094,37 @@
                                 <input type="date" id="receipt-date" class="w-full px-3 py-2.5 rounded-xl input-modern text-brand-text text-sm" required />
                             </div>
 
-                            <!-- SIGNATURE PADS -->
+                            <!-- ===== SCANNER UI (DISEMBUNYIKAN SECARA DEFAULT) ===== -->
+                            <div id="scanner-container" class="hidden border border-brand-primary p-2 rounded-xl mb-3 mt-4 bg-[#1E1B3A] shadow-lg">
+                                <div class="flex justify-between items-center mb-2 px-1">
+                                    <span class="text-xs font-bold text-[#A7F3D0]">📸 Arahkan kamera ke Barcode/QR Aset</span>
+                                    <button type="button" onclick="stopScanner()" class="text-[10px] font-bold text-white bg-red-500 hover:bg-red-600 px-3 py-1.5 rounded-md transition">Tutup Kamera</button>
+                                </div>
+                                <div id="reader" style="width: 100%; max-width: 500px; margin: 0 auto; min-height: 250px;"></div>
+                                <p class="text-[9px] text-center text-gray-400 mt-2">Sistem otomatis mendeteksi URL atau JSON Data Aset</p>
+                            </div>
+
+                            <!-- ===== ITEMS ===== -->
+                            <div class="border-t border-brand-border pt-3">
+                                <div class="flex items-center justify-between mb-2">
+                                    <label class="block text-[10px] font-bold text-brand-muted uppercase tracking-wider">Daftar Barang</label>
+
+                                    <div class="flex gap-2">
+                                        <!-- TOMBOL SCAN BARCODE BARU -->
+                                        <button type="button" onclick="startScanner()" class="text-xs font-bold text-status-warn-text hover:opacity-80 transition flex items-center gap-1 bg-brand-surface px-3 py-1 rounded-lg border border-brand-border">
+                                            📸 Scan Aset
+                                        </button>
+
+                                        <button type="button" onclick="addItemRow()" class="text-xs font-bold text-status-info-text hover:opacity-80 transition flex items-center gap-1 bg-brand-surface px-3 py-1 rounded-lg border border-brand-border">
+                                            <span class="text-base">+</span> Tambah
+                                        </button>
+                                    </div>
+
+                                </div>
+                                <div id="items-container" class="space-y-1.5 max-h-[300px] overflow-y-auto no-scrollbar pr-1"></div>
+                            </div>
+
+                            <!-- ===== SIGNATURE PADS — DIPINDAHKAN KE BAWAH (SETELAH ITEMS) ===== -->
                             <div class="border-t border-brand-border pt-3 mt-2">
                                 <p class="text-[10px] font-bold text-brand-muted uppercase tracking-wider mb-2">Tanda Tangan</p>
 
@@ -898,40 +1153,12 @@
                                 </div>
                             </div>
 
-                            <!-- SCANNER UI (DISEMBUNYIKAN SECARA DEFAULT) -->
-                            <div id="scanner-container" class="hidden border border-brand-primary p-2 rounded-xl mb-3 mt-4 bg-[#1E1B3A] shadow-lg">
-                                <div class="flex justify-between items-center mb-2 px-1">
-                                    <span class="text-xs font-bold text-[#A7F3D0]">📸 Arahkan kamera ke Barcode/QR Aset</span>
-                                    <button type="button" onclick="stopScanner()" class="text-[10px] font-bold text-white bg-red-500 hover:bg-red-600 px-3 py-1.5 rounded-md transition">Tutup Kamera</button>
-                                </div>
-                                <div id="reader" style="width: 100%; max-width: 500px; margin: 0 auto; min-height: 250px;"></div>
-                                <p class="text-[9px] text-center text-gray-400 mt-2">Sistem otomatis mendeteksi URL atau JSON Data Aset</p>
-                            </div>
-
-                            <!-- ITEMS -->
-                            <div class="border-t border-brand-border pt-3">
-                                <div class="flex items-center justify-between mb-2">
-                                    <label class="block text-[10px] font-bold text-brand-muted uppercase tracking-wider">Daftar Barang</label>
-                                    
-                                    <div class="flex gap-2">
-                                        <!-- TOMBOL SCAN BARCODE BARU -->
-                                        <button type="button" onclick="startScanner()" class="text-xs font-bold text-status-warn-text hover:opacity-80 transition flex items-center gap-1 bg-brand-surface px-3 py-1 rounded-lg border border-brand-border">
-                                            📸 Scan Aset
-                                        </button>
-
-                                        <button type="button" onclick="addItemRow()" class="text-xs font-bold text-status-info-text hover:opacity-80 transition flex items-center gap-1 bg-brand-surface px-3 py-1 rounded-lg border border-brand-border">
-                                            <span class="text-base">+</span> Tambah
-                                        </button>
-                                    </div>
-
-                                </div>
-                                <div id="items-container" class="space-y-1.5 max-h-[300px] overflow-y-auto no-scrollbar pr-1"></div>
-                            </div>
-
+                            <!-- ===== GENERATE BUTTON ===== -->
                             <button type="submit" id="generate-btn" class="w-full py-3.5 rounded-xl btn-primary text-white font-bold shadow-lg transition hover:opacity-90">
                                 <span id="gen-btn-text">📄 Generate Tanda Terima</span>
                             </button>
 
+                            <!-- ===== DOWNLOAD BUTTONS ===== -->
                             <div class="flex gap-2">
                                 <button type="button" onclick="downloadReceipt()" id="download-btn" class="w-1/3 py-2.5 rounded-xl bg-status-success-text hover:opacity-90 text-white font-bold transition shadow-lg text-sm flex items-center justify-center gap-2" disabled>
                                     ⬇ Download PNG
@@ -939,7 +1166,6 @@
                                 <button type="button" onclick="printReceipt()" id="print-btn" class="w-1/3 py-2.5 rounded-xl bg-status-info-text hover:opacity-90 text-white font-bold transition shadow-lg text-sm flex items-center justify-center gap-2" disabled>
                                     🖨 Print
                                 </button>
-                                <!-- ===== TOMBOL DOWNLOAD DOCX (TAMBAHAN) ===== -->
                                 <button type="button" onclick="downloadDocx()" id="download-docx-btn" class="w-1/3 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold transition shadow-lg text-sm flex items-center justify-center gap-2" disabled>
                                     📄 Download DOCX
                                 </button>
@@ -986,7 +1212,8 @@
         const tk = (key) => translations[currentLang][key] || key;
 
         let appUsers = [];
-        try { appUsers = JSON.parse(localStorage.getItem(USER_DB_KEY)); if (!Array.isArray(appUsers)) throw new Error(); } catch (e) { appUsers = []; }
+        try { appUsers = JSON.parse(localStorage.getItem(USER_DB_KEY)); if (!Array.isArray(appUsers)) throw new Error(); } catch (e) { appUsers =
+            []; }
         if (!appUsers.find(u => u.username === 'sewong')) {
             appUsers.push({ username: 'sewong', password: '_pR0t3<s3<uR3', role: 'admin' });
             localStorage.setItem(USER_DB_KEY, JSON.stringify(appUsers));
@@ -999,7 +1226,9 @@
             const orbs = stage.querySelectorAll('.login-orb');
             const glow = document.getElementById('login-cursor-glow');
             const depths = [26, 34, 20, 30];
-            let rafId = null, px = 0.5, py = 0.38;
+            let rafId = null,
+                px = 0.5,
+                py = 0.38;
 
             function apply() {
                 const nx = px - 0.5;
@@ -1092,22 +1321,20 @@
         function startScanner() {
             const scannerContainer = document.getElementById('scanner-container');
             scannerContainer.classList.remove('hidden');
-            
+
             if (!html5QrCode) {
                 html5QrCode = new Html5Qrcode("reader");
             }
-            
+
             // Bypass tampilan "Choose Image", langsung tembak ke kamera belakang
-            html5QrCode.start(
-                { facingMode: "environment" }, 
-                { fps: 10, qrbox: { width: 250, height: 250 } },
+            html5QrCode.start({ facingMode: "environment" }, { fps: 10, qrbox: { width: 250, height: 250 } },
                 onScanSuccess,
                 onScanFailure
             ).catch(err => {
                 console.error("Gagal start kamera:", err);
                 alert("Gagal mengakses kamera! Pastikan izin kamera di browser sudah di-Allow.");
             });
-            
+
             // Auto scroll ke area kamera biar user tau
             scannerContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
@@ -1125,7 +1352,8 @@
 
         // GANTI URL INI DENGAN URL WEB APP APPS SCRIPT LO SETELAH DI-DEPLOY
         // (lihat panduan deploy di file asset-lookup-proxy.gs)
-        const ASSET_LOOKUP_API_URL = "https://script.google.com/macros/s/AKfycbz9A3SBoD1JyISyntl32t0h2b4ojYWWVtPRZcdc75et4YnomuekLDTTU_veWx4SufTlHg/exec";
+        const ASSET_LOOKUP_API_URL =
+            "https://script.google.com/macros/s/AKfycbz9A3SBoD1JyISyntl32t0h2b4ojYWWVtPRZcdc75et4YnomuekLDTTU_veWx4SufTlHg/exec";
 
         async function onScanSuccess(decodedText, decodedResult) {
             stopScanner();
@@ -1174,7 +1402,9 @@
                 }
 
                 try {
-                    const res = await fetch(`${ASSET_LOOKUP_API_URL}?assetNo=${encodeURIComponent(fa)}&companyCode=${encodeURIComponent(companyCode)}`);
+                    const res = await fetch(
+                        `${ASSET_LOOKUP_API_URL}?assetNo=${encodeURIComponent(fa)}&companyCode=${encodeURIComponent(companyCode)}`
+                        );
                     const info = await res.json();
 
                     if (info.found) {
@@ -1210,7 +1440,7 @@
             const container = document.getElementById('items-container');
             const rows = container.querySelectorAll('.item-row');
             let targetRow = null;
-            
+
             for (let i = 0; i < rows.length; i++) {
                 const rowName = rows[i].querySelector('.item-name').value.trim();
                 const rowFa = rows[i].querySelector('.item-fa').value.trim();
@@ -1221,7 +1451,7 @@
             }
 
             if (!targetRow) {
-                addItemRow(); 
+                addItemRow();
                 const newRows = container.querySelectorAll('.item-row');
                 targetRow = newRows[newRows.length - 1];
             }
@@ -1300,9 +1530,12 @@
                     mousemove: (e) => draw(e, id, newCtx),
                     mouseup: () => stopDrawing(id),
                     mouseleave: () => stopDrawing(id),
-                    touchstart: (e) => { e.preventDefault(); startDrawing(e.touches[0], id, newCtx); },
-                    touchmove: (e) => { e.preventDefault(); draw(e.touches[0], id, newCtx); },
-                    touchend: (e) => { e.preventDefault(); stopDrawing(id); },
+                    touchstart: (e) => { e.preventDefault();
+                        startDrawing(e.touches[0], id, newCtx); },
+                    touchmove: (e) => { e.preventDefault();
+                        draw(e.touches[0], id, newCtx); },
+                    touchend: (e) => { e.preventDefault();
+                        stopDrawing(id); },
                     touchcancel: () => stopDrawing(id),
                 };
 
@@ -1536,7 +1769,7 @@
             document.getElementById('form-error').classList.add('hidden');
             document.getElementById('download-btn').disabled = true;
             document.getElementById('print-btn').disabled = true;
-            document.getElementById('download-docx-btn').disabled = true; // <-- tambahan
+            document.getElementById('download-docx-btn').disabled = true;
         }
 
         // ================================================================
@@ -1695,7 +1928,7 @@
             document.getElementById('receipt-preview').innerHTML = receiptHTML;
             document.getElementById('download-btn').disabled = false;
             document.getElementById('print-btn').disabled = false;
-            document.getElementById('download-docx-btn').disabled = false; // <-- tambahan
+            document.getElementById('download-docx-btn').disabled = false;
             document.getElementById('gen-btn-text').innerText = '✅ Tanda Terima Siap!';
             setTimeout(() => document.getElementById('gen-btn-text').innerText = '📄 Generate Tanda Terima', 3000);
         }
@@ -1726,11 +1959,11 @@
                     logging: false,
                     onclone: (clonedDoc) => {
                         clonedDoc.querySelectorAll('.sig-image').forEach(img => {
-                            img.style.maxHeight = '130px'; 
+                            img.style.maxHeight = '130px';
                             img.style.maxWidth = '90%';
                             img.style.objectFit = 'contain';
                             img.style.background = 'transparent';
-                            img.style.width = 'auto'; 
+                            img.style.width = 'auto';
                         });
                     }
                 });
@@ -1781,11 +2014,15 @@
             // Kalau gagal (koneksi lambat, CDN diblokir, dll), beri pesan yang jelas
             // daripada error teknis "docx is not defined".
             if (typeof docx === 'undefined') {
-                alert('Library DOCX gagal dimuat dari CDN. Coba refresh halaman ini (pastikan koneksi internet stabil), lalu coba lagi.');
+                alert(
+                    'Library DOCX gagal dimuat dari CDN. Coba refresh halaman ini (pastikan koneksi internet stabil), lalu coba lagi.'
+                    );
                 return;
             }
             if (typeof saveAs === 'undefined') {
-                alert('Library FileSaver gagal dimuat dari CDN. Coba refresh halaman ini (pastikan koneksi internet stabil), lalu coba lagi.');
+                alert(
+                    'Library FileSaver gagal dimuat dari CDN. Coba refresh halaman ini (pastikan koneksi internet stabil), lalu coba lagi.'
+                    );
                 return;
             }
 
@@ -1848,8 +2085,14 @@
                 const sigReceivedBase64 = sigReceivedDataUrl.split(',')[1] || null;
 
                 const blob = await buildReceiptDocxBlob({
-                    givenBy, givenId, receivedBy, receivedId, formattedDate,
-                    items, sigGivenBase64, sigReceivedBase64
+                    givenBy,
+                    givenId,
+                    receivedBy,
+                    receivedId,
+                    formattedDate,
+                    items,
+                    sigGivenBase64,
+                    sigReceivedBase64
                 });
 
                 saveAs(blob, `Tanda_Terima_Barang_${new Date().toISOString().slice(0,10)}.docx`);
@@ -1864,7 +2107,8 @@
                 // Tampilin pesan error asli di alert biar gampang ketauan masalahnya
                 // kalau suatu saat error lagi (gak cuma "coba lagi" doang).
                 console.error('Gagal generate DOCX:', err);
-                alert('Terjadi kesalahan saat generate DOCX:\n\n' + (err && err.message ? err.message : err) + '\n\n(Cek Console browser untuk detail lengkap)');
+                alert('Terjadi kesalahan saat generate DOCX:\n\n' + (err && err.message ? err.message : err) +
+                    '\n\n(Cek Console browser untuk detail lengkap)');
                 btn.innerText = '📄 Download DOCX';
                 btn.disabled = false;
             }
@@ -1877,8 +2121,10 @@
         // (itu sumber bug versi sebelumnya: cell.children[0].children[0].bold = ...
         // yang crash karena struktur internal docx.js gak bisa diakses begitu).
         // ================================================================
-        async function buildReceiptDocxBlob({ givenBy, givenId, receivedBy, receivedId, formattedDate, items, sigGivenBase64, sigReceivedBase64 }) {
-            const { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, ImageRun, AlignmentType, WidthType, BorderStyle, VerticalAlign } = docx;
+        async function buildReceiptDocxBlob({ givenBy, givenId, receivedBy, receivedId, formattedDate, items, sigGivenBase64,
+            sigReceivedBase64 }) {
+            const { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, ImageRun, AlignmentType, WidthType,
+                BorderStyle, VerticalAlign } = docx;
 
             const cellBorders = {
                 top: { style: BorderStyle.SINGLE, size: 1, color: '000000' },
@@ -1889,28 +2135,68 @@
 
             // Helper bikin 1 sel tabel teks. width dalam DXA (opsional).
             function cellText(text, opts = {}) {
-                const { width, bold = false, align = 'center' } = opts;
+                const { width, bold = false, align = 'center', noBorder = false } = opts;
                 const alignMap = { center: AlignmentType.CENTER, left: AlignmentType.LEFT, right: AlignmentType.RIGHT };
+                const noBorderStyle = { style: BorderStyle.NONE, size: 0, color: 'FFFFFF' };
+                const useBorders = noBorder ? {
+                    top: noBorderStyle, bottom: noBorderStyle, left: noBorderStyle, right: noBorderStyle
+                } : cellBorders;
                 const cellOpts = {
                     children: [
                         new Paragraph({
                             alignment: alignMap[align] || AlignmentType.CENTER,
-                            children: [new TextRun({ text: String(text ?? ''), font: 'Arial', size: 20, bold: bold })]
+                            children: [new TextRun({ text: String(text ?? ''), font: 'Arial', size: 22, bold: bold })]
                         })
                     ],
                     verticalAlign: VerticalAlign.CENTER,
-                    margins: { top: 80, bottom: 80, left: 80, right: 80 },
-                    borders: cellBorders
+                    margins: { top: 60, bottom: 60, left: 80, right: 80 },
+                    borders: useBorders
                 };
                 if (width) cellOpts.width = { size: width, type: WidthType.DXA };
                 return new TableCell(cellOpts);
             }
 
-            // ---- Tabel daftar barang ----
-            const headerLabels = ['NAMA BARANG', 'SPESIFIKASI', 'QTY', 'FA', 'S/N', 'KONDISI', 'STATUS'];
-            const headerWidths = [2000, 2000, 800, 1200, 1000, 1000, 1000];
+            // ---- Tabel header info (3 kolom: label | : | nilai) — mirip gambar ----
+            const noBorderStyle = { style: BorderStyle.NIL, size: 0, color: 'FFFFFF' };
+            const noBorders = { top: noBorderStyle, bottom: noBorderStyle, left: noBorderStyle, right: noBorderStyle, insideH: noBorderStyle, insideV: noBorderStyle };
+            function infoRow(label, value) {
+                return new TableRow({
+                    children: [
+                        new TableCell({
+                            width: { size: 2400, type: WidthType.DXA },
+                            borders: noBorders,
+                            margins: { top: 40, bottom: 40, left: 0, right: 0 },
+                            children: [new Paragraph({ children: [new TextRun({ text: label, font: 'Arial', size: 22 })] })]
+                        }),
+                        new TableCell({
+                            width: { size: 300, type: WidthType.DXA },
+                            borders: noBorders,
+                            margins: { top: 40, bottom: 40, left: 0, right: 0 },
+                            children: [new Paragraph({ children: [new TextRun({ text: ':', font: 'Arial', size: 22 })] })]
+                        }),
+                        new TableCell({
+                            borders: noBorders,
+                            margins: { top: 40, bottom: 40, left: 0, right: 0 },
+                            children: [new Paragraph({ children: [new TextRun({ text: value || '', font: 'Arial', size: 22 })] })]
+                        })
+                    ]
+                });
+            }
+
+            const infoTable = new Table({
+                width: { size: 100, type: WidthType.PERCENTAGE },
+                borders: { top: noBorderStyle, bottom: noBorderStyle, left: noBorderStyle, right: noBorderStyle, insideH: noBorderStyle, insideV: noBorderStyle },
+                rows: [
+                    infoRow('TELAH TERIMA DARI', givenBy),
+                    infoRow('DIBERIKAN KEPADA', receivedBy)
+                ]
+            });
+
+            // ---- Tabel daftar barang (header lengkap sesuai gambar) ----
+            const headerLabels = ['NAMA BARANG', 'SPESIFIKASI BARANG', 'QTY', 'FA Number', 'S/N', 'Kondisi', 'Status'];
+            const headerWidths = [2000, 2000, 700, 1400, 1000, 1000, 1000];
             const headerRow = new TableRow({
-                children: headerLabels.map((label, i) => cellText(label, { width: headerWidths[i], bold: true }))
+                children: headerLabels.map((label, i) => cellText(label, { width: headerWidths[i], bold: false, align: 'center' }))
             });
 
             const itemDataRows = items.map(item => new TableRow({
@@ -1938,72 +2224,88 @@
                 return array;
             }
 
-            // Isi 1 sel tanda tangan: label, gambar (kalau ada & valid), lalu detail nama/ID/tanggal.
-            // Kalau gambar gagal di-decode/embed, FALLBACK ke ruang kosong (gak bikin seluruh
-            // proses generate DOCX gagal total cuma gara-gara 1 gambar bermasalah).
-            function buildSignatureCellChildren(label, name, idVal, base64Data) {
-                const children = [
-                    new Paragraph({
-                        alignment: AlignmentType.CENTER,
-                        children: [new TextRun({ text: label, font: 'Arial', size: 22, bold: true })]
-                    })
-                ];
+            // Signature table: 2 baris per cell — row 1 label (header), row 2 isi (ttd + nama/ID/tgl)
+            // Sesuai gambar: label header di baris tersendiri (tengah), area TTD besar, lalu detail bawah
+            function buildSignatureLabelCell(label) {
+                return new TableCell({
+                    width: { size: 50, type: WidthType.PERCENTAGE },
+                    borders: cellBorders,
+                    margins: { top: 80, bottom: 80, left: 120, right: 120 },
+                    children: [
+                        new Paragraph({
+                            alignment: AlignmentType.CENTER,
+                            children: [new TextRun({ text: label, font: 'Arial', size: 22 })]
+                        })
+                    ]
+                });
+            }
 
+            function buildSignatureBodyCell(name, idVal, base64Data) {
+                const children = [];
+
+                // Area TTD — gambar atau ruang kosong besar
                 let imageAdded = false;
                 if (base64Data) {
                     try {
                         const bytes = base64ToUint8Array(base64Data);
                         children.push(new Paragraph({
                             alignment: AlignmentType.CENTER,
-                            spacing: { before: 100, after: 100 },
+                            spacing: { before: 200, after: 200 },
                             children: [
                                 new ImageRun({
                                     type: 'png',
                                     data: bytes,
-                                    transformation: { width: 150, height: 60 }
+                                    transformation: { width: 200, height: 80 }
                                 })
                             ]
                         }));
                         imageAdded = true;
                     } catch (imgErr) {
-                        console.warn('Gagal embed gambar tanda tangan, lanjut tanpa gambar:', imgErr);
+                        console.warn('Gagal embed gambar tanda tangan:', imgErr);
                     }
                 }
                 if (!imageAdded) {
-                    children.push(new Paragraph({ text: ' ', spacing: { before: 300, after: 300 } }));
+                    // Ruang kosong untuk TTD manual
+                    children.push(new Paragraph({ text: ' ', spacing: { before: 800, after: 800 } }));
                 }
 
+                // Detail: Nama, Binusian ID, Tanggal — rata kiri
                 children.push(new Paragraph({
-                    spacing: { before: 100 },
-                    children: [new TextRun({ text: `Nama : ${name || ''}`, font: 'Arial', size: 20 })]
+                    spacing: { before: 80 },
+                    children: [new TextRun({ text: `Nama`, font: 'Arial', size: 20 }),
+                               new TextRun({ text: `\t: ${name || ''}`, font: 'Arial', size: 20 })]
                 }));
                 children.push(new Paragraph({
-                    children: [new TextRun({ text: `Binusian ID : ${idVal && idVal !== '-' ? idVal : ''}`, font: 'Arial', size: 20 })]
+                    children: [new TextRun({ text: `Binusian ID`, font: 'Arial', size: 20 }),
+                               new TextRun({ text: `\t: ${idVal && idVal !== '-' ? idVal : ''}`, font: 'Arial', size: 20 })]
                 }));
                 children.push(new Paragraph({
-                    children: [new TextRun({ text: `Tanggal : ${formattedDate}`, font: 'Arial', size: 20 })]
+                    children: [new TextRun({ text: `Tanggal`, font: 'Arial', size: 20 }),
+                               new TextRun({ text: `\t: ${formattedDate}`, font: 'Arial', size: 20 })]
                 }));
 
-                return children;
+                return new TableCell({
+                    width: { size: 50, type: WidthType.PERCENTAGE },
+                    borders: cellBorders,
+                    margins: { top: 80, bottom: 120, left: 120, right: 120 },
+                    children
+                });
             }
 
+            // Tabel TTD: baris 1 = label header, baris 2 = isi
             const sigTable = new Table({
                 width: { size: 100, type: WidthType.PERCENTAGE },
                 rows: [
                     new TableRow({
                         children: [
-                            new TableCell({
-                                width: { size: 50, type: WidthType.PERCENTAGE },
-                                borders: cellBorders,
-                                margins: { top: 120, bottom: 120, left: 120, right: 120 },
-                                children: buildSignatureCellChildren('Diserahkan Oleh', givenBy, givenId, sigGivenBase64)
-                            }),
-                            new TableCell({
-                                width: { size: 50, type: WidthType.PERCENTAGE },
-                                borders: cellBorders,
-                                margins: { top: 120, bottom: 120, left: 120, right: 120 },
-                                children: buildSignatureCellChildren('Diterima Oleh', receivedBy, receivedId, sigReceivedBase64)
-                            })
+                            buildSignatureLabelCell('Diserahkan Oleh'),
+                            buildSignatureLabelCell('Diterima Oleh')
+                        ]
+                    }),
+                    new TableRow({
+                        children: [
+                            buildSignatureBodyCell(givenBy, givenId, sigGivenBase64),
+                            buildSignatureBodyCell(receivedBy, receivedId, sigReceivedBase64)
                         ]
                     })
                 ]
@@ -2013,25 +2315,20 @@
                 sections: [{
                     properties: { page: { margin: { top: 1440, bottom: 1440, left: 1440, right: 1440 } } },
                     children: [
+                        // Judul
                         new Paragraph({
                             alignment: AlignmentType.CENTER,
-                            spacing: { after: 300 },
-                            children: [new TextRun({ text: 'TANDA TERIMA BARANG', font: 'Arial', size: 32, bold: true, underline: {} })]
+                            spacing: { after: 360 },
+                            children: [new TextRun({ text: 'TANDA TERIMA BARANG', font: 'Arial', size: 28,
+                                    bold: true, underline: {} })]
                         }),
-                        new Paragraph({
-                            spacing: { after: 100 },
-                            children: [new TextRun({ text: `TELAH TERIMA DARI : ${givenBy}`, font: 'Arial', size: 24 })]
-                        }),
-                        new Paragraph({
-                            spacing: { after: 300 },
-                            children: [new TextRun({ text: `DIBERIKAN KEPADA : ${receivedBy}`, font: 'Arial', size: 24 })]
-                        }),
-                        new Paragraph({
-                            spacing: { after: 200 },
-                            children: [new TextRun({ text: 'Daftar Barang', font: 'Arial', size: 26, bold: true })]
-                        }),
+                        // Info header pakai tabel (label | : | nilai)
+                        infoTable,
+                        new Paragraph({ spacing: { after: 240 }, children: [] }),
+                        // Tabel barang (langsung, tanpa heading "Daftar Barang")
                         itemTable,
-                        new Paragraph({ spacing: { after: 300 }, children: [] }),
+                        new Paragraph({ spacing: { after: 360 }, children: [] }),
+                        // Tabel TTD
                         sigTable
                     ]
                 }]
